@@ -5,6 +5,6 @@ import userRouter from './user';
 const mainRouter = new Hono()
 
 mainRouter.route('/user',userRouter)
-mainRouter.route('/blog',blogRouter)
+mainRouter.route('/blog', blogRouter)
 
 export default mainRouter;

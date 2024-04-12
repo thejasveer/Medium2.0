@@ -1,11 +1,8 @@
 import {Hono} from 'hono'
+import { signin, signup } from '../controllers/userController'
 
 const userRouter =new Hono()
-userRouter.post('/signup', (c) => {
-	return c.text('signup route')
-})
+userRouter.post('/signup', signup)
 
-userRouter.post('/signin', (c) => {
-	return c.text('signin route')
-})
+userRouter.post('/signin', signin)
 export default userRouter;
