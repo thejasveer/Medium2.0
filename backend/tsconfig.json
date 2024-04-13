@@ -2,15 +2,18 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "moduleResolution": "node",
     "strict": true,
+    "baseUrl": ".",
     "lib": [
       "ESNext"
     ],
     "types": [
       "@cloudflare/workers-types"
     ],
+     
     "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx"
+    "jsxImportSource": "hono/jsx",
+    
   },
 }

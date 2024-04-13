@@ -2,22 +2,32 @@ import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import {Context} from 'hono'
 import StatusCode from '../utils/statusCode';
-import { blogSchema } from '../zod/blog';
+import { blogSchema, updateBlogSchema } from "@codewithjass/common"
  
 export async function getAllBlogs(c: Context){
 	try {
 		const prisma = new PrismaClient({
 			datasourceUrl: c.env.DATABASE_URL,
 		  }).$extends(withAccelerate());
-		  
-		
-	} catch (error) {
-		
-	}		
+		  const blogs = await prisma.post.findMany({
+			select:{
+				title:true,
+				content:true,
+				published:true,
+				author: true
+			}
+		  });
+		  c.status = StatusCode.OK;
+		  return c.json({blogs:blogs})
+	} catch (error: any) {
+
+		return c.json({error: error.message});
+	}			
 
    }
    export async function getBlogById(c: Context){
 	try {
+	 
 		const id = c.req.param('id')
 		const prisma = new PrismaClient({
 			datasourceUrl: c.env.DATABASE_URL,
@@ -39,7 +49,7 @@ interface blogInput{
 
 export async function addBlog(c: Context){
 	try {
-		const input: blogInput =await  c.req.json();
+		const input: blogInput = await  c.req.json();
 		console.log(input);
 		const {success, error} = await blogSchema.safeParse(input);
 		if(!success) {
@@ -49,11 +59,12 @@ export async function addBlog(c: Context){
 			const prisma = new PrismaClient({
 				datasourceUrl: c.env.DATABASE_URL,
 			  }).$extends(withAccelerate());
-			
+			console.log(c.get("userId"))
+			const authorId =  c.get("userId")
 			const blog = await prisma.post.create({data:{
 				title:input.title,
 				content:input.content,
-				authorId: Number(c.get("userId"))
+				authorId: authorId
 			}})
 
 			c.status = StatusCode.OK;
@@ -69,23 +80,61 @@ export async function addBlog(c: Context){
 }
 
 export async function deleteBlog(c: Context){
-	const id = c.req.param('id')
-	const prisma = new PrismaClient({
-		datasourceUrl: c.env.DATABASE_URL,
-	  }).$extends(withAccelerate());
+	try {
+		const id = c.req.param('id')
+		const prisma = new PrismaClient({
+			datasourceUrl: c.env.DATABASE_URL,
+		  }).$extends(withAccelerate());
+		const res = await prisma.post.delete({where:{id}});
+		const blogs = await prisma.post.findMany({where:{authorId: c.get("userId")}})
+		c.status = StatusCode.OK;
+		return c.json({blogs: blogs});
+	
+	} catch (error: any) {
+		console.error(error)
+		return c.json({error:{message: error.message}});
+	}
 	
 }
-export async function getmyBlog(c: Context){
-	const id = c.req.param('id')
-	const prisma = new PrismaClient({
-		datasourceUrl: c.env.DATABASE_URL,
-	  }).$extends(withAccelerate());
-	
+export async function getmyBlogs(c: Context){
+	try{
+ 		const prisma = new PrismaClient({
+			datasourceUrl: c.env.DATABASE_URL,
+		  }).$extends(withAccelerate());
+		  const authorId = c.get("userId")
+		const blogs = await prisma.post.findMany({where:{authorId : authorId}})
+
+		c.status = StatusCode.OK;
+		return c.json({blogs: blogs});
+	} catch (error: any) {
+		console.error(error)
+		return c.json({error:{message: error.message}});
+	}
+		
 }
+
 export async function updateBlog(c: Context){
-	const prisma = new PrismaClient({
-		datasourceUrl: c.env.DATABASE_URL,
-	  }).$extends(withAccelerate());
-	
+	try{
+		const input = await c.req.json()
+		const prisma = new PrismaClient({
+		   datasourceUrl: c.env.DATABASE_URL,
+		 }).$extends(withAccelerate());
+		 const {success, error} = updateBlogSchema.safeParse(input)
+		 if(!success){
+			c.status = StatusCode.BADREQ;
+			return c.json({error:error.issues});
+		 }else{
+
+			const updated = await prisma.post.update({where:{id:input.id}, data:input})
+
+			c.status = StatusCode.OK;
+			return c.json({blog:updated})
+
+		 }
+		
+   } catch (error: any) {
+	   console.error(error)
+	   return c.json({error:{message: error.message}});
+   }
 }
  

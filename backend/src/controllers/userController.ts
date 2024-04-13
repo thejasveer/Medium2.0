@@ -4,7 +4,7 @@ import {z} from "zod";
 import {  sign } from 'hono/jwt'
 import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
-import { signinSchema, signupSchema } from "../zod/user";
+import { signinSchema, signupSchema }  from '@codewithjass/common'
 import StatusCode from '../utils/statusCode';
 interface singupInput  {
     name:String
