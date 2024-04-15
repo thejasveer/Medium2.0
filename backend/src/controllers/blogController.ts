@@ -45,7 +45,7 @@ export async function getAllBlogs(c: Context){
 }
 interface blogInput{
 	title: String
-	content : String
+	content : String 
 }
 
 export async function addBlog(c: Context){
