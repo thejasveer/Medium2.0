@@ -4,8 +4,8 @@ import { Subheading } from "../components/Subheading"
 import { Input } from "../components/Input"
 import { Button } from "../components/Button"
 import { useState , useEffect} from "react"
-import { signupParams } from "@codewithjass/common"
-import { useSignup } from "../utils/apis"
+import { signupParams } from "@codewithjass/common/dist"
+import { useSignup } from "../hooks/apis"
 import {Errors} from "../components/Errors"
 export const Signup= () =>{
     const [inputs, setInputs] = useState<signupParams>({

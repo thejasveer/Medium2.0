@@ -48,3 +48,4 @@ export declare const signinSchema: z.ZodObject<{
 export type blogParams = z.infer<typeof blogSchema>;
 export type updateBlogParams = z.infer<typeof updateBlogSchema>;
 export type signinParams = z.infer<typeof signinSchema>;
+export type signupParams = z.infer<typeof signupSchema>;

@@ -2,7 +2,9 @@ import { signinParams, signupParams } from '@codewithjass/common';
 import axios, { AxiosError, AxiosResponse } from 'axios' 
 import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { BACKEND_URL } from './config'
+import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from 'recoil';
+import { BACKEND_URL } from '../config';
+import {blogAtom} from "../store/blogAtoms"
 export const useSignup= (inputs: signupParams)=>{
     const [response,setRes] = useState();
     const [errors,setErrors] = useState([]);
@@ -65,3 +67,47 @@ export const Auth=()=>{
     }
    
 }
+
+interface Blog {
+    "id":string;
+    "title":string;
+    "content": string;
+    "published": string
+    "createdAt": string;
+    "author": {
+        "name": string
+    }
+}
+export const useBlogs= ()=>{
+    const [blogs,setBlogs] = useState<Blog[]>([]);
+    const [loading,setLoading] = useState(false);
+    const getBlogs = async()=>{
+        try {
+            setLoading(true);
+            const response = await axios.get(`${BACKEND_URL}/blog/bulk`);
+            const data = response.data;
+            setBlogs(data.blogs);
+            setLoading(false);
+        } catch (error) {
+            setLoading(false);
+            
+        }
+
+    }
+    return {getBlogs,blogs,loading};
+
+
+}
+
+
+export const useBlog = (id: string = "") => {
+    const blog = useRecoilValueLoadable<Blog>(blogAtom(id));
+    return { blog };
+  };
+ 
+  export const useFormatDate=(str: string)=>{
+    const options: any = {  year: 'numeric', month: 'long', day: 'numeric' };
+    const date = (new Date(str)).toLocaleDateString("en-US",options)
+      return date;
+}
+ 

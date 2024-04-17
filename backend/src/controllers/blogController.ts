@@ -2,27 +2,33 @@ import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import {Context} from 'hono'
 import StatusCode from '../utils/statusCode';
-import { blogSchema, updateBlogSchema } from "@codewithjass/common"
+import { blogSchema, updateBlogSchema } from "@codewithjass/common/dist"
+import { HTTPException } from 'hono/http-exception'
+
  
- 
-export async function getAllBlogs(c: Context){
+export async function getAllBlogs(c:Context){
 	try {
 		const prisma = new PrismaClient({
 			datasourceUrl: c.env.DATABASE_URL,
 		  }).$extends(withAccelerate());
 		  const blogs = await prisma.post.findMany({
 			select:{
+				id:true,
 				title:true,
 				content:true,
 				published:true,
-				author: true
+				createdAt:true,
+				author: {
+					select:{name:true}
+				}
 			}
 		  });
-		  c.satus(StatusCode.OK);
+		  c.status(StatusCode.OK);
 		  return c.json({blogs:blogs})
 	} catch (error: any) {
-		c.satus(StatusCode.BADREQ);
-		return c.json({error: error.message});
+		 console.log(error)
+		throw new HTTPException(StatusCode.BADREQ, { cause:error.message })
+		 
 	}			
 
    }
@@ -34,11 +40,21 @@ export async function getAllBlogs(c: Context){
 			datasourceUrl: c.env.DATABASE_URL,
 		  }).$extends(withAccelerate());
 	
-		const blog = await prisma.post.findFirst({where:{id}})
+		const blog = await prisma.post.findFirst({where:{id},
+			select:{
+				id:true,
+				title:true,
+				content:true,
+				published:true,
+				createdAt:true,
+				author: {
+					select:{name:true}
+				}
+			}})
 		c.status(StatusCode.OK);
 		return c.json({blog: blog});
 	} catch (error: any) {
-		c.satus(StatusCode.BADREQ);
+		c.status(StatusCode.BADREQ);
 		return c.json({error:{message: error.message}});
 	}
 
@@ -74,7 +90,7 @@ export async function addBlog(c: Context){
 		}
 
 	} catch (error: any) {
-		c.satus(StatusCode.BADREQ);
+		c.status(StatusCode.BADREQ);
 		return c.json({error:{message: error.message}});
 	}
 	
@@ -92,7 +108,7 @@ export async function deleteBlog(c: Context){
 		return c.json({blogs: blogs});
 	
 	} catch (error: any) {
-		c.satus(StatusCode.BADREQ);
+		c.status(StatusCode.BADREQ);
 		return c.json({error:{message: error.message}});
 	}
 	
@@ -103,12 +119,23 @@ export async function getmyBlogs(c: Context){
 			datasourceUrl: c.env.DATABASE_URL,
 		  }).$extends(withAccelerate());
 		  const authorId = c.get("userId")
-		const blogs = await prisma.post.findMany({where:{authorId : authorId}})
+		const blogs = await prisma.post.findMany({
+			where:{authorId : authorId},
+			select:{
+				title:true,
+				content:true,
+				
+				author:{
+					name:true
+				}
+			}
+		
+		})
 
 		c.status(StatusCode.OK);
 		return c.json({blogs: blogs});
 	} catch (error: any) {
-		c.satus(StatusCode.BADREQ);
+		c.status(StatusCode.BADREQ);
 		return c.json({error:{message: error.message}});
 	}
 		
@@ -134,7 +161,7 @@ export async function updateBlog(c: Context){
 		 }
 		
    } catch (error: any) {
-	c.satus(StatusCode.BADREQ);
+	c.status(StatusCode.BADREQ);
 	   return c.json({error:{message: error.message}});
    }
 }

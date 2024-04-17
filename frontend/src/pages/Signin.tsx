@@ -4,9 +4,9 @@ import { Subheading } from "../components/Subheading"
 import { Input } from "../components/Input"
 import { Button } from "../components/Button"
 import { useState } from "react"
-import { signinParams } from "@codewithjass/common" 
+import { signinParams } from "@codewithjass/common/dist" 
 import { Qoute } from "../components/Qoute"
-import { useSignin } from "../utils/apis"
+import { useSignin } from "../hooks/apis"
 import { Errors } from "../components/Errors"
 export const Signin= () =>{
     const [inputs, setInputs] = useState<signinParams>({
