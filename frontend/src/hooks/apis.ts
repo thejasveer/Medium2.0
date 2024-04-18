@@ -75,7 +75,8 @@ interface Blog {
     "published": string
     "createdAt": string;
     "author": {
-        "name": string
+        "name": string;
+        "description": string;
     }
 }
 export const useBlogs= ()=>{

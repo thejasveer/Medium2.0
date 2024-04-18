@@ -13,9 +13,11 @@
     "@codewithjass/common": "^1.0.7",
     "axios": "^1.6.8",
     "clsx": "^2.1.0",
+    "lexical": "^0.14.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.3",
+    "react-simple-wysiwyg": "^3.0.2",
     "recoil": "^0.7.7"
   },
   "devDependencies": {

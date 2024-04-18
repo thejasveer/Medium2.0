@@ -33,10 +33,10 @@ return <div   className=" gap-1 flex flex-col p-2">
 
 }
 
-export function Avatar({name,size="size-6",text="text-sm"}: {name: string, size?: string,text?:string}){
+export function Avatar({name,size="size-8",text="text-lg"}: {name: string, size?: string,text?:string}){
  
     name = name[0]
-return   <div className={`relative inline-flex items-center justify-center  ${size} overflow-hidden bg-slate-500 rounded-full `}>
-<span className={`font-medium ${ text} text-gray-200 dark:text-gray-300`}>{name}</span>
+return   <div className={`relative inline-flex items-center justify-center  ${size} overflow-hidden bg-slate-400 rounded-full `}>
+<span className={`font-medium ${ text} text-gray-300 dark:text-gray-300`}>{name}</span>
 </div>
 }

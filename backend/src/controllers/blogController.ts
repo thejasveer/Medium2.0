@@ -48,7 +48,7 @@ export async function getAllBlogs(c:Context){
 				published:true,
 				createdAt:true,
 				author: {
-					select:{name:true}
+					select:{name:true, description:true}
 				}
 			}})
 		c.status(StatusCode.OK);
