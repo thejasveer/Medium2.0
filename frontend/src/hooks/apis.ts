@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from 'recoil';
 import { BACKEND_URL } from '../config';
 import {blogAtom} from "../store/blogAtoms"
+import DOMPurify from 'isomorphic-dompurify';
 export const useSignup= (inputs: signupParams)=>{
     const [response,setRes] = useState();
     const [errors,setErrors] = useState([]);
@@ -110,5 +111,12 @@ export const useBlog = (id: string = "") => {
     const options: any = {  year: 'numeric', month: 'long', day: 'numeric' };
     const date = (new Date(str)).toLocaleDateString("en-US",options)
       return date;
+}
+
+export const useSanitize = (str: string)=>{
+    console.log(str)
+    const clean = DOMPurify.sanitize(str);
+      
+       return clean;
 }
  

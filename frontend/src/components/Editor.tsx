@@ -20,29 +20,31 @@ import {
   Toolbar,
   EditorProps
 } from 'react-simple-wysiwyg';
+const btnStyle= {
+  "background": "#3b3a3a",
+  "color": "rgb(246, 235, 235)",
+  "cursor": "pointer",
+  "fontSize": "1em",
+  "height": "2em",
+  "outline": "none",
+  "padding": "7px",
+  "width": "2em",
+  
+}
+
+export default function ContentEditor({containerProps,onChange,value,showplaceholder}: any) {
  
-export default function ContentEditor(props: EditorProps) {
- 
-  const btnStyle= {
-    "background": "#3b3a3a",
-    "color": "rgb(246, 235, 235)",
-    "cursor": "pointer",
-    "fontSize": "1em",
-    "height": "2em",
-    "outline": "none",
-    "padding": "0",
-    "width": "2em"
-  }
  
   const [toolbarStyle,setToolbarStyle] = useState({
     "alignItems": "center",
     "backgroundColor": "transparent",
     "display": "none",
-    "width":"500px",
+    "width":"-webkit-fill-available",
     "border": "none",
     "position": "absolute",
     "top": "156",
-    "left": "0"
+    "left": "0",
+    "padding": "3px"
     
   })
   function onchange2(e) {
@@ -61,12 +63,14 @@ export default function ContentEditor(props: EditorProps) {
     }
    
   }
-
+ 
   return (
     <EditorProvider>
-      <Editor {...props} onSelect={onchange2}   >
-        {1 &&<div className="absolute text-slate-300 text-3xl font-sans">Tell Your Story...</div>}
-        <Toolbar style={toolbarStyle}>
+      <Editor containerProps={containerProps} onChange={onChange} value={value}  onSelect={onchange2}   >
+        {showplaceholder && <div className='relative'>
+                          <div className="absolute text-slate-300 text-xl top-2 px-3 font-serif not-italic flex leading-normal">Tell your story...</div>
+                        </div>}
+         <Toolbar style={toolbarStyle}>
       
         <BtnUndo style={btnStyle} />
           <BtnRedo style={btnStyle}  />

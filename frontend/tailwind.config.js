@@ -5,7 +5,17 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      keyframes: {
+          blinking: {
+              '0%, 100%': { color: 'rgb(148 163 184)' },
+              '50%': { color: '#fff' },
+          }
+      },
+      animation: {
+        blinking: 'blinking 0.65s ease-in-out infinite',
+      }
+  },
   },
   plugins: [],
 }
