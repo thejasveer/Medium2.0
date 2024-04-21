@@ -5,14 +5,14 @@ const date = new Date().toDateString();
 export const contentAtom = atom({
     key:"contentAtom",
     default:{
-        "id":"string",
+        "id":"",
         "title":"",
         "content": "",
-        "published":"false",
-        "createdAt": useFormatDate(date),
+        "published":"",
+        "createdAt": "",
         "author": {
-            "name": "JAsveer",
-            "description":" Reandom" 
+            "name": "",
+            "description":""
         }
     }
 })
@@ -21,8 +21,11 @@ export const reviewToggleAtom = atom({
     key:"reviewToggleAtom",
     default:false
 })
-
-export const tagsAtom= atom({
+export interface TagType{
+    tag:string
+    active:boolean
+}
+export const tagsAtom= atom<TagType[]>({
     key:"tagsAtom",
     default: [] 
 })

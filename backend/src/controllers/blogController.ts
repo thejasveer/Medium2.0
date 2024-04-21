@@ -20,8 +20,12 @@ export async function getAllBlogs(c:Context){
 				createdAt:true,
 				author: {
 					select:{name:true}
+				},
+				tags:{
+					select:{tag:true}
 				}
-			}
+				 
+			} 
 		  });
 		  c.status(StatusCode.OK);
 		  return c.json({blogs:blogs})
@@ -49,6 +53,9 @@ export async function getAllBlogs(c:Context){
 				createdAt:true,
 				author: {
 					select:{name:true, description:true}
+				},
+				tags: {
+					select:{tag:true}
 				}
 			}})
 		c.status(StatusCode.OK);
@@ -60,29 +67,47 @@ export async function getAllBlogs(c:Context){
 
 }
 interface blogInput{
-	title: String
-	content : String 
+	title: string
+	content : string 
+	tags: string,
+	published:boolean
 }
+ 
 
 export async function addBlog(c: Context){
 	try {
 		const input: blogInput = await  c.req.json();
-		console.log(input);
+		const tagNames = input.tags.split(',').map((tag) => tag.trim());
+ 
 		const {success, error} = await blogSchema.safeParse(input);
 		if(!success) {
 			c.status(StatusCode.BADREQ);
 			return c.json({"error": error.issues})
 		}else{
+			
 			const prisma = new PrismaClient({
 				datasourceUrl: c.env.DATABASE_URL,
 			  }).$extends(withAccelerate());
-			console.log(c.get("userId"))
+			  
 			const authorId =  c.get("userId")
-			const blog = await prisma.post.create({data:{
+			const blog = await prisma.post.create({
+				data:{
 				title:input.title,
 				content:input.content,
-				authorId: authorId
-			}})
+				authorId: authorId,
+				published:input.published,
+				tags: {
+					connectOrCreate: tagNames.map((tag) => ({
+					  where: { tag },
+					  create: { tag },
+					})),
+				  },
+				  
+			},
+			include: {
+				tags: true,
+			  },
+			})
 
 			c.status(StatusCode.OK);
 			return c.json({blog: blog})
@@ -124,9 +149,11 @@ export async function getmyBlogs(c: Context){
 			select:{
 				title:true,
 				content:true,
-				
+				tags:{
+					select:{tag:true}
+				},
 				author:{
-					name:true
+					select:{name:true}
 				}
 			}
 		
@@ -144,6 +171,8 @@ export async function getmyBlogs(c: Context){
 export async function updateBlog(c: Context){
 	try{
 		const input = await c.req.json()
+		const tagNames = input.tags.split(',').map((tag) => tag.trim());
+ 
 		const prisma = new PrismaClient({
 		   datasourceUrl: c.env.DATABASE_URL,
 		 }).$extends(withAccelerate());
@@ -153,7 +182,24 @@ export async function updateBlog(c: Context){
 			return c.json({error:error.issues});
 		 }else{
 
-			const updated = await prisma.post.update({where:{id:input.id}, data:input})
+			const updated = await prisma.post.update({where:{id:input.id},
+				data:{
+					title:input.title,
+					content:input.content,
+					published:input.published,
+					tags: {
+						set:[],
+						connectOrCreate: tagNames.map((tag) => ({
+						  where: { tag },
+						  create: { tag },
+						})),
+					  },
+					  
+				},
+				include: {
+					tags: true,
+				  },
+				})
 
 			c.status(StatusCode.OK);
 			return c.json({blog:updated})

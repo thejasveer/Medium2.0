@@ -1,22 +1,26 @@
 import { ChangeEvent, useEffect, useState } from "react"
+import { useRecoilValue } from "recoil"
+import { contentAtom } from "../store/EditorAtom"
 interface props {
     onchange: (e: ChangeEvent<HTMLInputElement>) => void
     value: string
 }
-export const TitleEditor=({onchange,value }: props)=>{
+export const TitleEditor=({onchange }: props)=>{
     const [show,setShow]= useState("visible")
+    const blog = useRecoilValue(contentAtom)
     useEffect(() =>{
-        if(value.length>0)
+        if(blog.title.length>0)
         {
             setShow("visible")
         }else{
             setShow("invisible")
         }   
-    },[value]);
+    },[blog.title]);
 
     return<a className="flex items-center -mx-14  ">
      <span className={`px-3 ${show} text-xs text-slate-400 mb-4`}>Title </span> 
        <input onChange={onchange}  
+       value={blog.title}
        type="text" placeholder="Title"
         className="  
          caret-slate-400 px-3 font-serif  

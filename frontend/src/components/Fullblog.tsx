@@ -1,7 +1,7 @@
 import { useRecoilValue } from "recoil";
 import { useFormatDate } from "../hooks/apis";
 import { reviewToggleAtom } from "../store/EditorAtom";
-import { Avatar } from "./BlogCard";
+import { Avatar } from "./Avatar";
 import { RenderHtml } from "./RenderHtml";
 
 interface Blog {
@@ -20,7 +20,7 @@ export const Fullblog =({blog } : {blog:Blog})=>{
     const date = useFormatDate(blog.createdAt)
     return  <div className="flex justify-center">
             <div className="grid grid-cols-12  w-full  max-w-screen-lg p-3 sm:p-5" >
-                <div className={`order-last sm:order-first col-span-12 sm:${!inReview?'col-span-8' :'col-span-12'} space-y-2 `}>
+                <div className={`order-last sm:order-first col-span-12 ${!inReview?'sm:col-span-8' :'sm:col-span-12'} space-y-2 `}>
                         <div className="text-3xl md:text-4xl font-extrabold max-w-lg break-words">{blog.title}</div>
                             <div className="text-slate-400   text-sm ">Posted on {date}</div>
                             <div className="text-sm text-slate-700">< RenderHtml  html={blog.content}/></div>

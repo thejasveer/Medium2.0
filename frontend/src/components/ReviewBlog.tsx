@@ -4,14 +4,16 @@ import { contentAtom, reviewToggleAtom } from "../store/EditorAtom"
 import { AddTags } from "./AddTags"
 import { Fullblog } from "./Fullblog"
 import { PublishButton } from "./PublishButton"
+import { userAtom } from "../store/userAtom"
 
 export const ReviewBlog = () =>{
     const setReviewToggle= useSetRecoilState(reviewToggleAtom)
-
+    const user = useRecoilValue(userAtom)
+ 
     const blog = useRecoilValue(contentAtom)
 
     function publish(){
-
+        const res= usAddBlog();
     }
     return <div className="flex justify-center absolute h-screen bg-white top-0 w-full  ">
             <div className="w-full sm:w-8/12  h-full p-3">
@@ -24,8 +26,8 @@ export const ReviewBlog = () =>{
                  </div>
                 
                  </div> 
-               <div className="col-span-12 md:col-span-6 space-y-3">
-                <div className="tetxt=sm text-slate-400">Publishing to: <span className="text-slate-500 font-semibold">Jasveer Singh</span></div>
+               <div className="col-span-12 md:col-span-6 space-y-7">
+                <div className="tetxt=sm text-slate-400">Publishing to: <span className="text-slate-500 font-semibold capitalize">{user.username}</span></div>
                 
                 <div className=" space-y-3">
                     <div className="text-xs">Add or change topics (up to 5) so readers know what your story is about</div>
@@ -35,11 +37,15 @@ export const ReviewBlog = () =>{
 
                 <div className="flex gap-2 items-center">
                     <PublishButton text={"Publish Now"} onclick={publish}/>
-                    <div className="text-slate-400 text-xs">Make it a draft</div>
+                    <button className="text-slate-400 text-xs">Make it a draft</button>
                 </div>
                 </div> 
                <div></div> 
         </div>
             </div>
            </div>
+}
+
+function useAddOrBlog() {
+    throw new Error("Function not implemented.")
 }

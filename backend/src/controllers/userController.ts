@@ -16,6 +16,22 @@ interface signinInput {
     password: String
 }
 
+    export const currentUser = async(c:Context)=>{
+        const prisma = new PrismaClient({
+            datasourceUrl: c.env.DATABASE_URL,
+          }).$extends(withAccelerate());
+        
+        const user= await prisma.user.findFirst({where:{id: c.get("userId")}});
+        c.status(StatusCode.OK);
+                return c.json({
+                     user: {
+                        userId: user?.id,
+                        username: user?.name,
+                        email:user?.email,
+                      },
+                })
+    }
+
  export const signup = async (c:Context) => {
         try {
             const input: singupInput = await  c.req.json();
@@ -45,7 +61,7 @@ interface signinInput {
                     message:"user added successfully",
                     user: {
                         userId: user.id,
-                        username: user.username,
+                        username: user.name,
                         email:user.email,
                       },
                 })
@@ -83,7 +99,7 @@ export const signin= async (c:Context) => {
                     message:"logged in successfully",
                     user: {
                         userId: user.id,
-                        username: user.username,
+                        username: user.name,
                         email:user.email,
                       },
                 })

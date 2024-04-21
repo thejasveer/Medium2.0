@@ -5,7 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from 'recoil';
 import { BACKEND_URL } from '../config';
 import {blogAtom} from "../store/blogAtoms"
-import DOMPurify from 'isomorphic-dompurify';
+ 
+import { activeUserAtom } from '../store/userAtom';
+import { contentAtom, tagsAtom } from '../store/EditorAtom';
+import  DOMPurify from 'dompurify';
 export const useSignup= (inputs: signupParams)=>{
     const [response,setRes] = useState();
     const [errors,setErrors] = useState([]);
@@ -32,7 +35,7 @@ export const useSignup= (inputs: signupParams)=>{
 
 export const useSignin=(inputs: signinParams) => {
     const [response,setRes] = useState();
-    const [errors,setErrors] = useState([]);
+    const [errors,setErrors] = useState<any>([]);
     const [loading,setLoading] = useState(false);
            const navigate = useNavigate()
     async function signinIn(){
@@ -53,21 +56,7 @@ export const useSignin=(inputs: signinParams) => {
     return {response,errors,signinIn,loading};
 }
 
-export const Auth=()=>{
-    
-    async function isAuthenticated(){
-        const token: string|null = localStorage.getItem('token');
-
-        if(token){
-            const response = await axios.post(`${BACKEND_URL}/api/user/me`,token);
-            const data = response.data();
-            
-
-
-        }
-    }
-   
-}
+ 
 
 interface Blog {
     "id":string;
@@ -114,9 +103,37 @@ export const useBlog = (id: string = "") => {
 }
 
 export const useSanitize = (str: string)=>{
-    console.log(str)
-    const clean = DOMPurify.sanitize(str);
-      
-       return clean;
+     const clean = DOMPurify.sanitize(str);
+        return clean;
 }
  
+export const useAuth= ()=>{
+    const user = useRecoilValueLoadable(activeUserAtom);
+    
+    return user;
+}
+export const usAddBlog= async ()=>{
+    const blog= useRecoilValue(contentAtom);
+    const tagsArr = useRecoilValue(tagsAtom);
+    const tags = tagsArr.map(t=>t.tag).join(',');
+
+    try {
+        const res = await axios.post(BACKEND_URL+'/user/my',{
+            title:blog.title,
+            content:blog.content,
+            tags:tags,
+        },{ 
+         headers: {
+            Authorization: 'Bearer ' + localStorage.getItem("token") //the token is a variable which holds the token
+            }, 
+        });
+        
+
+        
+    } catch (error) {
+        
+    }
+
+    
+
+}
