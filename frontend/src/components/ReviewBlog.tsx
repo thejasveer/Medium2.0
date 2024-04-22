@@ -1,20 +1,18 @@
-import { useSetRecoilState , useRecoilValue} from "recoil"
-import { blogAtom } from "../store/blogAtoms"
+import { useSetRecoilState , useRecoilValue, useRecoilState} from "recoil"
 import { contentAtom, reviewToggleAtom } from "../store/EditorAtom"
 import { AddTags } from "./AddTags"
 import { Fullblog } from "./Fullblog"
 import { PublishButton } from "./PublishButton"
 import { userAtom } from "../store/userAtom"
+import {  useAddBlog } from "../hooks/apis"
 
 export const ReviewBlog = () =>{
     const setReviewToggle= useSetRecoilState(reviewToggleAtom)
     const user = useRecoilValue(userAtom)
  
-    const blog = useRecoilValue(contentAtom)
+    const [blog,setBlog] = useRecoilState(contentAtom)
 
-    function publish(){
-        const res= usAddBlog();
-    }
+    const {setPublish,postBlog}= useAddBlog()
     return <div className="flex justify-center absolute h-screen bg-white top-0 w-full  ">
             <div className="w-full sm:w-8/12  h-full p-3">
             <button onClick={()=>{setReviewToggle(false)}} className="p-2 flex justify-end w-full  text-3xl font-thin text-slate-400  ">&times;</button>
@@ -36,8 +34,15 @@ export const ReviewBlog = () =>{
                 </div>
 
                 <div className="flex gap-2 items-center">
-                    <PublishButton text={"Publish Now"} onclick={publish}/>
-                    <button className="text-slate-400 text-xs">Make it a draft</button>
+                    <PublishButton text={"Publish Now"} onclick={()=>{
+                        setPublish(true)
+                        postBlog()
+                        
+                        }}/>
+                    <button className="text-slate-400 text-xs" onClick={()=>{
+                         setPublish(false)
+                         postBlog()
+                    }}>Make it a draft</button>
                 </div>
                 </div> 
                <div></div> 
@@ -45,7 +50,4 @@ export const ReviewBlog = () =>{
             </div>
            </div>
 }
-
-function useAddOrBlog() {
-    throw new Error("Function not implemented.")
-}
+ 

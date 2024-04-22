@@ -18,6 +18,11 @@ export const signinSchema = z.object({
     email: z.string().min(1,{message: "Invalid credentials"},),
     password: z.string().min(1,{message: "invalid credentials"},),
 })
+
+export const readingListSchema =z.object({
+    id:z.string().min(1,{message:"Blog id is required"})
+})
+export type readingListParam= z.infer<typeof readingListSchema>
 export type blogParams = z.infer< typeof blogSchema>
 export type updateBlogParams = z.infer< typeof updateBlogSchema>
 export type signinParams = z.infer< typeof signinSchema>

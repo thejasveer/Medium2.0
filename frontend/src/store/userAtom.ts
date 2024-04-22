@@ -1,18 +1,16 @@
 import axios from "axios";
 import { atom, selector, useRecoilState, useSetRecoilState } from "recoil";
 import { BACKEND_URL } from "../config";
+import { User } from "../interfaces";
 
-interface User{
-    userId?:string
-    username?:string
-    email?:string
-}
+
+
 export const userAtom = atom<User  >({
     key:"userAtom",
     default: {}
 })
 
-export const activeUserAtom = selector({
+export const activeUserAtom = selector<User>({
     key:'activeUserAtom',
     get: async ({get})=>{
         const token = localStorage.getItem('token');
@@ -39,3 +37,4 @@ export const activeUserAtom = selector({
       return user ;
     }
   })
+ 

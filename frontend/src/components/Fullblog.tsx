@@ -8,7 +8,7 @@ interface Blog {
     "id":string;
     "title":string;
     "content": string;
-    "published": string
+    "published": boolean
     "createdAt": string;
     "author": {
         "name": string

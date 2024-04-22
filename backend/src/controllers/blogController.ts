@@ -12,6 +12,9 @@ export async function getAllBlogs(c:Context){
 			datasourceUrl: c.env.DATABASE_URL,
 		  }).$extends(withAccelerate());
 		  const blogs = await prisma.post.findMany({
+			where:{
+				published:true
+			},
 			select:{
 				id:true,
 				title:true,
@@ -44,7 +47,9 @@ export async function getAllBlogs(c:Context){
 			datasourceUrl: c.env.DATABASE_URL,
 		  }).$extends(withAccelerate());
 	
-		const blog = await prisma.post.findFirst({where:{id},
+		const blog = await prisma.post.findFirst({where:{
+			id:id,published:true
+		},
 			select:{
 				id:true,
 				title:true,
@@ -78,7 +83,7 @@ export async function addBlog(c: Context){
 	try {
 		const input: blogInput = await  c.req.json();
 		const tagNames = input.tags.split(',').map((tag) => tag.trim());
- 
+		console.log(input,tagNames)
 		const {success, error} = await blogSchema.safeParse(input);
 		if(!success) {
 			c.status(StatusCode.BADREQ);

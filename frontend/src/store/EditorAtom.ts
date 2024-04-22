@@ -1,14 +1,12 @@
 import {atom} from 'recoil';
-import { useFormatDate } from '../hooks/apis';
-
-const date = new Date().toDateString();
+ 
 export const contentAtom = atom({
     key:"contentAtom",
     default:{
         "id":"",
         "title":"",
         "content": "",
-        "published":"",
+        "published":false,
         "createdAt": "",
         "author": {
             "name": "",

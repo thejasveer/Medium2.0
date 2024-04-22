@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.signinSchema = exports.signupSchema = exports.updateBlogSchema = exports.blogSchema = void 0;
+exports.readingListSchema = exports.signinSchema = exports.signupSchema = exports.updateBlogSchema = exports.blogSchema = void 0;
 const zod_1 = require("zod");
 exports.blogSchema = zod_1.z.object({
     title: zod_1.z.string().min(3, { message: "Title should atleast be 3 characters" }),
@@ -19,4 +19,7 @@ exports.signupSchema = zod_1.z.object({
 exports.signinSchema = zod_1.z.object({
     email: zod_1.z.string().min(1, { message: "Invalid credentials" }),
     password: zod_1.z.string().min(1, { message: "invalid credentials" }),
+});
+exports.readingListSchema = zod_1.z.object({
+    id: zod_1.z.string().min(1, { message: "Blog id is required" })
 });

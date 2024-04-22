@@ -6,9 +6,12 @@ import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from 'recoil';
 import { BACKEND_URL } from '../config';
 import {blogAtom} from "../store/blogAtoms"
  
-import { activeUserAtom } from '../store/userAtom';
-import { contentAtom, tagsAtom } from '../store/EditorAtom';
+import { User, activeUserAtom } from '../store/userAtom';
+import { TagType, contentAtom, tagsAtom } from '../store/EditorAtom';
 import  DOMPurify from 'dompurify';
+import { Blog } from '../interfaces';
+
+// Authentication 
 export const useSignup= (inputs: signupParams)=>{
     const [response,setRes] = useState();
     const [errors,setErrors] = useState([]);
@@ -20,7 +23,8 @@ export const useSignup= (inputs: signupParams)=>{
             let response = await axios.post(BACKEND_URL+"/user/signup",inputs);
              const data = response.data;
              const token: string = data.token;
-            localStorage.setItem('token',token)
+            localStorage.setItem('token',token);
+            useAuth()
             navigate('/blogs')
             setLoading(false);
 
@@ -38,37 +42,35 @@ export const useSignin=(inputs: signinParams) => {
     const [errors,setErrors] = useState<any>([]);
     const [loading,setLoading] = useState(false);
            const navigate = useNavigate()
-    async function signinIn(){
-        try {
-            setLoading(true);
-            let response = await axios.post(BACKEND_URL+"/user/signin",inputs);
-             const data = response.data;
-             const token: string = data.token;
-            localStorage.setItem('token',token)
-            navigate('/blogs')
-            setLoading(false);
+
+        async function signinIn(){
+            try {
+                setLoading(true);
+                let response = await axios.post(BACKEND_URL+"/user/signin",inputs);
+                const data = response.data;
+                const token: string = data.token;
+                localStorage.setItem('token',token)
+                navigate('/blogs')
+                setLoading(false);
+                
             } catch (err: any) {
-                 setLoading(false);
-                setErrors(...[],[err.response.data.error[0]])
-            }
-    }
+                    console.log(err)
+                    setLoading(false);
+                    setErrors(...[],[err.response.data.error[0]])
+                }
+        }
 
     return {response,errors,signinIn,loading};
 }
+export const useAuth= ()=>{
+    const user = useRecoilValueLoadable<User>(activeUserAtom);
+     return user;
+}
 
  
+ // Authentication end
 
-interface Blog {
-    "id":string;
-    "title":string;
-    "content": string;
-    "published": string
-    "createdAt": string;
-    "author": {
-        "name": string;
-        "description": string;
-    }
-}
+//  blogs
 export const useBlogs= ()=>{
     const [blogs,setBlogs] = useState<Blog[]>([]);
     const [loading,setLoading] = useState(false);
@@ -107,32 +109,36 @@ export const useSanitize = (str: string)=>{
         return clean;
 }
  
-export const useAuth= ()=>{
-    const user = useRecoilValueLoadable(activeUserAtom);
-     return user;
-}
-// :save as new / draft / dashboard of user , update , delete, 
-export const usAddBlog= async ()=>{
-    const blog= useRecoilValue(contentAtom);
+
+// :save as dashboard of user , update , delete, 
+export const useAddBlog =  ()=>{ 
+ 
+    const [publish,setPublish] = useState<boolean>(false)
+    const [blog,setblog]= useRecoilState(contentAtom);
     const tagsArr = useRecoilValue(tagsAtom);
     const tags = tagsArr.map(t=>t.tag).join(',');
+    useEffect(()=>{
+        setblog({...blog,published:publish})
+    },[publish])
 
-    try {
-        const res = await axios.post(BACKEND_URL+'/user/my',{
-            title:blog.title,
-            content:blog.content,
-            tags:tags,
-        },{ 
-         headers: {
-            Authorization: 'Bearer ' + localStorage.getItem("token") //the token is a variable which holds the token
-            }, 
-        });
-        
-
-        
-    } catch (error) {
-        
+    const postBlog = async () =>{
+        try {
+            const res = await axios.post(BACKEND_URL+'/blog/my',{
+                title:blog.title,
+                content:blog.content,
+                published:blog.published,
+                tags:tags,
+            },{ 
+             headers: {
+                Authorization: 'Bearer ' + localStorage.getItem("token") //the token is a variable which holds the token
+                }, 
+            });
+          } catch (error) {
+            console.error(error)
+        }
     }
+    
+    return {setPublish,postBlog }
 
     
 

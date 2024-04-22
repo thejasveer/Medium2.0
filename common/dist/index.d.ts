@@ -45,6 +45,14 @@ export declare const signinSchema: z.ZodObject<{
     email: string;
     password: string;
 }>;
+export declare const readingListSchema: z.ZodObject<{
+    id: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+}, {
+    id: string;
+}>;
+export type readingListParam = z.infer<typeof readingListSchema>;
 export type blogParams = z.infer<typeof blogSchema>;
 export type updateBlogParams = z.infer<typeof updateBlogSchema>;
 export type signinParams = z.infer<typeof signinSchema>;
