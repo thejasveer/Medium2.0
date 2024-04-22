@@ -109,9 +109,9 @@ export const useSanitize = (str: string)=>{
  
 export const useAuth= ()=>{
     const user = useRecoilValueLoadable(activeUserAtom);
-    
-    return user;
+     return user;
 }
+// :save as new / draft / dashboard of user , update , delete, 
 export const usAddBlog= async ()=>{
     const blog= useRecoilValue(contentAtom);
     const tagsArr = useRecoilValue(tagsAtom);
@@ -136,4 +136,4 @@ export const usAddBlog= async ()=>{
 
     
 
-}
+}       
