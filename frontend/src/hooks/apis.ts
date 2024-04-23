@@ -2,11 +2,11 @@ import { signinParams, signupParams } from '@codewithjass/common';
 import axios, { AxiosError, AxiosResponse } from 'axios' 
 import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from 'recoil';
+import { useRecoilState, useRecoilValue, useRecoilValueLoadable, useSetRecoilState } from 'recoil';
 import { BACKEND_URL } from '../config';
 import {blogAtom} from "../store/blogAtoms"
  
-import { User, activeUserAtom } from '../store/userAtom';
+import { User, activeUserAtom, authAtom, userAtom } from '../store/userAtom';
 import { TagType, contentAtom, tagsAtom } from '../store/EditorAtom';
 import  DOMPurify from 'dompurify';
 import { Blog } from '../interfaces';
@@ -16,6 +16,8 @@ export const useSignup= (inputs: signupParams)=>{
     const [response,setRes] = useState();
     const [errors,setErrors] = useState([]);
     const [loading,setLoading] = useState(false);
+    const setAuth = useSetRecoilState(authAtom)
+    const setUser= useSetRecoilState(userAtom)
            const navigate = useNavigate()
     async function signupPost(){
     try {
@@ -24,9 +26,10 @@ export const useSignup= (inputs: signupParams)=>{
              const data = response.data;
              const token: string = data.token;
             localStorage.setItem('token',token);
-            useAuth()
+            setAuth(token);
             navigate('/blogs')
             setLoading(false);
+            setUser(data.user)
 
             } catch (err: any) {
                  setLoading(false);
@@ -41,7 +44,10 @@ export const useSignin=(inputs: signinParams) => {
     const [response,setRes] = useState();
     const [errors,setErrors] = useState<any>([]);
     const [loading,setLoading] = useState(false);
-           const navigate = useNavigate()
+    const setAuth = useSetRecoilState(authAtom)
+    const setUser= useSetRecoilState(userAtom)
+    const navigate = useNavigate()
+          
 
         async function signinIn(){
             try {
@@ -50,6 +56,8 @@ export const useSignin=(inputs: signinParams) => {
                 const data = response.data;
                 const token: string = data.token;
                 localStorage.setItem('token',token)
+                setAuth(token);
+                setUser(data.user)
                 navigate('/blogs')
                 setLoading(false);
                 
@@ -57,14 +65,19 @@ export const useSignin=(inputs: signinParams) => {
                     console.log(err)
                     setLoading(false);
                     setErrors(...[],[err.response.data.error[0]])
+                    console.log(errors)
                 }
         }
 
     return {response,errors,signinIn,loading};
 }
 export const useAuth= ()=>{
-    const user = useRecoilValueLoadable<User>(activeUserAtom);
-     return user;
+    const res = useRecoilValueLoadable<User>(activeUserAtom);
+    const user = useRecoilValue(userAtom);
+ 
+    const userExist = Object.keys(user).length >0;
+    
+     return {user,res,userExist};
 }
 
  
@@ -91,6 +104,7 @@ export const useBlogs= ()=>{
 
 
 }
+
 
 
 export const useBlog = (id: string = "") => {
@@ -143,3 +157,30 @@ export const useAddBlog =  ()=>{
     
 
 }       
+
+export const useReadingList = ()=>{
+const auth = useRecoilValue(authAtom);
+const [loading,setLoading] = useState(false)
+ 
+const update= async(id: string)=>{
+    try {
+        setLoading(true)
+        const res= await axios.post(BACKEND_URL+'/user/reading-list',{
+           id:id
+        },{ 
+         headers: {
+            Authorization: 'Bearer ' + auth//the token is a variable which holds the token
+            }, 
+        });
+        setLoading(false)
+        debugger
+    } catch (error) {
+        setLoading(true)
+        console.log(error)
+    }
+  
+}
+return {update,loading}
+
+
+}

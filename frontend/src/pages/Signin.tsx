@@ -3,18 +3,34 @@ import { Heading } from "../components/Heading"
 import { Subheading } from "../components/Subheading"
 import { Input } from "../components/Input"
 import { Button } from "../components/Button"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { signinParams } from "@codewithjass/common/dist" 
 import { Qoute } from "../components/Qoute"
-import { useSignin } from "../hooks/apis"
+import { useAuth, useSignin } from "../hooks/apis"
 import { Errors } from "../components/Errors"
+import { Loading } from "../components/Loading"
+import { useNavigate } from "react-router-dom"
+import { authAtom, userAtom } from "../store/userAtom"
+import { useRecoilValue } from "recoil"
 export const Signin= () =>{
+     
+    const navigate = useNavigate()
+    const  authenticated= useRecoilValue(authAtom)
+ 
+
     const [inputs, setInputs] = useState<signinParams>({
         email: "",
         password: "",
     })
+    useEffect(()=>{
+        if(authenticated){
+            navigate('/')
+        }
+    },[authenticated])
+    
     const {errors,loading,signinIn} = useSignin(inputs)
-    return (
+ 
+    return  (
         <>
         
         <div className="flex ">

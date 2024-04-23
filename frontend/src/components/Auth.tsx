@@ -1,9 +1,10 @@
+import { useRecoilValue } from "recoil";
 import { useAuth } from "../hooks/apis";
 import { Signin } from "../pages/Signin";
+import { authAtom } from "../store/userAtom";
 export const Auth=({children}: any)=>{
-    const user = useAuth();
-    if(user.state=='hasValue'){
-        return Object.keys(user.contents).length > 0 ? children : <Signin/>
-    }
+    const Authenticated = useRecoilValue(authAtom)
+    return (Authenticated) ? children : <Signin/>
+ 
 
 }

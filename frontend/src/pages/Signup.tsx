@@ -5,16 +5,29 @@ import { Input } from "../components/Input"
 import { Button } from "../components/Button"
 import { useState , useEffect} from "react"
 import { signupParams } from "@codewithjass/common/dist"
-import { useSignup } from "../hooks/apis"
+import {  useSignup } from "../hooks/apis"
 import {Errors} from "../components/Errors"
+ 
+import { useNavigate } from "react-router-dom"
+import { useRecoilValue } from "recoil"
+import { authAtom } from "../store/userAtom"
 export const Signup= () =>{
+    const navigate = useNavigate()
+  
+    const  authenticated= useRecoilValue(authAtom)
+ 
     const [inputs, setInputs] = useState<signupParams>({
         name: "",
         email: "",
         password: "",
     })
-
  
+     useEffect(()=>{
+        if(authenticated ){
+            navigate('/')
+        }
+     },[])
+  
      const {errors, signupPost,loading} = useSignup(inputs);
     
 

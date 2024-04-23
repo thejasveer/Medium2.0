@@ -54,7 +54,7 @@ export async function getAllBlogs(c:Context){
 				id:true,
 				title:true,
 				content:true,
-				published:true,
+				 
 				createdAt:true,
 				author: {
 					select:{name:true, description:true}
@@ -152,15 +152,19 @@ export async function getmyBlogs(c: Context){
 		const blogs = await prisma.post.findMany({
 			where:{authorId : authorId},
 			select:{
+				id:true,
 				title:true,
 				content:true,
+				published:true,
+				createdAt:true,
+				author: {
+					select:{name:true}
+				},
 				tags:{
 					select:{tag:true}
-				},
-				author:{
-					select:{name:true}
 				}
-			}
+				 
+			} 
 		
 		})
 

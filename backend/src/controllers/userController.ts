@@ -7,13 +7,13 @@ import { withAccelerate } from '@prisma/extension-accelerate'
 import { readingListSchema, signinSchema, signupSchema }  from '@codewithjass/common/dist'
 import StatusCode from '../utils/statusCode';
 interface singupInput  {
-    name:String
-    email:String
-    password:String
+    name:string
+    email:string
+    password:string
 }
 interface signinInput {
-    email: String
-    password: String
+    email: string
+    password: string
 }
 interface readingList{
     id:string
@@ -33,11 +33,14 @@ interface readingList{
                 description:true,
                 posts:{
                     select:{
-                        id:true,            
+                        id:true,
                         title:true,
                         content:true,
                         published:true,
                         createdAt:true,
+                        author: {
+                            select:{name:true}
+                        },
                         tags: {
                             select:{tag:true}
                         }
@@ -79,13 +82,45 @@ interface readingList{
                     datasourceUrl: c.env.DATABASE_URL,
                   }).$extends(withAccelerate());
                 
-                const exist= await prisma.user.findFirst({where:{email:input.email}});
+                const exist= await prisma.user.findFirst({
+                    where:{email:input.email},
+                   
+                });
                 if(exist!=null){
                     c.status(StatusCode.BADREQ);
                     return c.json({"error":[{message: 'Email already exist.'}]});
                 }
 
-                const user= await prisma.user.create({data: input});
+                const user= await prisma.user.create({
+                    data: input,
+                    select: {
+                        id:true,
+                        name:true,
+                        email:true,
+                        description:true,
+                        posts:{
+                            select:{
+                                id:true,            
+                                title:true,
+                                content:true,
+                                published:true,
+                                createdAt:true,
+                                tags: {
+                                    select:{tag:true}
+                                }
+                            }
+                        },
+                        list:{
+                            include:{
+                                post:true
+                            }
+                        }
+                       
+                       
+                    }
+                }
+            
+            );
           
                 const token = await sign( user.id , c.env.JWT_SECRET)
                 c.status(StatusCode.OK);
@@ -93,9 +128,12 @@ interface readingList{
                     token: token,
                     message:"user added successfully",
                     user: {
-                        userId: user.id,
-                        username: user.name,
-                        email:user.email,
+                        userId: user?.id,
+                        username: user?.name,
+                        blogs:user?.posts,
+                        list:user?.list,
+                        
+                        email:user?.email,
                       },
                 })
             }
@@ -119,11 +157,38 @@ export const signin= async (c:Context) => {
             const prisma = new PrismaClient({
                 datasourceUrl: c.env.DATABASE_URL,
               }).$extends(withAccelerate());
-            const user=  await prisma.user.findFirst({where:{email: input.email,password:input.password}})
+            const user=  await prisma.user.findFirst({
+                where:{email: input.email,password:input.password},
+                select: {
+                    id:true,
+                    name:true,
+                    email:true,
+                    description:true,
+                    posts:{
+                        select:{
+                            id:true,            
+                            title:true,
+                            content:true,
+                            published:true,
+                            createdAt:true,
+                            tags: {
+                                select:{tag:true}
+                            }
+                        }
+                    },
+                    list:{
+                        include:{
+                            post:true
+                        }
+                    }
+                   
+                   
+                }
+            })
               
             if(user==null){
                 c.status(StatusCode.BADREQ);
-                return c.json({message: "Please enter valid credentials"});
+                return c.json({"error":[ {message:"Please enter valid credentials"}]});
             }else{
                 const token = await sign( user.id , c.env.JWT_SECRET)
                 c.status(StatusCode.OK);
@@ -131,9 +196,12 @@ export const signin= async (c:Context) => {
                     token: token,
                     message:"logged in successfully",
                     user: {
-                        userId: user.id,
-                        username: user.name,
-                        email:user.email,
+                        userId: user?.id,
+                        username: user?.name,
+                        blogs:user?.posts,
+                        list:user?.list,
+                        
+                        email:user?.email,
                       },
                 })
             }

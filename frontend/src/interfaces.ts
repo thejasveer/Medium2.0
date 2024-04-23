@@ -6,15 +6,16 @@ export interface Blog {
     title: string;
     content: string;
     published: boolean;
-    createdAt: Date;
+    createdAt: string;
     author: {
-        name: string | null;
+        name: string;
         description: string;
     };
 }  
 export interface User{
     userId?:string
     username?:string
+
     email?:string
     description?:string
     blogs?: Blog[]

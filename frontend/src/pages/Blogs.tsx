@@ -15,15 +15,11 @@ export const Blogs = ()=>{
     : <div className="w-full flex justify-center">
 
    
-    <div className="  max-w-xl mt-20 ">
+    <div className="w-3/4 mt-20 ">
             {blogs.map(blog =>{
                return <Link  key={blog.id}  to={"/blog/"+blog.id}>
                  <BlogCard
-
-                    authorName={blog.author.name}
-                    title={blog.title}
-                    content={blog.content}
-                    publishedDate={blog.createdAt}
+                        blog={blog}
                     />
              </Link> 
             })}

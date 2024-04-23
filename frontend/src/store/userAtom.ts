@@ -9,7 +9,11 @@ export const userAtom = atom<User  >({
     key:"userAtom",
     default: {}
 })
-
+export const authAtom = atom <string|null>({
+    key:"authAtom",
+    default:localStorage.getItem('token') 
+})
+ 
 export const activeUserAtom = selector<User>({
     key:'activeUserAtom',
     get: async ({get})=>{
