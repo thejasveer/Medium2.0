@@ -2,6 +2,7 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { authAtom, userAtom } from "../store/userAtom";
 import { useEffect, useRef, useState } from "react";
+import { PopUpDiv } from "./PopUpDiv";
   
 
 export function Avatar({name="Ano",size="size-8",text="text-lg",showlogout=false}: {name: string, size?: string,text?:string,showlogout?:boolean}){
@@ -35,18 +36,17 @@ export function Avatar({name="Ano",size="size-8",text="text-lg",showlogout=false
 
 return   <div onClick={(e)=>setShowDrowpdown(!showDropdown)} className={`relative group  cursor-pointer flex items-center justify-center  ${size} first: bg-red-400 rounded-full `}>
 <span className={`font-medium ${ text} text-slate-100  `}>{initial}</span>
-{showlogout?<span ref={popupRef} className={`cursor-pointer  ${showDropdown?'visible':'invisible'}  absolute  top-10 right-1  z-20 shadow-lg`}>
-    <Dropdown onClick={handleLogout} name={name}/> </span>
-        :""} 
+{showlogout?  <Dropdown onClick={handleLogout} name={name} showDropdown={showDropdown}/>  
+                           :""} 
 </div> 
 
 }
 
-const Dropdown=({onClick,name}: {onClick: any,name: string})=>{
+const Dropdown=({onClick,name,showDropdown}: {onClick: any,name: string,showDropdown:boolean})=>{
     const location = useLocation()
     const {pathname}= location;
     const active= " text-slate-700 font-semibold"
-    return <div className="    h-max  text-slate-500 font-light rounded-md  border bg-white w-max min-w-60 text-sm ">
+    return <PopUpDiv showDropdown={showDropdown}>
         <div className="space-y-3 border-b p-5 ">
             <Link to={`/@${name}`}>
             <div className={`${pathname.includes(name) && active} flex gap-2 items-center`}>
@@ -69,5 +69,6 @@ const Dropdown=({onClick,name}: {onClick: any,name: string})=>{
             </div>
         </div>
 
-    </div>
+    </PopUpDiv>
 }
+

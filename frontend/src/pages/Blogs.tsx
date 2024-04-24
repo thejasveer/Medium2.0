@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { BlogCard } from "../components/BlogCard"
 import { Loading } from "../components/Loading";
 import { useBlogs } from "../hooks/apis"
+import { Blog } from "../interfaces";
  
 
 export const Blogs = ()=>{
@@ -13,16 +14,17 @@ export const Blogs = ()=>{
     return loading ?
         <Loading/>
     : <div className="w-full flex justify-center">
-
-   
-    <div className="w-3/4 mt-20 ">
-            {blogs.map(blog =>{
-               return <Link  key={blog.id}  to={"/blog/"+blog.id}>
-                 <BlogCard
-                        blog={blog}
-                    />
-             </Link> 
-            })}
-    </div>
+ <BlogsHtml blogs={blogs} />
+       
     </div>
 }
+ export const BlogsHtml = ({blogs}:{blogs: Blog[]})=>{
+    return <div className="mt-20 ">{blogs.map(blog =>{
+                return <BlogCard key={blog.id}
+                                    blog={blog}
+                                />
+                        
+                        })}
+            </div> 
+     
+ }

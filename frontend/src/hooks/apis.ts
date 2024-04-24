@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useRecoilValueLoadable, useSetRecoilState } from 'recoil';
 import { BACKEND_URL } from '../config';
-import {blogAtom} from "../store/blogAtoms"
+import {blogAtom, myBlogsAtom} from "../store/blogAtoms"
  
-import { User, activeUserAtom, authAtom, userAtom } from '../store/userAtom';
-import { TagType, contentAtom, tagsAtom } from '../store/EditorAtom';
+import {  activeUserAtom, authAtom, userAtom } from '../store/userAtom';
+import {  contentAtom, tagsAtom } from '../store/EditorAtom';
 import  DOMPurify from 'dompurify';
-import { Blog } from '../interfaces';
+import { Blog ,User} from '../interfaces';
 
 // Authentication 
 export const useSignup= (inputs: signupParams)=>{
@@ -72,12 +72,15 @@ export const useSignin=(inputs: signinParams) => {
     return {response,errors,signinIn,loading};
 }
 export const useAuth= ()=>{
-    const res = useRecoilValueLoadable<User>(activeUserAtom);
-    const user = useRecoilValue(userAtom);
- 
-    const userExist = Object.keys(user).length >0;
+   
+    const userLoadable = useRecoilValueLoadable<User>(activeUserAtom);
+    const userExist = userLoadable.state === 'hasValue';
     
-     return {user,res,userExist};
+    return {
+      user: userLoadable.contents,
+      res: userLoadable,
+      userExist,
+    };
 }
 
  
@@ -125,7 +128,7 @@ export const useSanitize = (str: string)=>{
  
 
 // :save as dashboard of user , update , delete, 
-export const useAddBlog =  ()=>{ 
+export const useBlogCrud =  ()=>{ 
  
     const [publish,setPublish] = useState<boolean>(false)
     const [blog,setblog]= useRecoilState(contentAtom);
@@ -151,8 +154,12 @@ export const useAddBlog =  ()=>{
             console.error(error)
         }
     }
+
+    const editBlog =async (blog) =>{
+        
+    }
     
-    return {setPublish,postBlog }
+    return {setPublish,postBlog,editBlog }
 
     
 
@@ -161,25 +168,28 @@ export const useAddBlog =  ()=>{
 export const useReadingList = ()=>{
 const auth = useRecoilValue(authAtom);
 const [loading,setLoading] = useState(false)
+ const [blogs,updateReadingList]= useRecoilState(userAtom)
  
-const update= async(id: string)=>{
-    try {
-        setLoading(true)
-        const res= await axios.post(BACKEND_URL+'/user/reading-list',{
-           id:id
-        },{ 
-         headers: {
-            Authorization: 'Bearer ' + auth//the token is a variable which holds the token
-            }, 
-        });
-        setLoading(false)
-        debugger
-    } catch (error) {
-        setLoading(true)
-        console.log(error)
+    const update= async(id: string)=>{
+        try {
+            setLoading(true)
+            const res= await axios.post(BACKEND_URL+'/user/reading-list',{
+            id:id
+            },{ 
+            headers: {
+                Authorization: 'Bearer ' + auth//the token is a variable which holds the token
+                }, 
+            });
+            setLoading(false)
+            updateReadingList({...blogs, list:res.data.list})
+        
+        } catch (error) {
+            setLoading(true)
+            console.log(error)
+        }
+    
     }
-  
-}
+ 
 return {update,loading}
 
 

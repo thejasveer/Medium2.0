@@ -3,7 +3,7 @@ import { useRecoilValue } from "recoil"
 import { contentAtom } from "../store/EditorAtom"
 interface props {
     onchange: (e: ChangeEvent<HTMLInputElement>) => void
-    value: string
+   
 }
 export const TitleEditor=({onchange }: props)=>{
     const [show,setShow]= useState("visible")

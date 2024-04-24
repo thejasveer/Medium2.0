@@ -1,28 +1,23 @@
-import { useRecoilValue, useRecoilValueLoadable } from "recoil"
-import { userAtom } from "../../store/userAtom"
-import { BlogCard } from "../BlogCard";
+import {  useRecoilValueLoadable } from "recoil"
+ 
 import { myBlogsAtom } from "../../store/blogAtoms";
 import { Loading } from "../Loading";
+import { BlogsHtml } from "../../pages/Blogs";
 
 export const Home= ()=>{
 
     const blogs = useRecoilValueLoadable(myBlogsAtom)
  
     
-    if(blogs.state=="loading"){
-        return <Loading/>
-    }
+        if(blogs.state=="loading"){
+            return <Loading/>
+        }
+        if(blogs.state=="hasValue"){
  
  
         return <div className="mt-10">
-                { blogs.contents.map((blog)=>{
-                    return <BlogCard key={blog.id} blog={blog}/> 
-                })}
+               <BlogsHtml blogs={blogs.contents}/>
         </div>
-    
-
-
-
-
-
+        }
+ 
 }

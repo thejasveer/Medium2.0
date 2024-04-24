@@ -4,7 +4,7 @@ import { AddTags } from "./AddTags"
 import { Fullblog } from "./Fullblog"
 import { PublishButton } from "./PublishButton"
 import { userAtom } from "../store/userAtom"
-import {  useAddBlog } from "../hooks/apis"
+import {  useBlogCrud } from "../hooks/apis"
 
 export const ReviewBlog = () =>{
     const setReviewToggle= useSetRecoilState(reviewToggleAtom)
@@ -12,15 +12,15 @@ export const ReviewBlog = () =>{
  
     const [blog,setBlog] = useRecoilState(contentAtom)
 
-    const {setPublish,postBlog}= useAddBlog()
+    const {setPublish,postBlog}= useBlogCrud()
     return <div className="flex justify-center absolute h-screen bg-white top-0 w-full  ">
             <div className="w-full sm:w-8/12  h-full p-3">
             <button onClick={()=>{setReviewToggle(false)}} className="p-2 flex justify-end w-full  text-3xl font-thin text-slate-400  ">&times;</button>
-        <div className="grid grid-cols-12 mt-20 gap-10">
-               <div className="col-span-12 md:col-span-6 space-y-2  ">
-                 <div className="text-sm text-slate-500 font-semibold">Story Preview </div>
-                 <div className="bg-slate-50 rounded-lg ">
-                 <Fullblog blog={blog} />
+                 <div className="grid grid-cols-12 mt-20 gap-10">
+                     <div className="col-span-12 md:col-span-6 space-y-2  ">
+                        <div className="text-sm text-slate-500 font-semibold">Story Preview </div>
+                        <div className="bg-slate-50 rounded-lg ">
+                       <Fullblog blog={blog} />
                  </div>
                 
                  </div> 

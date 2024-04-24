@@ -19,6 +19,21 @@ export interface User{
     email?:string
     description?:string
     blogs?: Blog[]
-    list?:Blog[]
+    list?:  ReadingList[]
+ 
     
+} 
+interface ReadingList{
+    "id": string,
+    "postId": string,
+    "userId":string,
+    "post": {
+        "id": string,
+        "title": string,
+        "content": string,
+        "published": true,
+        "authorId": string,
+        "createdAt": string,
+        "updatedAt": string
+    }
 }
