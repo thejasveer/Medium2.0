@@ -18,16 +18,17 @@ model User {
 }
 
 model Post {
-  id        String        @id @default(uuid())
-  title     String
-  content   String
-  published Boolean       @default(false)
-  author    User          @relation(fields: [authorId], references: [id])
-  authorId  String
-  tags      Tags[]
-  list      ReadingList[]
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @default(now()) @updatedAt
+  id          String        @id @default(uuid())
+  title       String
+  content     String
+  published   Boolean       @default(false)
+  author      User          @relation(fields: [authorId], references: [id])
+  authorId    String
+  tags        Tags[]
+  placeholder Boolean       @default(false)
+  list        ReadingList[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now()) @updatedAt
 }
 
 model Tags {

@@ -7,7 +7,7 @@ import { BACKEND_URL } from '../config';
 import {blogAtom, myBlogsAtom} from "../store/blogAtoms"
  
 import {  activeUserAtom, authAtom, userAtom } from '../store/userAtom';
-import {  contentAtom, tagsAtom } from '../store/EditorAtom';
+import {  contentAtom, placeholderIdAtom, tagsAtom } from '../store/EditorAtom';
 import  DOMPurify from 'dompurify';
 import { Blog ,User} from '../interfaces';
 
@@ -128,23 +128,30 @@ export const useSanitize = (str: string)=>{
  
 
 // :save as dashboard of user , update , delete, 
-export const useBlogCrud =  ()=>{ 
+export const useBlogCrud =  ( )=>{ 
  
+    const [placeholderId,setPlaceholderId]= useRecoilState(placeholderIdAtom)
+    console.log(placeholderId)
     const [publish,setPublish] = useState<boolean>(false)
-    const [blog,setblog]= useRecoilState(contentAtom);
+    const [blog,setblog]= useRecoilState(contentAtom(placeholderId));
+    const navigate = useNavigate()
     const tagsArr = useRecoilValue(tagsAtom);
     const tags = tagsArr.map(t=>t.tag).join(',');
     useEffect(()=>{
+        
         setblog({...blog,published:publish})
     },[publish])
 
     const postBlog = async () =>{
         try {
-            const res = await axios.post(BACKEND_URL+'/blog/my',{
+
+            const res = await axios.put(BACKEND_URL+'/blog/my',{
                 title:blog.title,
                 content:blog.content,
                 published:blog.published,
+                placeholder:false,
                 tags:tags,
+                id:blog.id
             },{ 
              headers: {
                 Authorization: 'Bearer ' + localStorage.getItem("token") //the token is a variable which holds the token
@@ -155,11 +162,27 @@ export const useBlogCrud =  ()=>{
         }
     }
 
-    const editBlog =async (blog) =>{
-        
-    }
-    
-    return {setPublish,postBlog,editBlog }
+    const getPlaceholderId = async()=>{
+       
+        try {
+            const res = await axios.post(BACKEND_URL+'/blog/my',{
+                title:blog.title,
+                content:blog.content, 
+                placeholder:true,
+                tags:tags,
+            },{ 
+             headers: {
+                Authorization: 'Bearer ' + localStorage.getItem("token") //the token is a variable which holds the token
+                }, 
+            });
+            const url = `/p/${res.data.blog.id}/edit`
+            navigate(url);
+          } catch (error) {
+            console.error(error)
+            }
+        }
+
+    return {setPublish,postBlog,getPlaceholderId }
 
     
 

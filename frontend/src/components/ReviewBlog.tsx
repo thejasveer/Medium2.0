@@ -1,5 +1,5 @@
 import { useSetRecoilState , useRecoilValue, useRecoilState} from "recoil"
-import { contentAtom, reviewToggleAtom } from "../store/EditorAtom"
+import { contentAtom, placeholderIdAtom, reviewToggleAtom } from "../store/EditorAtom"
 import { AddTags } from "./AddTags"
 import { Fullblog } from "./Fullblog"
 import { PublishButton } from "./PublishButton"
@@ -9,8 +9,8 @@ import {  useBlogCrud } from "../hooks/apis"
 export const ReviewBlog = () =>{
     const setReviewToggle= useSetRecoilState(reviewToggleAtom)
     const user = useRecoilValue(userAtom)
- 
-    const [blog,setBlog] = useRecoilState(contentAtom)
+    const placeholderId= useRecoilValue(placeholderIdAtom)
+    const blog = useRecoilValue(contentAtom(placeholderId))
 
     const {setPublish,postBlog}= useBlogCrud()
     return <div className="flex justify-center absolute h-screen bg-white top-0 w-full  ">

@@ -54,6 +54,40 @@ export async function getAllBlogs(c:Context){
 				id:true,
 				title:true,
 				content:true,
+
+				 
+				createdAt:true,
+				author: {
+					select:{name:true, description:true}
+				},
+				tags: {
+					select:{tag:true}
+				}
+			}})
+		c.status(StatusCode.OK);
+		return c.json({blog: blog});
+	} catch (error: any) {
+		c.status(StatusCode.BADREQ);
+		return c.json({error:{message: error.message}});
+	}
+
+}
+export async function getBlogByIdForEditor(c: Context){
+	try {
+	 
+		const id = c.req.param('id')
+		const prisma = new PrismaClient({
+			datasourceUrl: c.env.DATABASE_URL,
+		  }).$extends(withAccelerate());
+	
+		const blog = await prisma.post.findFirst({where:{
+			id:id,
+		},
+			select:{
+				id:true,
+				title:true,
+				content:true,
+				
 				 
 				createdAt:true,
 				author: {
@@ -84,22 +118,24 @@ export async function addBlog(c: Context){
 		const input: blogInput = await  c.req.json();
 		const tagNames = input.tags.split(',').map((tag) => tag.trim());
 		console.log(input,tagNames)
-		const {success, error} = await blogSchema.safeParse(input);
-		if(!success) {
-			c.status(StatusCode.BADREQ);
-			return c.json({"error": error.issues})
-		}else{
+		// const {success, error} = await blogSchema.safeParse(input);
+		// if(!success) {
+		// 	c.status(StatusCode.BADREQ);
+		// 	return c.json({"error": error.issues})
+		// }else{
 			
 			const prisma = new PrismaClient({
 				datasourceUrl: c.env.DATABASE_URL,
 			  }).$extends(withAccelerate());
 			  
+			
 			const authorId =  c.get("userId")
 			const blog = await prisma.post.create({
 				data:{
 				title:input.title,
 				content:input.content,
 				authorId: authorId,
+				placeholder:true,
 				published:input.published,
 				tags: {
 					connectOrCreate: tagNames.map((tag) => ({
@@ -117,7 +153,7 @@ export async function addBlog(c: Context){
 			c.status(StatusCode.OK);
 			return c.json({blog: blog})
 
-		}
+		// }
 
 	} catch (error: any) {
 		c.status(StatusCode.BADREQ);
@@ -180,22 +216,24 @@ export async function getmyBlogs(c: Context){
 export async function updateBlog(c: Context){
 	try{
 		const input = await c.req.json()
+		console.log(input)
 		const tagNames = input.tags.split(',').map((tag) => tag.trim());
  
 		const prisma = new PrismaClient({
 		   datasourceUrl: c.env.DATABASE_URL,
 		 }).$extends(withAccelerate());
-		 const {success, error} = updateBlogSchema.safeParse(input)
-		 if(!success){
-			c.status(StatusCode.BADREQ);
-			return c.json({error:error.issues});
-		 }else{
+		//  const {success, error} = updateBlogSchema.safeParse(input)
+		//  if(!success){
+		// 	c.status(StatusCode.BADREQ);
+		// 	return c.json({error:error.issues});
+		//  }else{
 
 			const updated = await prisma.post.update({where:{id:input.id},
 				data:{
 					title:input.title,
 					content:input.content,
 					published:input.published,
+					placeholder:false,
 					tags: {
 						set:[],
 						connectOrCreate: tagNames.map((tag) => ({
@@ -213,7 +251,7 @@ export async function updateBlog(c: Context){
 			c.status(StatusCode.OK);
 			return c.json({blog:updated})
 
-		 }
+		//  }
 		
    } catch (error: any) {
 	c.status(StatusCode.BADREQ);
