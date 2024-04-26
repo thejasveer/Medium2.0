@@ -1,4 +1,4 @@
-import { MouseEvent } from "react";
+import { MouseEvent, useEffect } from "react";
 import { useRecoilValue, useRecoilValueLoadable } from "recoil";
 import { contentAtom, placeholderIdAtom } from "../store/EditorAtom";
 
@@ -8,14 +8,23 @@ interface props{
 }
 export const PublishButton = ({text,onclick}: props)=>{
     const placeholderId= useRecoilValue(placeholderIdAtom)
+    console.log(placeholderId,"button")
     const blog = useRecoilValueLoadable(contentAtom(placeholderId))
+    
+        const hasValidContent = blog.state === "hasValue" &&
+        blog.contents?.title !== '' &&
+        blog.contents?.content !== '';
  
-    if(blog.state!="loading"){
-        return blog.contents?.title!==''&& blog.contents?.content!=''?<button onClick={onclick} className="bg-green-700 px-3 text-sm py-1 text-white rounded-full"> 
-        {text}
-        </button>: <button  className="invisible bg-green-700 px-3 text-sm py-1 text-white rounded-full"> 
+    
+    
+
+    return hasValidContent&&(
+        <button
+            onClick={onclick}
+            className={`bg-green-700 px-3 text-sm py-1 text-white rounded-full ${!hasValidContent && "invisible"}`}
+        >
             {text}
         </button>
-    }
+    );
 
 }

@@ -2,7 +2,7 @@ import { signinParams, signupParams } from '@codewithjass/common';
 import axios, { AxiosError, AxiosResponse } from 'axios' 
 import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { useRecoilState, useRecoilValue, useRecoilValueLoadable, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilStateLoadable, useRecoilValue, useRecoilValueLoadable, useSetRecoilState } from 'recoil';
 import { BACKEND_URL } from '../config';
 import {blogAtom, myBlogsAtom} from "../store/blogAtoms"
  
@@ -71,9 +71,10 @@ export const useSignin=(inputs: signinParams) => {
 
     return {response,errors,signinIn,loading};
 }
-export const useAuth= ()=>{
+export const useAuth = ()=>{
    
     const userLoadable = useRecoilValueLoadable<User>(activeUserAtom);
+ 
     const userExist = userLoadable.state === 'hasValue';
     
     return {
@@ -130,13 +131,14 @@ export const useSanitize = (str: string)=>{
 // :save as dashboard of user , update , delete, 
 export const useBlogCrud =  ( )=>{ 
  
-    const [placeholderId,setPlaceholderId]= useRecoilState(placeholderIdAtom)
-    console.log(placeholderId)
+    const placeholderId= useRecoilValue(placeholderIdAtom)
+    console.log("from apis",placeholderId)
     const [publish,setPublish] = useState<boolean>(false)
-    const [blog,setblog]= useRecoilState(contentAtom(placeholderId));
-    const navigate = useNavigate()
+    const [blog,setblog]= useRecoilStateLoadable(contentAtom(placeholderId));
+    debugger
     const tagsArr = useRecoilValue(tagsAtom);
     const tags = tagsArr.map(t=>t.tag).join(',');
+    const navigate = useNavigate()
     useEffect(()=>{
         
         setblog({...blog,published:publish})
@@ -144,19 +146,22 @@ export const useBlogCrud =  ( )=>{
 
     const postBlog = async () =>{
         try {
-
-            const res = await axios.put(BACKEND_URL+'/blog/my',{
-                title:blog.title,
-                content:blog.content,
-                published:blog.published,
-                placeholder:false,
-                tags:tags,
-                id:blog.id
-            },{ 
-             headers: {
-                Authorization: 'Bearer ' + localStorage.getItem("token") //the token is a variable which holds the token
-                }, 
-            });
+         
+            if(blog.state=='hasValue'){
+                const res = await axios.put(BACKEND_URL+'/blog/my',{
+                    title:blog.contents.title,
+                    content:blog.contents.content,
+                    published:blog.contents.published,
+                    placeholder:false,
+                    tags:tags,
+                    id:blog.contents.id
+                },{ 
+                 headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem("token") //the token is a variable which holds the token
+                    }, 
+                });
+            }
+       
           } catch (error) {
             console.error(error)
         }
@@ -166,8 +171,8 @@ export const useBlogCrud =  ( )=>{
        
         try {
             const res = await axios.post(BACKEND_URL+'/blog/my',{
-                title:blog.title,
-                content:blog.content, 
+                title:blog.contents.title,
+                content:blog.contents.content, 
                 placeholder:true,
                 tags:tags,
             },{ 

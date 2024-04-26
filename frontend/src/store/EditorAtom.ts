@@ -25,17 +25,17 @@ import { authAtom } from './userAtom';
     key: 'contentAtom',
     default: selectorFamily({
       key: "contentAtomSelectorFamily",
-      get: (id: string| null) => async ({get}) => {
-        console.log(id)
-        const token = get(authAtom)
-        const res = await axios.get(`${BACKEND_URL}/blog/editor/${id}`,{
-            headers:{
-                Authorization: 'Bearer'+ token
-            }
-
-        });
+      get: (id: string| null| undefined) => async ({get}) => {
+    
+            const token = get(authAtom)
+            const res = await axios.get(`${BACKEND_URL}/blog/editor/${id}`,{
+                headers:{
+                    Authorization: 'Bearer'+ token
+                }
+    
+            });
             const blog= res.data.blog;
-       
+        
             if(!blog){
                 return {
                     null: null,
@@ -53,7 +53,9 @@ import { authAtom } from './userAtom';
             }else{
                 return blog;
             }
-            },
+        }
+              
+            
     })
   });
 
@@ -69,7 +71,7 @@ export const tagsAtom= atom<TagType[]>({
     key:"tagsAtom",
     default: [] 
 })
-export const placeholderIdAtom =atom({
+export const placeholderIdAtom =atom<string|undefined|null>({
     key:"placeholderIdAtom",
-    default:null
+    default: null
 })

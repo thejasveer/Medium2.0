@@ -4,28 +4,26 @@ import { contentAtom, placeholderIdAtom } from "../store/EditorAtom"
 import { useParams } from "react-router-dom"
 interface props {
     onchange: (e: ChangeEvent<HTMLInputElement>) => void
-   
+ 
 }
 export const TitleEditor=({onchange }: props)=>{
-    let {id} = useParams();
+ 
     const [show,setShow]= useState("visible")
     const placeholderId= useRecoilValue(placeholderIdAtom)
-    const blog = useRecoilValueLoadable(contentAtom(id))
+    const blog = useRecoilValueLoadable(contentAtom(placeholderId))
     useEffect(() =>{
-      if(blog.state!='loading'){
-        if(blog.contents.title.length>0)
-            {
-                setShow("visible")
-            }else{
-                setShow("invisible")
-            } 
-      }
+ 
+        if(blog.contents.title!="")
+        {
+            setShow("visible")
+        }else{
+            setShow("invisible")
+        } 
+ 
      
     },[blog]);
-    if (blog.state === 'loading') {
-        return null; // Render nothing while loading
-    }
-console.log(blog)
+  
+ 
     return (
         <a className="flex items-center -mx-14">
             <span className={`px-3 ${show} text-xs text-slate-400 mb-4`}>Title</span>
