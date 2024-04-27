@@ -1,7 +1,7 @@
 import { signinParams, signupParams } from '@codewithjass/common';
 import axios, { AxiosError, AxiosResponse } from 'axios' 
 import { useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilStateLoadable, useRecoilValue, useRecoilValueLoadable, useSetRecoilState } from 'recoil';
 import { BACKEND_URL } from '../config';
 import {blogAtom, myBlogsAtom} from "../store/blogAtoms"
@@ -130,8 +130,10 @@ export const useSanitize = (str: string)=>{
 
 // :save as dashboard of user , update , delete, 
 export const useBlogCrud =  ( )=>{ 
- 
-    const placeholderId= useRecoilValue(placeholderIdAtom)
+    const location= useLocation();
+    
+    const {pathname}= location;
+    const [placeholderId,setPlaceholderId]= useRecoilState(placeholderIdAtom)
  
     const [publish,setPublish] = useState<boolean>(false)
     const [blog,setblog]= useRecoilStateLoadable(contentAtom(placeholderId));
@@ -139,6 +141,18 @@ export const useBlogCrud =  ( )=>{
     const tagsArr = useRecoilValue(tagsAtom);
     const tags = tagsArr.map(t=>t.tag).join(',');
     const navigate = useNavigate()
+    useEffect(()=>{
+  
+        let timerId;
+        timerId = setTimeout((  )=>{
+            pathname=='/new-story'?getPlaceholderId():updateBlog()
+        }  ,500)
+    return ()=>{
+        clearTimeout(timerId)
+    }
+
+    },[blog.contents.content,blog.contents.title])
+
     useEffect(()=>{
         
         setblog({...blog,published:publish})
@@ -168,7 +182,7 @@ export const useBlogCrud =  ( )=>{
     }
     const updateBlog = async () =>{
         try {
-         
+      
             if(blog.state=='hasValue'){
                 const res = await axios.put(BACKEND_URL+'/blog/my',{
                     title:blog.contents.title,
@@ -188,11 +202,12 @@ export const useBlogCrud =  ( )=>{
         }
     }
 
-
+   
     const getPlaceholderId = async()=>{
-       
+ 
         try {
-            if(blog.state=='hasValue'){
+ 
+            if(blog.state=='hasValue'&& (blog.contents.title!='' || blog.contents.content!="")){
                 const res = await axios.post(BACKEND_URL+'/blog/my',{
                     title:blog.contents.title,
                     content:blog.contents.content, 
@@ -203,8 +218,15 @@ export const useBlogCrud =  ( )=>{
                     Authorization: 'Bearer ' + localStorage.getItem("token") //the token is a variable which holds the token
                     }, 
                 });
-                const url = `/p/${res.data.blog.id}/edit`
-                navigate(url);
+                const id= res.data.blog.id;
+                const url = `/p/${id}/edit`;
+                setblog((prevBlog:any) => ({
+                    ...prevBlog,
+                    id: id,
+                    }));
+                setPlaceholderId(id)
+                // history.replaceState({}, '', newPath);
+                navigate(url,{ replace: true });
             }
             
           } catch (error) {

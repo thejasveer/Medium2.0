@@ -47,9 +47,9 @@ export const Publish = ()=>{
         {
           setPlaceholderId(uuidv4())
         }else{
-          setPlaceholderId(id)
+          // setPlaceholderId(id)
         }
-      },[id])
+      },[])
    
     
     useEffect(()=>{
@@ -61,16 +61,9 @@ export const Publish = ()=>{
         setShowPlaceholder(true);
       }
  
-      let timerId;
-      timerId = setTimeout( async()=>{
-        console.log('yes')
-        callBackendforid();
-      },300)
-      return ()=>{
-          clearTimeout(timerId)
-      }
+    
     }
-  },[blog.contents.title])
+  },[blog.contents.content])
 
  
   
@@ -86,17 +79,17 @@ export const Publish = ()=>{
           }
       }
       const callBackendforid = async() =>{
-     
+     debugger
       if(pathname =='/new-story'){
        
-  
+        getPlaceholderId()
         }else{
           updateBlog()
         }
       }
 
-      const handleInput1Debounced = debounce(callBackendforid, 1000);
-      const handleInput2Debounced = debounce(callBackendforid, 1000);
+      const handleInput1Debounced = debounce(callBackendforid, 0);
+      const handleInput2Debounced = debounce(callBackendforid, 0);
 
       // Event handler for input field 1
       function handleChangeInput1(event: { target: { value: any; }; }) {
@@ -118,7 +111,7 @@ export const Publish = ()=>{
           title: title,
           
         }));
-        handleChangeInput1(e)
+    
       }
       function onChangeContent(e) {
         
@@ -130,10 +123,10 @@ export const Publish = ()=>{
           content: content,
           
         }));
-        handleChangeInput2(e)
+     
        }
       if(blog.state=='loading'){
-        return <Loading/>
+        // return <Loading/>
       }
       if(blog.state=='hasValue'){
  

@@ -22,8 +22,8 @@ export const contentAtom = atomFamily({
            
            const blog = res.data.blog || {
                 id: id,
-                title: "cdeww",
-                content: "dewdwe",
+                title: "",
+                content: "",
                 published: "false",
                 createdAt: "",
                 author: {
