@@ -23,7 +23,7 @@ export const TitleEditor=({onchange }: props)=>{
      
     },[blog]);
   
- 
+    
     return (
         <a className="flex items-center -mx-14">
             <span className={`px-3 ${show} text-xs text-slate-400 mb-4`}>Title</span>

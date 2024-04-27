@@ -8,7 +8,7 @@ interface props{
 }
 export const PublishButton = ({text,onclick}: props)=>{
     const placeholderId= useRecoilValue(placeholderIdAtom)
-    console.log(placeholderId,"button")
+   
     const blog = useRecoilValueLoadable(contentAtom(placeholderId))
     
         const hasValidContent = blog.state === "hasValue" &&

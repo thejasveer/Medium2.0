@@ -20,6 +20,8 @@ import {
   Toolbar,
   EditorProps
 } from 'react-simple-wysiwyg';
+import { useRecoilValue, useRecoilValueLoadable } from 'recoil';
+import { contentAtom, placeholderIdAtom } from '../store/EditorAtom';
 const btnStyle= {
   "background": "#3b3a3a",
   "color": "rgb(246, 235, 235)",
@@ -47,6 +49,8 @@ export default function ContentEditor({containerProps,onChange,value,showplaceho
     "padding": "3px"
     
   })
+  const placeholderId = useRecoilValue(placeholderIdAtom);
+  
   function onchange2(e) {
     
     const selection: any = window.getSelection();

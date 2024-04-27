@@ -132,10 +132,10 @@ export const useSanitize = (str: string)=>{
 export const useBlogCrud =  ( )=>{ 
  
     const placeholderId= useRecoilValue(placeholderIdAtom)
-    console.log("from apis",placeholderId)
+ 
     const [publish,setPublish] = useState<boolean>(false)
     const [blog,setblog]= useRecoilStateLoadable(contentAtom(placeholderId));
-    debugger
+ 
     const tagsArr = useRecoilValue(tagsAtom);
     const tags = tagsArr.map(t=>t.tag).join(',');
     const navigate = useNavigate()
@@ -166,28 +166,53 @@ export const useBlogCrud =  ( )=>{
             console.error(error)
         }
     }
+    const updateBlog = async () =>{
+        try {
+         
+            if(blog.state=='hasValue'){
+                const res = await axios.put(BACKEND_URL+'/blog/my',{
+                    title:blog.contents.title,
+                    content:blog.contents.content,
+                    published:blog.contents.published,
+                    tags:tags,
+                    id:blog.contents.id
+                },{ 
+                 headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem("token") //the token is a variable which holds the token
+                    }, 
+                });
+            }
+       
+          } catch (error) {
+            console.error(error)
+        }
+    }
+
 
     const getPlaceholderId = async()=>{
        
         try {
-            const res = await axios.post(BACKEND_URL+'/blog/my',{
-                title:blog.contents.title,
-                content:blog.contents.content, 
-                placeholder:true,
-                tags:tags,
-            },{ 
-             headers: {
-                Authorization: 'Bearer ' + localStorage.getItem("token") //the token is a variable which holds the token
-                }, 
-            });
-            const url = `/p/${res.data.blog.id}/edit`
-            navigate(url);
+            if(blog.state=='hasValue'){
+                const res = await axios.post(BACKEND_URL+'/blog/my',{
+                    title:blog.contents.title,
+                    content:blog.contents.content, 
+                    placeholder:true,
+                    tags:tags,
+                },{ 
+                 headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem("token") //the token is a variable which holds the token
+                    }, 
+                });
+                const url = `/p/${res.data.blog.id}/edit`
+                navigate(url);
+            }
+            
           } catch (error) {
             console.error(error)
             }
         }
 
-    return {setPublish,postBlog,getPlaceholderId }
+    return {setPublish,postBlog,getPlaceholderId,updateBlog }
 
     
 
