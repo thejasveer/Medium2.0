@@ -1,12 +1,12 @@
  
  
-import { useEffect, useState } from 'react';
-import { useRecoilState, useRecoilStateLoadable, useRecoilValue } from 'recoil';
-import ContentEditor from '../components/Editor';
+import { useEffect, useRef, useState } from 'react';
+import { useRecoilState, useRecoilStateLoadable, useRecoilValue, useSetRecoilState } from 'recoil';
+import {ContentEditor} from '../components/Editor';
 import { ReviewBlog } from '../components/ReviewBlog';
 import { TitleEditor } from '../components/TitleEditor';
 import { useBlogCrud, useSanitize } from '../hooks/apis';
-import { contentAtom, placeholderIdAtom, reviewToggleAtom, todosAtomFamily } from '../store/EditorAtom';
+import { contentAtom, draftState, placeholderIdAtom, reviewToggleAtom, todosAtomFamily } from '../store/EditorAtom';
 import { Auth } from '../components/Auth';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Loading } from '../components/Loading';
@@ -33,88 +33,51 @@ export const Publish = ()=>{
       const {id} = useParams();
       const location = useLocation();
       const{pathname} = location;
-
-      let [placeholderId,setPlaceholderId] = useRecoilState(placeholderIdAtom);
+      const setDraftState= useSetRecoilState(draftState)
+      let placeholderId = useRef("") 
     
-      const [blog, setBlog] = useRecoilStateLoadable(contentAtom(placeholderId));
+      const [blog, setBlog] = useRecoilStateLoadable(contentAtom(placeholderId.current));
     
-      const [showPlaceholder, setShowPlaceholder] = useState<boolean>(true)
+   
       const reviewToggle = useRecoilValue(reviewToggleAtom);
-      const {getPlaceholderId,updateBlog} = useBlogCrud()
+      const {getPlaceholderId,updateBlog} = useBlogCrud(placeholderId.current)
+
+      useEffect(()=>{
+    
+        setDraftState("")
+         let timerId;
+          timerId = setTimeout((  )=>{
+              pathname=='/new-story'?getPlaceholderId():updateBlog()
+          }  ,3000)
+          return ()=>{
+              clearTimeout(timerId)
+          }
+         },[blog.contents.content,blog.contents.title])
       useEffect(()=>{
       
-        if(!id)
+        if(!id || pathname=='/new-story')
         {
-          setPlaceholderId(uuidv4())
+          placeholderId.current =uuidv4();
+       
         }else{
+          placeholderId.current =  id
           // setPlaceholderId(id)
         }
       },[])
    
-    
-    useEffect(()=>{
-      if (blog.state === 'hasValue'){
-        console.log(blog)
-        if (blog.contents.content!="") {
-        setShowPlaceholder(false);
-      } else {
-        setShowPlaceholder(true);
-      }
- 
-    
-    }
-  },[blog.contents.content])
-
- 
-  
-   
-    const debounce= (fn: { (e: any): void; (e: any): void; apply?: any; },delay: number | undefined)=>{
- 
-      let timeoutId: number | undefined;
-          return (...args: any)=>{
-            clearTimeout(timeoutId);
-            timeoutId =  setTimeout(()=>{
-              fn.apply(null,args);
-          },delay)
-          }
-      }
-      const callBackendforid = async() =>{
-     debugger
-      if(pathname =='/new-story'){
+     function onChangeTitle(e){
        
-        getPlaceholderId()
-        }else{
-          updateBlog()
-        }
-      }
-
-      const handleInput1Debounced = debounce(callBackendforid, 0);
-      const handleInput2Debounced = debounce(callBackendforid, 0);
-
-      // Event handler for input field 1
-      function handleChangeInput1(event: { target: { value: any; }; }) {
-        handleInput1Debounced(event.target.value);
-      }
-
-      // Event handler for input field 2
-      function handleChangeInput2() {
-        handleInput2Debounced();
-      }
-      
-    
-      function onChangeTitle(e){
         const title =useSanitize(e.target.value)
-     
+        
         setBlog((prevBlog:any) => ({
           ...prevBlog,
           id: id,
           title: title,
           
         }));
-    
-      }
+       }
       function onChangeContent(e) {
-        
+     
         const content =useSanitize(e.target.value)
  
         setBlog((prevBlog:any) => ({
@@ -126,19 +89,19 @@ export const Publish = ()=>{
      
        }
       if(blog.state=='loading'){
-        // return <Loading/>
+        return <Loading/>
       }
       if(blog.state=='hasValue'){
  
     return <Auth>
-           {reviewToggle == true  ? <ReviewBlog/>
+           {reviewToggle == true  ? <ReviewBlog placeholderId={placeholderId.current}/>
               : <div className='flex justify-center w-full gap-2 mt-5 '>
                     <div className='max-w-lg min-h-screen flex flex-col gap-10'  >
                           <div>
-                          <TitleEditor onchange={onChangeTitle}  />
+                          <TitleEditor onchange={onChangeTitle} value={blog.contents.title} />
                           </div>
                           <ContentEditor  containerProps={{ style:editorStyles}}
-                            showplaceholder={showPlaceholder} 
+                        
                              value={blog.contents.content}
                             onChange={onChangeContent}  />
                     </div>

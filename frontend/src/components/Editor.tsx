@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import "../assets/editorStyles.css"
 import { 
     
@@ -20,8 +20,7 @@ import {
   Toolbar,
   EditorProps
 } from 'react-simple-wysiwyg';
-import { useRecoilValue, useRecoilValueLoadable } from 'recoil';
-import { contentAtom, placeholderIdAtom } from '../store/EditorAtom';
+ 
 const btnStyle= {
   "background": "#3b3a3a",
   "color": "rgb(246, 235, 235)",
@@ -34,7 +33,7 @@ const btnStyle= {
   
 }
 
-export default function ContentEditor({containerProps,onChange,value,showplaceholder}: any) {
+export   const  ContentEditor = memo(({containerProps,onChange,value}: any)=> {
  
  
   const [toolbarStyle,setToolbarStyle] = useState({
@@ -49,7 +48,15 @@ export default function ContentEditor({containerProps,onChange,value,showplaceho
     "padding": "3px"
     
   })
-  const placeholderId = useRecoilValue(placeholderIdAtom);
+  const [showplaceholder,setShowPlaceholder] = useState(true);
+  useEffect(()=>{
+    console.log("called UE")
+    if (value!="") {
+      setShowPlaceholder(false);
+      } else {
+        setShowPlaceholder(true);
+      }
+  },[value])
   
   function onchange2(e) {
     
@@ -65,6 +72,7 @@ export default function ContentEditor({containerProps,onChange,value,showplaceho
      
       setToolbarStyle({...toolbarStyle,display: "none"})
     }
+
    
   }
  
@@ -93,6 +101,6 @@ export default function ContentEditor({containerProps,onChange,value,showplaceho
       </Editor>
     </EditorProvider>
   );
-}
+});
 
  

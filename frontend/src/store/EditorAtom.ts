@@ -11,6 +11,7 @@ export const contentAtom = atomFamily({
     default: selectorFamily({
       key: `contentAtomSelectorFamily`,
       get: (id: string| null| undefined) => async ({get}) => {
+     
             if(!id) return;
             const token = get(authAtom)
             const res = await axios.get(`${BACKEND_URL}/blog/editor/${id}`,{
@@ -38,6 +39,10 @@ export const contentAtom = atomFamily({
             
     })
   });
+export const draftState = atom<string>({
+    key:"draftState",
+    default: ""
+})
 
 export const reviewToggleAtom = atom({
     key:"reviewToggleAtom",

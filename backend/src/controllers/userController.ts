@@ -39,7 +39,7 @@ interface readingList{
                         published:true,
                         createdAt:true,
                         author: {
-                            select:{name:true}
+                            select:{name:true,id:true}
                         },
                         tags: {
                             select:{tag:true}
@@ -71,7 +71,7 @@ interface readingList{
  export const signup = async (c:Context) => {
         try {
             const input: singupInput = await  c.req.json();
-            console.log(input);
+       
             const {success,error} = await signupSchema.safeParse(input);
             if(!success){
                 c.status(StatusCode.BADREQ);

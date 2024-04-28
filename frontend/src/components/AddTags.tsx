@@ -1,15 +1,27 @@
 import { RefObject, SyntheticEvent, useEffect, useRef, useState } from "react"
-import { noWait, useRecoilState } from "recoil"
-import { tagsAtom ,TagType} from "../store/EditorAtom"
+import { noWait, useRecoilState, useRecoilStateLoadable } from "recoil"
+import { contentAtom, tagsAtom ,TagType} from "../store/EditorAtom"
+import { useBlogCrud } from "../hooks/apis"
  
 
-export const AddTags = () =>{
+export const AddTags = ({blogTags,placeholderId}: {blogTags: any,placeholderId:string}) =>{
     const [input,setInput]  = useState<string>("")
     const [tags, setTags] = useRecoilState<TagType[]>(tagsAtom)
     const [showError,setShowError] = useState(false);
     const [activeTagIndex,setActiveTagIndex ] =useState<number>(-1);
     const inputRef: RefObject<HTMLInputElement>= useRef(null)
+    const { updateBlog} = useBlogCrud(placeholderId)
+             
+    useEffect(()=>{
      
+         setTags(blogTags);
+      
+    },[])
+    
+    useEffect(()=>{
+        updateBlog()
+    },[tags])
+ 
 
     useEffect(()=>{
         if(activeTagIndex<0) inputRef?.current?.focus() 
@@ -51,10 +63,10 @@ export const AddTags = () =>{
          
             if (tags.length > 0) {
                 const lastTagIndex = tags.length - 1;
-              
+               
                 if(lastTagIndex=== activeTagIndex){
                     const newTags = [...tags.slice(0, lastTagIndex)];
-                  
+                 
                     setTags(newTags);
                 }else{
                     const updatedTags = tags.map((tag, index) => {

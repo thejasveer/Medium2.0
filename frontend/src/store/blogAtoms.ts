@@ -24,3 +24,5 @@ export const blogAtom = atomFamily ({
         return res.data.blogs;
     }})
   });
+
+  

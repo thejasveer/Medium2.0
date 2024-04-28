@@ -37,3 +37,8 @@ interface ReadingList{
         "updatedAt": string
     }
 }
+enum DRAFTSTATE {
+    SAVING = 'Saving....',
+   SAVED= 'Saved'
+  }
+  export default DRAFTSTATE;

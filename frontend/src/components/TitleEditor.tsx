@@ -1,19 +1,19 @@
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, memo, useEffect, useState } from "react"
 import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from "recoil"
 import { contentAtom, placeholderIdAtom } from "../store/EditorAtom"
 import { useParams } from "react-router-dom"
 interface props {
     onchange: (e: ChangeEvent<HTMLInputElement>) => void
- 
+    value: string
 }
-export const TitleEditor=({onchange }: props)=>{
+export const TitleEditor=memo( ({onchange,value }: props)=>{
  
     const [show,setShow]= useState("visible")
-    const placeholderId= useRecoilValue(placeholderIdAtom)
-    const blog = useRecoilValueLoadable(contentAtom(placeholderId))
+    // const placeholderId= useRecoilValue(placeholderIdAtom)
+    // const blog = useRecoilValueLoadable(contentAtom(placeholderId))
     useEffect(() =>{
  
-        if(blog.contents.title!="")
+        if(value!="")
         {
             setShow("visible")
         }else{
@@ -21,7 +21,7 @@ export const TitleEditor=({onchange }: props)=>{
         } 
  
      
-    },[blog]);
+    },[value]);
   
     
     return (
@@ -29,11 +29,11 @@ export const TitleEditor=({onchange }: props)=>{
             <span className={`px-3 ${show} text-xs text-slate-400 mb-4`}>Title</span>
             <input
                 onChange={onchange}
-                value={blog.contents.title}
+                value={value}
                 type="text"
                 placeholder="Title"
                 className="caret-slate-400 px-3 font-serif text-5xl focus:outline-none text-slate-800 placeholder:text-slate-300 border-l-2 border-slate-400"
             />
         </a>
     );
-}
+});

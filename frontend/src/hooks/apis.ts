@@ -7,9 +7,9 @@ import { BACKEND_URL } from '../config';
 import {blogAtom, myBlogsAtom} from "../store/blogAtoms"
  
 import {  activeUserAtom, authAtom, userAtom } from '../store/userAtom';
-import {  contentAtom, placeholderIdAtom, tagsAtom } from '../store/EditorAtom';
+import {  contentAtom, draftState, placeholderIdAtom, tagsAtom } from '../store/EditorAtom';
 import  DOMPurify from 'dompurify';
-import { Blog ,User} from '../interfaces';
+import DRAFTSTATE, { Blog ,User} from '../interfaces';
 
 // Authentication 
 export const useSignup= (inputs: signupParams)=>{
@@ -129,43 +129,26 @@ export const useSanitize = (str: string)=>{
  
 
 // :save as dashboard of user , update , delete, 
-export const useBlogCrud =  ( )=>{ 
-    const location= useLocation();
-    
-    const {pathname}= location;
-    const [placeholderId,setPlaceholderId]= useRecoilState(placeholderIdAtom)
+export const useBlogCrud =  ( placeholderId: string)=>{ 
  
     const [publish,setPublish] = useState<boolean>(false)
     const [blog,setblog]= useRecoilStateLoadable(contentAtom(placeholderId));
- 
+    const setDraftState = useSetRecoilState(draftState)
     const tagsArr = useRecoilValue(tagsAtom);
-    const tags = tagsArr.map(t=>t.tag).join(',');
+ 
+    const tags = tagsArr.length>0 ?tagsArr.map(t=>t.tag).join(',') :"";
     const navigate = useNavigate()
-    useEffect(()=>{
-  
-        let timerId;
-        timerId = setTimeout((  )=>{
-            pathname=='/new-story'?getPlaceholderId():updateBlog()
-        }  ,500)
-    return ()=>{
-        clearTimeout(timerId)
-    }
+ 
 
-    },[blog.contents.content,blog.contents.title])
-
-    useEffect(()=>{
-        
-        setblog({...blog,published:publish})
-    },[publish])
-
-    const postBlog = async () =>{
+ 
+    const postBlog = async (publish: boolean) =>{
         try {
          
             if(blog.state=='hasValue'){
                 const res = await axios.put(BACKEND_URL+'/blog/my',{
                     title:blog.contents.title,
                     content:blog.contents.content,
-                    published:blog.contents.published,
+                    published:publish,
                     placeholder:false,
                     tags:tags,
                     id:blog.contents.id
@@ -174,6 +157,8 @@ export const useBlogCrud =  ( )=>{
                     Authorization: 'Bearer ' + localStorage.getItem("token") //the token is a variable which holds the token
                     }, 
                 });
+
+                navigate('/blog/'+res.data.blog.id)
             }
        
           } catch (error) {
@@ -181,9 +166,12 @@ export const useBlogCrud =  ( )=>{
         }
     }
     const updateBlog = async () =>{
+      
         try {
       
-            if(blog.state=='hasValue'){
+            if(blog.state=='hasValue'&& (blog.contents.title!='' || blog.contents.content!="")){
+                console.log("blogupdate",blog)
+                manageDraftState( DRAFTSTATE.SAVING)
                 const res = await axios.put(BACKEND_URL+'/blog/my',{
                     title:blog.contents.title,
                     content:blog.contents.content,
@@ -195,17 +183,37 @@ export const useBlogCrud =  ( )=>{
                     Authorization: 'Bearer ' + localStorage.getItem("token") //the token is a variable which holds the token
                     }, 
                 });
+               const updatedBlog= res.data.blog
+                setblog((prevBlog:any) => ({
+                    ...prevBlog,
+                    id: updatedBlog.id,
+                    title: updatedBlog.title,
+                    content:updatedBlog.content,
+                    published: updatedBlog.published,
+                    tags: updatedBlog.tags
+                    
+                  }));
             }
-       
+            manageDraftState( DRAFTSTATE.SAVED)
+
           } catch (error) {
             console.error(error)
         }
     }
 
-   
-    const getPlaceholderId = async()=>{
+   const manageDraftState = (state: any) =>{
+ 
+    setDraftState(state)
+        setTimeout(()=>{
+            setDraftState("")
+        },2000)
+
+   }
+
+    const getPlaceholderId =  async()=>{
  
         try {
+     
  
             if(blog.state=='hasValue'&& (blog.contents.title!='' || blog.contents.content!="")){
                 const res = await axios.post(BACKEND_URL+'/blog/my',{
@@ -224,9 +232,10 @@ export const useBlogCrud =  ( )=>{
                     ...prevBlog,
                     id: id,
                     }));
-                setPlaceholderId(id)
+               
                 // history.replaceState({}, '', newPath);
                 navigate(url,{ replace: true });
+                 
             }
             
           } catch (error) {

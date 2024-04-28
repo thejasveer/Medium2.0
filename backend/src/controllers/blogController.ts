@@ -22,7 +22,7 @@ export async function getAllBlogs(c:Context){
 				published:true,
 				createdAt:true,
 				author: {
-					select:{name:true}
+					select:{name:true,id:true}
 				},
 				tags:{
 					select:{tag:true}
@@ -54,13 +54,12 @@ export async function getAllBlogs(c:Context){
 				id:true,
 				title:true,
 				content:true,
-
-				 
+				published:true,
 				createdAt:true,
 				author: {
-					select:{name:true, description:true}
+					select:{name:true,id:true}
 				},
-				tags: {
+				tags:{
 					select:{tag:true}
 				}
 			}})
@@ -87,13 +86,12 @@ export async function getBlogByIdForEditor(c: Context){
 				id:true,
 				title:true,
 				content:true,
-				
-				 
+				published:true,
 				createdAt:true,
 				author: {
-					select:{name:true, description:true}
+					select:{name:true,id:true}
 				},
-				tags: {
+				tags:{
 					select:{tag:true}
 				}
 			}})
@@ -116,7 +114,7 @@ interface blogInput{
 export async function addBlog(c: Context){
 	try {
 		const input: blogInput = await  c.req.json();
-		const tagNames = input.tags.split(',').map((tag) => tag.trim());
+		const tagNames = (input.tags!='')?input.tags.split(',').map((tag) => tag.trim()): [];
 		console.log(input,tagNames)
 		// const {success, error} = await blogSchema.safeParse(input);
 		// if(!success) {
@@ -194,7 +192,7 @@ export async function getmyBlogs(c: Context){
 				published:true,
 				createdAt:true,
 				author: {
-					select:{name:true}
+					select:{name:true,id:true}
 				},
 				tags:{
 					select:{tag:true}
@@ -217,8 +215,8 @@ export async function updateBlog(c: Context){
 	try{
 		const input = await c.req.json()
 		console.log(input)
-		const tagNames = input.tags.split(',').map((tag) => tag.trim());
- 
+		const tagNames = (input.tags!='')?input.tags.split(',').map((tag) => tag.trim()): [];
+		
 		const prisma = new PrismaClient({
 		   datasourceUrl: c.env.DATABASE_URL,
 		 }).$extends(withAccelerate());
@@ -243,8 +241,10 @@ export async function updateBlog(c: Context){
 					  },
 					  
 				},
+
 				include: {
 					tags: true,
+					author:true
 				  },
 				})
 
@@ -254,6 +254,7 @@ export async function updateBlog(c: Context){
 		//  }
 		
    } catch (error: any) {
+	console.log(error)
 	c.status(StatusCode.BADREQ);
 	   return c.json({error:{message: error.message}});
    }
