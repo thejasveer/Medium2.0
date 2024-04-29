@@ -28,7 +28,10 @@ export async function getAllBlogs(c:Context){
 					select:{tag:true}
 				}
 				 
-			} 
+			} ,	orderBy: {
+				createdAt: 'desc', // Replace 'timestampField' with the actual field name representing the timestamp
+				  // Replace 'timestampField' with the actual field name representing the timestamp
+			  },
 		  });
 		  c.status(StatusCode.OK);
 		  return c.json({blogs:blogs})
@@ -184,21 +187,28 @@ export async function getmyBlogs(c: Context){
 		  }).$extends(withAccelerate());
 		  const authorId = c.get("userId")
 		const blogs = await prisma.post.findMany({
-			where:{authorId : authorId},
+			where:{
+				AND: [
+				{authorId : authorId},
+				{placeholder:false}
+			]},
 			select:{
 				id:true,
 				title:true,
 				content:true,
 				published:true,
 				createdAt:true,
+				placeholder:false,
 				author: {
-					select:{name:true,id:true}
+					select:{name:true,id:true,description:true}
 				},
 				tags:{
 					select:{tag:true}
 				}
 				 
-			} 
+			} ,	orderBy: {
+				createdAt: 'desc', // Replace 'timestampField' with the actual field name representing the timestamp
+				  },
 		
 		})
 
@@ -214,7 +224,7 @@ export async function getmyBlogs(c: Context){
 export async function updateBlog(c: Context){
 	try{
 		const input = await c.req.json()
-		console.log(input)
+ 
 		const tagNames = (input.tags!='')?input.tags.split(',').map((tag) => tag.trim()): [];
 		
 		const prisma = new PrismaClient({
@@ -231,7 +241,7 @@ export async function updateBlog(c: Context){
 					title:input.title,
 					content:input.content,
 					published:input.published,
-					placeholder:false,
+					placeholder:input.placeholder,
 					tags: {
 						set:[],
 						connectOrCreate: tagNames.map((tag) => ({
@@ -242,10 +252,24 @@ export async function updateBlog(c: Context){
 					  
 				},
 
-				include: {
-					tags: true,
-					author:true
-				  },
+				select:{
+					placeholder:true,
+					id:true,
+					title:true,
+					content:true,
+					published:true,
+					createdAt:true,
+					updatedAt:true,
+					author: {
+						select:{name:true,id:true,description:true}
+					},
+					tags:{
+						select:{tag:true}
+					}
+					 
+				} ,
+			
+			
 				})
 
 			c.status(StatusCode.OK);

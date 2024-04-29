@@ -16,15 +16,15 @@ const editorStyles={
 "borderRadius": ".375rem",
 "display": "flex",
 "flexDirection": "column",
-"height": "100%",
+"height": "100vh",
 "overflow": "hidden",
 "resize":" vertical",
 "width": "500px",
 "fontFamily":" medium-content-serif-font, Georgia, Cambria, Times New Roman, Times, serif",
 "fontWeight": "400",
 "fontStyle": "normal",
-"fontSize": "17px",
-"lineHeight": "1.58",
+"fontSize": "25px",
+"lineHeight": "2.5rem",
 "letterSpacing":"-.003em",
   "caretColor": "#94a3b8"
 }
@@ -34,13 +34,19 @@ export const Publish = ()=>{
       const location = useLocation();
       const{pathname} = location;
       const setDraftState= useSetRecoilState(draftState)
-      let placeholderId = useRef("") 
+      let placeholderId = useRef(!id?uuidv4():id) 
+      const setPlaceholderId = useSetRecoilState(placeholderIdAtom)
     
       const [blog, setBlog] = useRecoilStateLoadable(contentAtom(placeholderId.current));
     
    
       const reviewToggle = useRecoilValue(reviewToggleAtom);
       const {getPlaceholderId,updateBlog} = useBlogCrud(placeholderId.current)
+
+      useEffect(()=>{
+      setPlaceholderId(placeholderId.current)
+    
+      },[])
 
       useEffect(()=>{
     
@@ -52,18 +58,7 @@ export const Publish = ()=>{
           return ()=>{
               clearTimeout(timerId)
           }
-         },[blog.contents.content,blog.contents.title])
-      useEffect(()=>{
-      
-        if(!id || pathname=='/new-story')
-        {
-          placeholderId.current =uuidv4();
-       
-        }else{
-          placeholderId.current =  id
-          // setPlaceholderId(id)
-        }
-      },[])
+         },[blog])
    
      function onChangeTitle(e){
        

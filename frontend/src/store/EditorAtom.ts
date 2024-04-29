@@ -12,7 +12,7 @@ export const contentAtom = atomFamily({
       key: `contentAtomSelectorFamily`,
       get: (id: string| null| undefined) => async ({get}) => {
      
-            if(!id) return;
+            // if(!id) return;
             const token = get(authAtom)
             const res = await axios.get(`${BACKEND_URL}/blog/editor/${id}`,{
                 headers:{
@@ -25,7 +25,7 @@ export const contentAtom = atomFamily({
                 id: id,
                 title: "",
                 content: "",
-                published: "false",
+                published: false,
                 createdAt: "",
                 author: {
                   name: "",

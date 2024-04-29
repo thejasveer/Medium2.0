@@ -39,6 +39,7 @@ export const AddTags = ({blogTags,placeholderId}: {blogTags: any,placeholderId:s
     
     
     function handleKeyDown(e: any){
+        console.log("yes1")
         e.stopPropagation()
         if(input!=""){
             if (e.key === 'Enter') {
@@ -60,7 +61,7 @@ export const AddTags = ({blogTags,placeholderId}: {blogTags: any,placeholderId:s
                      
         }
         if (e.key === 'Backspace' && input.length==0) {
-         
+                console.log("yes")
             if (tags.length > 0) {
                 const lastTagIndex = tags.length - 1;
                
@@ -81,6 +82,8 @@ export const AddTags = ({blogTags,placeholderId}: {blogTags: any,placeholderId:s
                 
               
             }
+        }else{
+            setActiveTagIndex(-1)
         }
         if(e.target.value!='') setActiveTagIndex(-1)
     }
@@ -100,7 +103,7 @@ export const AddTags = ({blogTags,placeholderId}: {blogTags: any,placeholderId:s
 
          {tags.length < 5  &&
                 <div className="flex flex-col relative">
-                    <div className={`${activeTagIndex<0?'visible':'invisible'}`}>
+                    <div >
                       <input ref={inputRef} className="border-none bg-transparent p-2  text-xs outline-none" onKeyDown={handleKeyDown} onChange={e=> setInput(e.target.value)} placeholder="Add a topic..."/>
                     {showError&& <div className="  p-1 absolute text-xs max-w-max top-12 bg-white rounded-md text-slate-500 border  ">You already added this tag </div>
                     } 
@@ -111,7 +114,7 @@ export const AddTags = ({blogTags,placeholderId}: {blogTags: any,placeholderId:s
 }
 
 const  Tag = ({tag,onClick,active}: {tag: TagType, onClick: any,active:boolean})=> {
-    return <div className={`rounded-md  px-2 py-1 text-sm ${ active? 'bg-green-700 text-white ':'bg-white'} `}>
+    return <div className={` rounded-md  px-2 py-1 text-sm ${ active? 'bg-green-700 text-white ':'bg-white'} `}>
         {tag.tag}
     <button   className="px-1" onClick={()=>{
     onClick(tag)}}> &times;</button> </div>

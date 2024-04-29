@@ -3,6 +3,7 @@ import { useFormatDate } from "../hooks/apis";
 import { reviewToggleAtom } from "../store/EditorAtom";
 import { Avatar } from "./Avatar";
 import { RenderHtml } from "./RenderHtml";
+import { ReadingListIcon } from "./ReadingListIcon";
 
 interface Blog {
     "id":string;
@@ -16,29 +17,30 @@ interface Blog {
     }
 }
 export const Fullblog =({blog } : {blog:Blog})=>{
-   
-    const inReview = useRecoilValue(reviewToggleAtom)
-   
+  console.log(blog.author)
     const date = useFormatDate(blog?.createdAt|| '=')
-    return  <div className="flex justify-center">
-            <div className="grid grid-cols-12  w-full  max-w-screen-lg p-3 sm:p-5" >
-                <div className={`order-last sm:order-first col-span-12 ${!inReview?'sm:col-span-8' :'sm:col-span-12'} space-y-2 `}>
-                        <div className="text-3xl md:text-4xl font-extrabold max-w-lg break-words">{blog.title}</div>
+    return  <div className="flex justify-center p-10  ">
+            <div className="  w-full  max-w-screen-lg p-3  space-x-11 sm:p-5" >
+                <div className={`flex flex-col gap-7  `}>
+                        <div className="grid grid-cols-12 "><div  className="col-span-10 text-4xl md:text-5xl font-bold max-w-2xl break-words capitalize">{blog.title} </div> <div className="col-span-2"> <ReadingListIcon  id={blog.id}/></div></div>
+                        <div className=" flex gap-5  items-end">
+                            <div className=" flex jusitfy-center items-center"><Avatar size={"size-10"} name={blog.author.name}  text=""/></div>
+                            <div className=" ">
+                            <div className="text-2xl font-light capitalize">{blog.author.name}</div>
+                            <div className= "text-sm font-light text-slate-500">
+                                {`${Math.ceil(blog.content?.length/100)} mins read`}
+                            </div>
+                            </div>
                             <div className="text-slate-400   text-sm ">Posted on {date}</div>
-                            <div className="text-sm text-slate-700">< RenderHtml  html={blog.content}/></div>
+                          
+                           
+                        </div>
+                
+                       
+                    <div className="text-xl leading-10  text-slate-700 ">< RenderHtml  html={blog.content}/></div>
                 </div>
                 
-           {!inReview  &&  
-           <div className="col-span-12 sm:col-span-4">
-           <div className="text-sm px-3">Author</div>
-           <div className="grid grid-cols-5 min-h-full p-3">
-               <div className="col-span-1 flex jusitfy-center items-center"><Avatar name={blog.author.name}  text=""/></div>
-               <div className="col-span-4 ">
-                   <div className="text-2xl font-extrabold">{blog.author.name}</div>
-                   <div className="text-sm text-slate-400">{blog.author.description}</div>
-               </div>
-           </div>
-       </div> } 
+        
             
          </div>
     </div>

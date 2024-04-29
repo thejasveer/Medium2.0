@@ -26,7 +26,7 @@ export const Dashboard = ()=>{
 
 
     return   <div className="flex justify-center">
-             <div className=" w-full md:max-w-5xl grid grid-cols-12 h-screen ">
+             <div className=" w-full md:max-w-6xl grid grid-cols-12 h-screen ">
                 <div className="col-span-12 md:col-span-8 py-10 px-8">
                 <AppBar username={user.username} />
                  <Routes>

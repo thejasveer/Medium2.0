@@ -7,9 +7,10 @@ import { BACKEND_URL } from '../config';
 import {blogAtom, myBlogsAtom} from "../store/blogAtoms"
  
 import {  activeUserAtom, authAtom, userAtom } from '../store/userAtom';
-import {  contentAtom, draftState, placeholderIdAtom, tagsAtom } from '../store/EditorAtom';
+import {  contentAtom, draftState, placeholderIdAtom, reviewToggleAtom, tagsAtom } from '../store/EditorAtom';
 import  DOMPurify from 'dompurify';
-import DRAFTSTATE, { Blog ,User} from '../interfaces';
+import DRAFTSTATE, { Blog ,SweetError,User} from '../interfaces';
+import { errorAtom } from '../store/errorAtoms';
 
 // Authentication 
 export const useSignup= (inputs: signupParams)=>{
@@ -133,18 +134,20 @@ export const useBlogCrud =  ( placeholderId: string)=>{
  
     const [publish,setPublish] = useState<boolean>(false)
     const [blog,setblog]= useRecoilStateLoadable(contentAtom(placeholderId));
-    const setDraftState = useSetRecoilState(draftState)
+    const [currDraftState,setDraftState] = useRecoilState(draftState)
     const tagsArr = useRecoilValue(tagsAtom);
  
     const tags = tagsArr.length>0 ?tagsArr.map(t=>t.tag).join(',') :"";
     const navigate = useNavigate()
- 
-
+    const [errors,setErrors]= useRecoilState(errorAtom);
+    const setReviewToggle= useSetRecoilState(reviewToggleAtom)
+    const user  = useRecoilValue(userAtom)
  
     const postBlog = async (publish: boolean) =>{
         try {
          
-            if(blog.state=='hasValue'){
+            if(blog.state=='hasValue'&& blog.contents.title!='' && blog.contents.content!="" && currDraftState==''){
+                manageDraftState( DRAFTSTATE.SAVING)
                 const res = await axios.put(BACKEND_URL+'/blog/my',{
                     title:blog.contents.title,
                     content:blog.contents.content,
@@ -157,10 +160,22 @@ export const useBlogCrud =  ( placeholderId: string)=>{
                     Authorization: 'Bearer ' + localStorage.getItem("token") //the token is a variable which holds the token
                     }, 
                 });
+                if(publish){
+                    navigate('/blog/'+res.data.blog.id)
+                }else{
+                    navigate('/@'+user.username)
+                }
 
-                navigate('/blog/'+res.data.blog.id)
+               
+                manageDraftState( DRAFTSTATE.SAVED)
+            }else{
+                  const msg= [{ msg: 'Oops, did you mean to write something so short? Please write more and try publishing again.'}]
+                    if(blog.contents.title=="" || blog.contents.content==""){ 
+                        setErrors(msg) 
+                      
+                    } 
             }
-       
+            setReviewToggle(false)
           } catch (error) {
             console.error(error)
         }
@@ -169,13 +184,14 @@ export const useBlogCrud =  ( placeholderId: string)=>{
       
         try {
       
-            if(blog.state=='hasValue'&& (blog.contents.title!='' || blog.contents.content!="")){
-                console.log("blogupdate",blog)
+            if(blog.state=='hasValue'&& (blog.contents.title!='' || blog.contents.content!="") && currDraftState==''){
+   
                 manageDraftState( DRAFTSTATE.SAVING)
                 const res = await axios.put(BACKEND_URL+'/blog/my',{
                     title:blog.contents.title,
                     content:blog.contents.content,
                     published:blog.contents.published,
+                    placeholder:true,
                     tags:tags,
                     id:blog.contents.id
                 },{ 
@@ -188,6 +204,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
                     ...prevBlog,
                     id: updatedBlog.id,
                     title: updatedBlog.title,
+                    createdAt:updatedBlog.createdAt,
                     content:updatedBlog.content,
                     published: updatedBlog.published,
                     tags: updatedBlog.tags
@@ -203,10 +220,11 @@ export const useBlogCrud =  ( placeholderId: string)=>{
 
    const manageDraftState = (state: any) =>{
  
-    setDraftState(state)
+        setDraftState(state)
+      
         setTimeout(()=>{
             setDraftState("")
-        },2000)
+         },2000)
 
    }
 
@@ -215,7 +233,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
         try {
      
  
-            if(blog.state=='hasValue'&& (blog.contents.title!='' || blog.contents.content!="")){
+            if(blog.state=='hasValue'&& (blog.contents.title!='' || blog.contents.content!="")  && currDraftState==''){
                 const res = await axios.post(BACKEND_URL+'/blog/my',{
                     title:blog.contents.title,
                     content:blog.contents.content, 

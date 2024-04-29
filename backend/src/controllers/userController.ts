@@ -32,6 +32,7 @@ interface readingList{
                 email:true,
                 description:true,
                 posts:{
+                    where:{placeholder:false},
                     select:{
                         id:true,
                         title:true,
@@ -48,7 +49,22 @@ interface readingList{
                 },
                 list:{
                     include:{
-                        post:true
+                        
+                           post:{
+                            select:{
+                                id:true,
+                                title:true,
+                                content:true,
+                                published:true,
+                                createdAt:true,
+                                author: {
+                                    select:{name:true,id:true}
+                                },
+                                tags: {
+                                    select:{tag:true}
+                                }
+                            }
+                        }
                     }
                 }
                
@@ -253,8 +269,23 @@ export const updateReadingList= async (c:Context)=>{
                     userId:userId
                 },
                 include:{
-                    post:true
-                }
+                        
+                    post:{
+                     select:{
+                         id:true,
+                         title:true,
+                         content:true,
+                         published:true,
+                         createdAt:true,
+                         author: {
+                             select:{name:true,id:true}
+                         },
+                         tags: {
+                             select:{tag:true}
+                         }
+                     }
+                 }
+             }
                 
             })
             c.status(StatusCode.OK);

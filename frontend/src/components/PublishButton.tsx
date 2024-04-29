@@ -1,6 +1,7 @@
-import { MouseEvent, useEffect } from "react";
+import { MouseEvent, useEffect, useMemo } from "react";
 import { useRecoilValue, useRecoilValueLoadable } from "recoil";
-import { contentAtom, placeholderIdAtom } from "../store/EditorAtom";
+import { contentAtom, draftState, placeholderIdAtom } from "../store/EditorAtom";
+import { ButtonSpinner } from "./ButtonSpinner";
 
 interface props{
     text: string;
@@ -11,20 +12,17 @@ export const PublishButton = ({text,onclick}: props)=>{
    
     const blog = useRecoilValueLoadable(contentAtom(placeholderId))
     
-        const hasValidContent = blog.state === "hasValue" &&
-        blog.contents?.title !== '' &&
-        blog.contents?.content !== '';
- 
+         
+        const currDraftState = useRecoilValue(draftState)
     
     
 
-    return hasValidContent&&(
-        <button
+    return  <button
             onClick={onclick}
-            className={`bg-green-700 px-3 text-sm py-1 text-white rounded-full ${!hasValidContent && "invisible"}`}
+            className={`bg-green-700 px-3 text-sm py-1 flex gap-2 items-center text-white rounded-full`}
         >
-            {text}
+        {text}
         </button>
-    );
+    ;
 
 }

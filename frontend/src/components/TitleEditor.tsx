@@ -32,7 +32,7 @@ export const TitleEditor=memo( ({onchange,value }: props)=>{
                 value={value}
                 type="text"
                 placeholder="Title"
-                className="caret-slate-400 px-3 font-serif text-5xl focus:outline-none text-slate-800 placeholder:text-slate-300 border-l-2 border-slate-400"
+                className="caret-slate-400 px-3 font-serif text-5xl focus:outline-none text-slate-800 placeholder:text-slate-300 border-l-2 max-h-96 overflow-y-scroll border-slate-400"
             />
         </a>
     );

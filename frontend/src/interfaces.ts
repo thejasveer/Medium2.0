@@ -37,6 +37,10 @@ interface ReadingList{
         "updatedAt": string
     }
 }
+export interface SweetError{
+msg: string
+}
+
 enum DRAFTSTATE {
     SAVING = 'Saving....',
    SAVED= 'Saved'

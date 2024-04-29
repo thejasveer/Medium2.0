@@ -15,7 +15,7 @@ export const Home= ()=>{
         if(blogs.state=="hasValue"){
  
  
-        return <div className="mt-10">
+        return <div className="mt-5">
                <BlogsHtml blogs={blogs.contents}/>
         </div>
         }

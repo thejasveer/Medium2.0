@@ -19,7 +19,7 @@ export const Blogs = ()=>{
     </div>
 }
  export const BlogsHtml = ({blogs}:{blogs: Blog[]})=>{
-    return <div className="mt-20 ">{blogs.map(blog =>{
+    return <div className="mt-10 ">{blogs.map(blog =>{
                 return <BlogCard key={blog.id}
                                     blog={blog}
                                 />

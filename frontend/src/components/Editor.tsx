@@ -26,9 +26,9 @@ const btnStyle= {
   "color": "rgb(246, 235, 235)",
   "cursor": "pointer",
   "fontSize": "1em",
-  "height": "2em",
+  "height": "1.5em",
   "outline": "none",
-  "padding": "7px",
+  "padding": "1px",
   "width": "2em",
   
 }
@@ -47,10 +47,11 @@ export   const  ContentEditor = memo(({containerProps,onChange,value}: any)=> {
     "left": "0",
     "padding": "3px"
     
+    
   })
   const [showplaceholder,setShowPlaceholder] = useState(true);
   useEffect(()=>{
-    console.log("called UE")
+ 
     if (value!="") {
       setShowPlaceholder(false);
       } else {
@@ -58,12 +59,12 @@ export   const  ContentEditor = memo(({containerProps,onChange,value}: any)=> {
       }
   },[value])
   
-  function onchange2(e) {
+  function onSelect(e) {
     
     const selection: any = window.getSelection();
     let {top,left} = selection.getRangeAt(0).getBoundingClientRect();
       
-      top -=39;
+      top -=42;
        
     if(selection.toString().length > 0 ){
       setToolbarStyle({...toolbarStyle,display: "flex",top:top,left:left})
@@ -78,9 +79,9 @@ export   const  ContentEditor = memo(({containerProps,onChange,value}: any)=> {
  
   return (
     <EditorProvider>
-      <Editor containerProps={containerProps} onChange={onChange} value={value}  onSelect={onchange2}   >
+      <Editor containerProps={containerProps} onChange={onChange} value={value}  onSelect={onSelect}   >
         {showplaceholder && <div className='relative'>
-                          <div className="absolute text-slate-300 text-xl top-2 px-3 font-serif not-italic flex leading-normal">Tell your story...</div>
+                          <div className="absolute text-slate-300 text-2xl top-2 px-3 font-serif not-italic flex leading-normal">Tell your story...</div>
                         </div>}
          <Toolbar style={toolbarStyle}>
       
