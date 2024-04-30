@@ -34,8 +34,8 @@ export function Avatar({name="Ano",size="size-8",text="text-lg",showlogout=false
         //       };
         // },[])
 
-return   <div onClick={(e)=>setShowDrowpdown(!showDropdown)} className={`relative group  cursor-pointer flex items-center justify-center  ${size} first: bg-red-400 rounded-full `}>
-<span className={`font-medium ${ text} text-slate-100  `}>{initial}</span>
+return   <div onClick={(e)=>setShowDrowpdown(!showDropdown)} className={`relative group  cursor-pointer flex items-center justify-center  ${size} first: bg-red-500 rounded-full `}>
+<div className={`font-medium ${ text} text-slate-100  `}>{initial}</div>
 {showlogout?  <Dropdown onClick={handleLogout} name={name} showDropdown={showDropdown}/>  
                            :""} 
 </div> 

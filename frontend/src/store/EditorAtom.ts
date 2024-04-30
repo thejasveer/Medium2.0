@@ -56,7 +56,14 @@ export const tagsAtom= atom<TagType[]>({
     key:"tagsAtom",
     default: [] 
 })
+export const ImgAtom= atom<any>({
+    key:"ImgAtom",
+    default: {
+        src:"",
+        newFile:null
+    }
+})
 export const placeholderIdAtom =atom<string|undefined|null>({
     key:"placeholderIdAtom",
-    default: null
+    default: ""
 })

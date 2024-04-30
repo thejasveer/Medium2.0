@@ -7,20 +7,20 @@ import { userAtom } from "../store/userAtom"
 import {  useBlogCrud } from "../hooks/apis"
 import { Loading } from "./Loading"
 import { memo } from "react"
-import { ButtonSpinner } from "./ButtonSpinner"
+ 
 
 export const ReviewBlog = memo(({placeholderId}: {placeholderId: string}) =>{
     const setReviewToggle= useSetRecoilState(reviewToggleAtom)
     const user = useRecoilValue(userAtom)
     const blog = useRecoilValueLoadable(contentAtom(placeholderId))
     const currDraftState = useRecoilValue(draftState)
- 
+    
 
     const { postBlog} = useBlogCrud(placeholderId)
     if(blog.state=='loading'){
         return <Loading/>
     }else{
-        return <div className=" animate-jump-in flex justify-center absolute h-screen bg-white top-0 w-full  ">
+        return <div className=" animate-jump-in animate-duration-[500ms] flex justify-center absolute h-screen bg-white top-0 w-full  ">
         <div className="w-full sm:w-8/12  h-full p-3">
         <button onClick={()=>{setReviewToggle(false)}} className="p-2 flex justify-end w-full  text-3xl font-thin text-slate-400  ">&times;</button>
              <div className="grid grid-cols-12 mt-20 gap-10">

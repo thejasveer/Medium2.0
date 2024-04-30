@@ -11,23 +11,7 @@ import { Auth } from '../components/Auth';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Loading } from '../components/Loading';
 import { v4 as uuidv4 } from 'uuid';
-const editorStyles={
-"border": "none",
-"borderRadius": ".375rem",
-"display": "flex",
-"flexDirection": "column",
-"height": "100vh",
-"overflow": "hidden",
-"resize":" vertical",
-"width": "500px",
-"fontFamily":" medium-content-serif-font, Georgia, Cambria, Times New Roman, Times, serif",
-"fontWeight": "400",
-"fontStyle": "normal",
-"fontSize": "25px",
-"lineHeight": "2.5rem",
-"letterSpacing":"-.003em",
-  "caretColor": "#94a3b8"
-}
+ import {editorStyles} from '../utils/styleObject';
  
 export const Publish = ()=>{
       const {id} = useParams();
@@ -36,13 +20,10 @@ export const Publish = ()=>{
       const setDraftState= useSetRecoilState(draftState)
       let placeholderId = useRef(!id?uuidv4():id) 
       const setPlaceholderId = useSetRecoilState(placeholderIdAtom)
-    
       const [blog, setBlog] = useRecoilStateLoadable(contentAtom(placeholderId.current));
-    
-   
       const reviewToggle = useRecoilValue(reviewToggleAtom);
       const {getPlaceholderId,updateBlog} = useBlogCrud(placeholderId.current)
-
+    
       useEffect(()=>{
       setPlaceholderId(placeholderId.current)
     
@@ -54,7 +35,7 @@ export const Publish = ()=>{
          let timerId;
           timerId = setTimeout((  )=>{
               pathname=='/new-story'?getPlaceholderId():updateBlog()
-          }  ,3000)
+          }  ,2000)
           return ()=>{
               clearTimeout(timerId)
           }
@@ -88,14 +69,14 @@ export const Publish = ()=>{
       }
       if(blog.state=='hasValue'){
  
-    return <Auth>
+      return <Auth>
            {reviewToggle == true  ? <ReviewBlog placeholderId={placeholderId.current}/>
               : <div className='flex justify-center w-full gap-2 mt-5 '>
                     <div className='max-w-lg min-h-screen flex flex-col gap-10'  >
                           <div>
                           <TitleEditor onchange={onChangeTitle} value={blog.contents.title} />
                           </div>
-                          <ContentEditor  containerProps={{ style:editorStyles}}
+                          <ContentEditor  containerProps={{ style: editorStyles }}
                         
                              value={blog.contents.content}
                             onChange={onChangeContent}  />

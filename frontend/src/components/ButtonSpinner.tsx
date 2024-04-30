@@ -1,4 +1,4 @@
-export const ButtonSpinner=({fillColor, bgColor}:{fillColor:string,bgColor:string})=>{
+export const ButtonSpinner=({fillColor="fill-black", bgColor="text-slate-400"}:{fillColor?:string,bgColor?:string})=>{
 
     return <div role="status">
                 <svg aria-hidden="true" className={`w-4 h-4 ${ bgColor}   animate-spin  ${fillColor} `}viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">

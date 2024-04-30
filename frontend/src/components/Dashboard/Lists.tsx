@@ -14,7 +14,7 @@ export const Lists=()=>{
     }
     
 
-    return <div className="mt-10">
+    return <div className="mt-10 h-dvh overflow-scroll">
             {user.list?.map((l)=>{
                 return <div >
                     <BlogCard blog={l.post} />

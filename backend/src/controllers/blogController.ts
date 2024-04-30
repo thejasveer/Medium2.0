@@ -4,7 +4,9 @@ import {Context} from 'hono'
 import StatusCode from '../utils/statusCode';
 import { blogSchema, updateBlogSchema } from "@codewithjass/common/dist"
 import { HTTPException } from 'hono/http-exception'
-
+import fs from 'fs';
+import path from 'path';
+import { Buffer } from 'buffer';
  
 export async function getAllBlogs(c:Context){
 	try {
@@ -118,7 +120,7 @@ export async function addBlog(c: Context){
 	try {
 		const input: blogInput = await  c.req.json();
 		const tagNames = (input.tags!='')?input.tags.split(',').map((tag) => tag.trim()): [];
-		console.log(input,tagNames)
+		console.log(input)
 		// const {success, error} = await blogSchema.safeParse(input);
 		// if(!success) {
 		// 	c.status(StatusCode.BADREQ);
@@ -138,6 +140,7 @@ export async function addBlog(c: Context){
 				authorId: authorId,
 				placeholder:true,
 				published:input.published,
+				
 				tags: {
 					connectOrCreate: tagNames.map((tag) => ({
 					  where: { tag },
@@ -146,10 +149,24 @@ export async function addBlog(c: Context){
 				  },
 				  
 			},
-			include: {
-				tags: true,
-			  },
+			select:{
+				placeholder:true,
+				id:true,
+				title:true,
+				content:true,
+				published:true,
+				createdAt:true,
+				updatedAt:true,
+				author: {
+					select:{name:true,id:true,description:true}
+				},
+				tags:{
+					select:{tag:true}
+				}
+				 
+			} ,
 			})
+
 
 			c.status(StatusCode.OK);
 			return c.json({blog: blog})
@@ -162,6 +179,12 @@ export async function addBlog(c: Context){
 	}
 	
 }
+
+async function manageImage(blogId: string,img: string){
+
+
+}
+
 
 export async function deleteBlog(c: Context){
 	try {
@@ -223,7 +246,11 @@ export async function getmyBlogs(c: Context){
 
 export async function updateBlog(c: Context){
 	try{
-		const input = await c.req.json()
+		const input = await c.req.parseBody()
+		console.log(input)
+		const buffer = Buffer.from(input.file, 'base64');
+	
+		console.log(input.img)
  
 		const tagNames = (input.tags!='')?input.tags.split(',').map((tag) => tag.trim()): [];
 		

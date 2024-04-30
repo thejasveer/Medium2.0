@@ -1,13 +1,13 @@
 import { signinParams, signupParams } from '@codewithjass/common';
 import axios, { AxiosError, AxiosResponse } from 'axios' 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilStateLoadable, useRecoilValue, useRecoilValueLoadable, useSetRecoilState } from 'recoil';
 import { BACKEND_URL } from '../config';
 import {blogAtom, myBlogsAtom} from "../store/blogAtoms"
  
 import {  activeUserAtom, authAtom, userAtom } from '../store/userAtom';
-import {  contentAtom, draftState, placeholderIdAtom, reviewToggleAtom, tagsAtom } from '../store/EditorAtom';
+import {  ImgAtom, contentAtom, draftState, placeholderIdAtom, reviewToggleAtom, tagsAtom } from '../store/EditorAtom';
 import  DOMPurify from 'dompurify';
 import DRAFTSTATE, { Blog ,SweetError,User} from '../interfaces';
 import { errorAtom } from '../store/errorAtoms';
@@ -138,12 +138,18 @@ export const useBlogCrud =  ( placeholderId: string)=>{
     const tagsArr = useRecoilValue(tagsAtom);
  
     const tags = tagsArr.length>0 ?tagsArr.map(t=>t.tag).join(',') :"";
+    let imgObj = useRecoilValue(ImgAtom)
+     const img =   imgObj.new!=null ? imgObj.new : null;
+   
+     
+     console.log(img)
     const navigate = useNavigate()
     const [errors,setErrors]= useRecoilState(errorAtom);
     const setReviewToggle= useSetRecoilState(reviewToggleAtom)
     const user  = useRecoilValue(userAtom)
  
     const postBlog = async (publish: boolean) =>{
+ 
         try {
          
             if(blog.state=='hasValue'&& blog.contents.title!='' && blog.contents.content!="" && currDraftState==''){
@@ -154,6 +160,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
                     published:publish,
                     placeholder:false,
                     tags:tags,
+                    img:imgObj.new,
                     id:blog.contents.id
                 },{ 
                  headers: {
@@ -181,7 +188,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
         }
     }
     const updateBlog = async () =>{
-      
+//  console.log(formData)
         try {
       
             if(blog.state=='hasValue'&& (blog.contents.title!='' || blog.contents.content!="") && currDraftState==''){
@@ -193,10 +200,12 @@ export const useBlogCrud =  ( placeholderId: string)=>{
                     published:blog.contents.published,
                     placeholder:true,
                     tags:tags,
+                    img: img,
                     id:blog.contents.id
                 },{ 
                  headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem("token") //the token is a variable which holds the token
+                    Authorization: 'Bearer ' + localStorage.getItem("token") ,'Content-Type': 'multipart/form-data', // Set Content-Type header to multipart/form-data
+                    //the token is a variable which holds the token
                     }, 
                 });
                const updatedBlog= res.data.blog
@@ -207,7 +216,9 @@ export const useBlogCrud =  ( placeholderId: string)=>{
                     createdAt:updatedBlog.createdAt,
                     content:updatedBlog.content,
                     published: updatedBlog.published,
-                    tags: updatedBlog.tags
+                    tags: updatedBlog.tags,
+                    author:updatedBlog.author,
+                    img:updatedBlog.img
                     
                   }));
             }
@@ -216,9 +227,9 @@ export const useBlogCrud =  ( placeholderId: string)=>{
           } catch (error) {
             console.error(error)
         }
-    }
+    };
 
-   const manageDraftState = (state: any) =>{
+   const manageDraftState = useCallback((state: any) =>{
  
         setDraftState(state)
       
@@ -226,9 +237,9 @@ export const useBlogCrud =  ( placeholderId: string)=>{
             setDraftState("")
          },2000)
 
-   }
+   },[])
 
-    const getPlaceholderId =  async()=>{
+    const getPlaceholderId =async()=>{
  
         try {
      
@@ -239,17 +250,28 @@ export const useBlogCrud =  ( placeholderId: string)=>{
                     content:blog.contents.content, 
                     placeholder:true,
                     tags:tags,
+                    img:img.new,
                 },{ 
                  headers: {
                     Authorization: 'Bearer ' + localStorage.getItem("token") //the token is a variable which holds the token
                     }, 
                 });
-                const id= res.data.blog.id;
-                const url = `/p/${id}/edit`;
+                
+              
+                const updatedBlog= res.data.blog
+                const url = `/p/${updatedBlog.id}/edit`;
                 setblog((prevBlog:any) => ({
                     ...prevBlog,
-                    id: id,
-                    }));
+                    id: updatedBlog.id,
+                    title: updatedBlog.title,
+                    createdAt:updatedBlog.createdAt,
+                    content:updatedBlog.content,
+                    published: updatedBlog.published,
+                    tags: updatedBlog.tags,
+                    author:updatedBlog.author,
+                    img:updatedBlog.img
+                    
+                  }));
                
                 // history.replaceState({}, '', newPath);
                 navigate(url,{ replace: true });

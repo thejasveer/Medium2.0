@@ -13,7 +13,7 @@ import { SweetErrors } from './components/SweetErrors';
 function App() {
   
   return (
-    <>
+    <div className=' h-svh'>
     <RecoilRoot>
     <BrowserRouter>
         <Appbar></Appbar>
@@ -32,7 +32,7 @@ function App() {
       <SweetErrors/>
     </RecoilRoot>
   
-    </>
+    </div>
   )
 }
 

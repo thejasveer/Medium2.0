@@ -15,7 +15,7 @@ export const Home= ()=>{
         if(blogs.state=="hasValue"){
  
  
-        return <div className="mt-5">
+        return <div className="mt-5  h-dvh overflow-scroll">
                <BlogsHtml blogs={blogs.contents}/>
         </div>
         }
