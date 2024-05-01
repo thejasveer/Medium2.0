@@ -27,6 +27,7 @@ model Post {
   tags        Tags[]
   placeholder Boolean       @default(false)
   list        ReadingList[]
+  img         String        @default("")
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @default(now()) @updatedAt
 }

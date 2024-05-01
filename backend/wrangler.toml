@@ -6,13 +6,14 @@ node_compat = true
 [vars]
 DATABASE_URL="prisma://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlfa2V5IjoiNDI3MzhiMjAtYmQwMC00MGE2LWE4YTgtZmVhOWRiNDU0MGRmIiwidGVuYW50X2lkIjoiYmY1NGJlODkwNGE5ZmMzMTJhNTZkY2Q1N2IzOGUzYzE5M2M1NTVlOGIzYTc1NGVjNjVmMWU2YTQ1YzM1ZDdiOCIsImludGVybmFsX3NlY3JldCI6IjExMGVjNWIwLTc1MjItNGI5NC1hM2QzLWFhZDM0ZjBhYjhmMiJ9.yC7J5UjVTzQqN0zChwOEbEAdx93NIe1CEDCa3dfcjJU"
 JWT_SECRET="secret"
+ 
 # [[kv_namespaces]]
 # binding = "MY_KV_NAMESPACE"
 # id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
-# [[r2_buckets]]
-# binding = "MY_BUCKET"
-# bucket_name = "my-bucket"
+[[r2_buckets]]
+binding = "MEDIUM_R2_UPLOAD"
+bucket_name = "medium-r2-upload"
 
 # [[d1_databases]]
 # binding = "DB"

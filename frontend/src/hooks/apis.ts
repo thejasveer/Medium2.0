@@ -139,10 +139,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
  
     const tags = tagsArr.length>0 ?tagsArr.map(t=>t.tag).join(',') :"";
     let imgObj = useRecoilValue(ImgAtom)
-     const img =   imgObj.new!=null ? imgObj.new : null;
-   
-     
-     console.log(img)
+    
     const navigate = useNavigate()
     const [errors,setErrors]= useRecoilState(errorAtom);
     const setReviewToggle= useSetRecoilState(reviewToggleAtom)
@@ -187,8 +184,29 @@ export const useBlogCrud =  ( placeholderId: string)=>{
             console.error(error)
         }
     }
+const manageImage= async()=>{
+try {
+        if(blog.state=='hasValue'&& (blog.contents.title!='' || blog.contents.content!="") && currDraftState==''){
+            const res = await axios.put(BACKEND_URL+'/blog/img',{
+                img: imgObj.newFile,
+                id:blog.contents.id
+            },{ 
+             headers: {
+                Authorization: 'Bearer ' + localStorage.getItem("token") ,
+                'Content-Type': 'multipart/form-data', // Set Content-Type header to multipart/form-data
+                //the token is a variable which holds the token
+                }, 
+            });
+
+        }
+    } catch (error) {
+    console.log(error)
+    }
+}
+
+
     const updateBlog = async () =>{
-//  console.log(formData)
+ 
         try {
       
             if(blog.state=='hasValue'&& (blog.contents.title!='' || blog.contents.content!="") && currDraftState==''){
@@ -200,11 +218,12 @@ export const useBlogCrud =  ( placeholderId: string)=>{
                     published:blog.contents.published,
                     placeholder:true,
                     tags:tags,
-                    img: img,
+                      img: imgObj.newFile,
                     id:blog.contents.id
                 },{ 
                  headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem("token") ,'Content-Type': 'multipart/form-data', // Set Content-Type header to multipart/form-data
+                    Authorization: 'Bearer ' + localStorage.getItem("token") ,
+                    'Content-Type': 'multipart/form-data', // Set Content-Type header to multipart/form-data
                     //the token is a variable which holds the token
                     }, 
                 });
@@ -250,7 +269,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
                     content:blog.contents.content, 
                     placeholder:true,
                     tags:tags,
-                    img:img.new,
+                    img:img,
                 },{ 
                  headers: {
                     Authorization: 'Bearer ' + localStorage.getItem("token") //the token is a variable which holds the token
@@ -259,6 +278,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
                 
               
                 const updatedBlog= res.data.blog
+                debugger
                 const url = `/p/${updatedBlog.id}/edit`;
                 setblog((prevBlog:any) => ({
                     ...prevBlog,
@@ -283,7 +303,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
             }
         }
 
-    return {setPublish,postBlog,getPlaceholderId,updateBlog }
+    return {setPublish,postBlog,getPlaceholderId,updateBlog,manageImage }
 
     
 

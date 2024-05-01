@@ -26,6 +26,7 @@ export const contentAtom = atomFamily({
                 title: "",
                 content: "",
                 published: false,
+                img:null,
                 createdAt: "",
                 author: {
                   name: "",

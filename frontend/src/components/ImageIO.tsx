@@ -6,13 +6,13 @@ import { useBlogCrud } from '../hooks/apis';
 export const ImageIO = ({ imgSrc,placeholderId }:{imgSrc: string,placeholderId:string}) => {
     const review= useRecoilValue(reviewToggleAtom)
     const [img,setImg]= useRecoilState(ImgAtom)
-    const { updateBlog} = useBlogCrud(placeholderId)
+    const { manageImage} = useBlogCrud(placeholderId)
     useEffect(()=>{
       setImg({...img,src:imgSrc})
     },[])
     useEffect(()=>{
  
-      updateBlog()
+      manageImage()
   },[img])
     const fileInputRef = useRef<any>(null);
 
@@ -25,10 +25,8 @@ export const ImageIO = ({ imgSrc,placeholderId }:{imgSrc: string,placeholderId:s
       if (file) {
         const reader = new FileReader();
         reader.onload = () => {
-          const imgData = new FormData()
-          imgData.append('img',file)
-          console.log(file)
-          setImg({src:reader.result,new:imgData})
+     
+          setImg({src:reader.result,newFile:file})
         };
         reader.readAsDataURL(file);
       }

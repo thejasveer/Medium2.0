@@ -7,6 +7,7 @@ export interface Blog {
     content: string;
     published: boolean;
     createdAt: string;
+    img: string;
     author: {
         name: string;
         description: string;

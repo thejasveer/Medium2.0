@@ -2,7 +2,7 @@ import {Context,Next} from 'hono';
 import { verify }  from 'hono/jwt'
 const Auth= async (c: Context,next: Next)=>{
     try {
-       
+ 
         const token: string = c.req.header("Authorization").split(" ")[1]||"";
     if (token !== null || token !== undefined) {
         

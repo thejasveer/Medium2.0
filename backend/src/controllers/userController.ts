@@ -38,6 +38,7 @@ interface readingList{
                         title:true,
                         content:true,
                         published:true,
+                        img:true,
                         createdAt:true,
                         author: {
                             select:{name:true,id:true}
@@ -276,6 +277,7 @@ export const updateReadingList= async (c:Context)=>{
                          title:true,
                          content:true,
                          published:true,
+                         img:true,
                          createdAt:true,
                          author: {
                              select:{name:true,id:true}

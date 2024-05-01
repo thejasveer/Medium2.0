@@ -4,9 +4,8 @@ import {Context} from 'hono'
 import StatusCode from '../utils/statusCode';
 import { blogSchema, updateBlogSchema } from "@codewithjass/common/dist"
 import { HTTPException } from 'hono/http-exception'
-import fs from 'fs';
-import path from 'path';
-import { Buffer } from 'buffer';
+ 
+ 
  
 export async function getAllBlogs(c:Context){
 	try {
@@ -120,7 +119,7 @@ export async function addBlog(c: Context){
 	try {
 		const input: blogInput = await  c.req.json();
 		const tagNames = (input.tags!='')?input.tags.split(',').map((tag) => tag.trim()): [];
-		console.log(input)
+		console.log(input,tagNames)
 		// const {success, error} = await blogSchema.safeParse(input);
 		// if(!success) {
 		// 	c.status(StatusCode.BADREQ);
@@ -180,9 +179,16 @@ export async function addBlog(c: Context){
 	
 }
 
-async function manageImage(blogId: string,img: string){
-
-
+export async function manageImage(c: Context){
+				const req= await c.req.parseBody();
+				console.log(req['img'])
+				const f= req['img'];
+				if(f&& f instanceof File){
+				const img=	await c.env.MEDIUM_R2_UPLOAD.put('test-image.png',f)
+					console.log("uploaded image",img)
+				}
+			 
+				return c.json({ss: 's'})
 }
 
 
@@ -246,11 +252,7 @@ export async function getmyBlogs(c: Context){
 
 export async function updateBlog(c: Context){
 	try{
-		const input = await c.req.parseBody()
-		console.log(input)
-		const buffer = Buffer.from(input.file, 'base64');
-	
-		console.log(input.img)
+		const input = await c.req.json()
  
 		const tagNames = (input.tags!='')?input.tags.split(',').map((tag) => tag.trim()): [];
 		
