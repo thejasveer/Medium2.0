@@ -226,8 +226,7 @@ try {
                 },{ 
                  headers: {
                     Authorization: 'Bearer ' + localStorage.getItem("token") ,
-                    'Content-Type': 'multipart/form-data', // Set Content-Type header to multipart/form-data
-                    //the token is a variable which holds the token
+                      //the token is a variable which holds the token
                     }, 
                 });
                const updatedBlog= res.data.blog
