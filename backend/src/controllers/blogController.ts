@@ -7,6 +7,7 @@ import { HTTPException } from 'hono/http-exception'
  
  
  
+ 
 export async function getAllBlogs(c:Context){
 	try {
 		const prisma = new PrismaClient({
@@ -178,19 +179,16 @@ export async function addBlog(c: Context){
 	}
 	
 }
-
+ 
 export async function manageImage(c: Context){
 				const req= await c.req.parseBody();
 				console.log(req['img'])
-				const f= req['img'];
-				if(f&& f instanceof File){
-				const img=	await c.env.MEDIUM_R2_UPLOAD.put('test-image.png',f)
-					console.log("uploaded image",img)
-				}
+				// update image url in post table
+				 
 			 
 				return c.json({ss: 's'})
 }
-
+ 
 
 export async function deleteBlog(c: Context){
 	try {

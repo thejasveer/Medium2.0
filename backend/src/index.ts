@@ -3,11 +3,8 @@ import mainRouter from './routes.ts/index'
  
 import { cors } from 'hono/cors';
 import { env } from 'hono/adapter'
-
-type Bindings= {
-  MEDIUM_R2_UPLOAD: R2Bucket
-}
-const app = new Hono<{Bindings: Bindings}>();
+ 
+const app = new Hono();
 app.use(cors());
  
 app.get('/env', (c) => {

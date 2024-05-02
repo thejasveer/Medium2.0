@@ -187,8 +187,11 @@ export const useBlogCrud =  ( placeholderId: string)=>{
 const manageImage= async()=>{
 try {
         if(blog.state=='hasValue'&& (blog.contents.title!='' || blog.contents.content!="") && currDraftState==''){
+ 
+           
+          
             const res = await axios.put(BACKEND_URL+'/blog/img',{
-                img: imgObj.newFile,
+                img: imgObj.newSrc,
                 id:blog.contents.id
             },{ 
              headers: {
@@ -197,7 +200,7 @@ try {
                 //the token is a variable which holds the token
                 }, 
             });
-
+            // update blog img url//
         }
     } catch (error) {
     console.log(error)
@@ -218,7 +221,7 @@ try {
                     published:blog.contents.published,
                     placeholder:true,
                     tags:tags,
-                      img: imgObj.newFile,
+                      
                     id:blog.contents.id
                 },{ 
                  headers: {
@@ -269,7 +272,7 @@ try {
                     content:blog.contents.content, 
                     placeholder:true,
                     tags:tags,
-                    img:img,
+                  
                 },{ 
                  headers: {
                     Authorization: 'Bearer ' + localStorage.getItem("token") //the token is a variable which holds the token
@@ -278,7 +281,7 @@ try {
                 
               
                 const updatedBlog= res.data.blog
-                debugger
+              
                 const url = `/p/${updatedBlog.id}/edit`;
                 setblog((prevBlog:any) => ({
                     ...prevBlog,

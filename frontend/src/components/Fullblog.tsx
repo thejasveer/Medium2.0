@@ -43,8 +43,8 @@ export const Fullblog =memo(({blog } : {blog:Blog})=>{
                           
                            
                         </div>
-                
-                  <ImageIO imgSrc={""} placeholderId={blog.id}/> 
+                  
+                    <ImageIO imgSrc={""} placeholderId={blog.id}/> 
                     <div className="text-xl leading-10  text-slate-700 ">< RenderHtml  html={blog.content}/></div>
                 </div>
                 

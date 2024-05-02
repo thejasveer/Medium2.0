@@ -3,6 +3,9 @@ import {useEffect, useMemo, useRef} from 'react';
 import { ImgAtom, reviewToggleAtom } from '../store/EditorAtom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useBlogCrud } from '../hooks/apis';
+import { imageDb } from '../utils/firebase';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
 export const ImageIO = ({ imgSrc,placeholderId }:{imgSrc: string,placeholderId:string}) => {
     const review= useRecoilValue(reviewToggleAtom)
     const [img,setImg]= useRecoilState(ImgAtom)
@@ -11,7 +14,7 @@ export const ImageIO = ({ imgSrc,placeholderId }:{imgSrc: string,placeholderId:s
       setImg({...img,src:imgSrc})
     },[])
     useEffect(()=>{
- 
+       
       manageImage()
   },[img])
     const fileInputRef = useRef<any>(null);
@@ -20,16 +23,32 @@ export const ImageIO = ({ imgSrc,placeholderId }:{imgSrc: string,placeholderId:s
       fileInputRef.current.click();
     };
   
-    const handleFileChange = (event: any) => {
+    const handleFileChange = async (event: any) => {
       const file = event.target.files[0];
       if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-     
-          setImg({src:reader.result,newFile:file})
+        
+        const imageRef= await  ref(imageDb,`${uuidv4()}`)
+        console.log("imageRef",imageRef)
+        uploadBytes(imageRef, file).then((snapshot) => {
+          console.log("File uploaded successfully!");
+        
+          // Get the download URL for the file
+          getDownloadURL(snapshot.ref).then((downloadURL) => {
+            console.log("File available at", downloadURL);
+            setImg({src:downloadURL,newSrc: downloadURL})
+            // Now you can use the downloadURL to display the image or do whatever you need
+          }).catch((error) => {
+            // Handle any errors that occurred while retrieving the download URL
+            console.error("Error getting download URL:", error);
+          });
+        }).catch((error) => {
+          // Handle any errors that occurred while uploading the file
+          console.error("Error uploading file:", error);
+        });
+       
+          
         };
-        reader.readAsDataURL(file);
-      }
+     
     };
     const height = useMemo(()=>{
       return review ? 'h-62': 'h-96'

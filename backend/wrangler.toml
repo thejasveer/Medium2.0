@@ -6,14 +6,14 @@ node_compat = true
 [vars]
 DATABASE_URL="prisma://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlfa2V5IjoiNDI3MzhiMjAtYmQwMC00MGE2LWE4YTgtZmVhOWRiNDU0MGRmIiwidGVuYW50X2lkIjoiYmY1NGJlODkwNGE5ZmMzMTJhNTZkY2Q1N2IzOGUzYzE5M2M1NTVlOGIzYTc1NGVjNjVmMWU2YTQ1YzM1ZDdiOCIsImludGVybmFsX3NlY3JldCI6IjExMGVjNWIwLTc1MjItNGI5NC1hM2QzLWFhZDM0ZjBhYjhmMiJ9.yC7J5UjVTzQqN0zChwOEbEAdx93NIe1CEDCa3dfcjJU"
 JWT_SECRET="secret"
+STORAGE_BUCKET = "medium-5c170.appspot.com"
+STORAGE_AUTH_TOKEN = "MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCPEZ948aOMKRN6\nmB7e9eN/jRTeKpxr0LXFpg1+m5RVWtKWF4OYWIYYBALAeQh4pj83wgTYsQI4D7XM\nN85H3Jqg6lwkrfGGG3XbaUg8DpUJdADziOX9XQNLAqec1dwDApxGINdlrDWdezrH\nDfUCFwHsps+JMYc4ffBq/7vO3A43M9aSofsyAMrU9XN8EsSKcVbgnx+PgCz1Sacr\ny/B9Nu5huxoZO+rVFoNQcOa82feZ+ZzoTcLfQbHc70mcyIOySyYUk50gtfyXbdt2\nogkNEYUygfkfuWQfpgrHRG8k8iL9OmeC6JIiKB8bfAEWUFo7Vx7Lm24smq+qiZRI\nUwkcNAOBAgMBAAECggEAKDSyJcl2hjGW9Ulhx5O/er15o1PDQLNXGfPn7/Al9/S9\noIt8ImiiSoZ6BYAeBtXlhzRhq0nXT0zu8LSwJlbTJ6yk93Pgn6kA7ofAUoxgitcM\nW2RaCeFFRyO4WeVp3nix1S1uivah3J9gbcc41v0DP+/C/BGsqA4QbelvbJs/7Xga\nzBgMfLkpCMBG56O6ALv2EHm5ER+MwqXW6CiTRFWiR2RNbdDwgyHX8wN7C6t4kf3l\nxg9F23DCocf4oH2rsDPnCACpik5ZHrMtc3Q2GnuTjN700smy1/odJq3/S6pgnlEg\nTanDk+fo7AmvsJvGMK4osV6wQL5lvcH1oWhpQd5CfwKBgQDG7RlhpBSoXkkSyjIf\nvPGs3Ii6IvorA08QFlJ9msImywP2ZC8ir2+8PDvr2P2tAfe+R8DRjXN04tBlikLy\n1aPSrWllGBT6+c2kaO1iEeQXQR4gxMx8iZx+D9LM+t/Hj7eEfvmH7whPMIQ6hmCb\nHsB7aXmsOmhaUmLGI0/oxufKcwKBgQC4Hd3TUXoalWbLBAfVE83zYxa6rHYGQF2T\ntpSfu88gfdyC+173h9PzcTRnAfz3boC8kPRNirsP+AU2VseWaOM+o1IXBaYi6X5v\ntt8IM2ZVuuxof/mfAz3qXNCh1BeJrwZSZABenGidad8rdsOxn1303Rrx6lH9jQfa\nFhxr84h5OwKBgCucj5P4hQ7knOChs5uBsPpU3yTvxijn8M12F1+yLh6TI6tBC5Rv\nIfACxKBQUk07wTTWRk+q00Us9MNOLJ9QdzoZCqI/RVpAqfUBjAmUIo12mURV4P7s\nrIJ2taB639TAjVte+xXyMcAqwtKR41wewdRMq4A2zen/ZehKlZpTAT5BAoGAZ448\n3wd7swoHB/bbZOg/tT4tYY9wzrFTMKrHy1P5+t9vsKgr0POvrcQlYi6HFrArbmPl\nVNvLvP6WB+slVR7neaqomFRQDmDgAXuM1HL8gwmgwGICh4JuR6wumGbPWlx8JMkk\nQBKe8LLEmBCznurxELFv31MZDJBPM0WudLVENFMCgYBlv/vYvFIE905GrpdkOr8Q\nZrNIP0cfsehQduRisaNQ7zBjTOIekFd3skkxTh5Jd/pv2E3+Sqqj1bvvShz/MW/2\n/ftFp7HTKCKSovKFHw9HbgtdVmbxX0a8kIFkfWd0y4xfVNHAqsJHFJuAqaZXeJ72\ndZsOx66WiK+ey4C4NkgnwA=="
  
 # [[kv_namespaces]]
 # binding = "MY_KV_NAMESPACE"
 # id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
-[[r2_buckets]]
-binding = "MEDIUM_R2_UPLOAD"
-bucket_name = "medium-r2-upload"
+ 
 
 # [[d1_databases]]
 # binding = "DB"
@@ -21,4 +21,4 @@ bucket_name = "medium-r2-upload"
 # database_id = ""
 
 # [ai]
-# binding = "AI"
+# binding = "AI"  

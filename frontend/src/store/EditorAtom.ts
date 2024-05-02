@@ -61,7 +61,7 @@ export const ImgAtom= atom<any>({
     key:"ImgAtom",
     default: {
         src:"",
-        newFile:null
+        newSrc:""
     }
 })
 export const placeholderIdAtom =atom<string|undefined|null>({
