@@ -14,7 +14,7 @@ export const Fullblog =memo(({blog } : {blog:Blog})=>{
   useEffect(()=>{
     const d = useFormatDate(blog?.createdAt|| '=')
     setDate(d)
-  },[setDate])
+  },[setDate,blog])
    
     return  <div className="flex justify-center p-10  ">
             <div className="  w-full  max-w-screen-lg p-3  space-x-11 sm:p-5" >

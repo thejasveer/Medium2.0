@@ -5,13 +5,15 @@ import { BACKEND_URL } from '../config';
 import { useAuth } from '../hooks/apis';
 import { authAtom } from './userAtom';
 import { v4 as uuidv4 } from 'uuid';
- 
+import { useLocation } from 'react-router-dom';
+
+
 export const contentAtom = atomFamily({
     key: 'contentAtom',
     default: selectorFamily({
       key: `contentAtomSelectorFamily`,
       get: (id: string| null| undefined) => async ({get}) => {
-     
+    
             // if(!id) return;
             const token = get(authAtom)
             const res = await axios.get(`${BACKEND_URL}/blog/editor/${id}`,{
@@ -20,7 +22,7 @@ export const contentAtom = atomFamily({
                 }
     
             });
-           
+      
            const blog = res.data.blog || {
                 id: id,
                 title: "",

@@ -57,7 +57,7 @@ export const ImageIO = ({ imgSrc,placeholderId }:{imgSrc: string,placeholderId:s
     };
 
     const removeImg= ()=>{
-      setImg({...img,src:""})
+      setImg({...img,src:"",newSrc:""})
     
     }
     const height = useMemo(()=>{

@@ -113,7 +113,7 @@ export const useBlogs= ()=>{
 
 
 export const useBlog = (id: string = "") => {
-    const blog = useRecoilValueLoadable<Blog>(blogAtom(id));
+    const blog = useRecoilValueLoadable<Blog>(contentAtom(id));
     return { blog };
   };
  
@@ -150,6 +150,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
         try {
          
             if(blog.state=='hasValue'&& blog.contents.title!='' && blog.contents.content!="" && currDraftState==''){
+               // manage when image removed....
                 if(imgObj.newSrc!=""){
                  await   manageImage();
                  setImgObj({...imgObj,newSrc:""})
