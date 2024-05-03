@@ -14,13 +14,13 @@ export const BlogCard=({blog  }: {blog: Blog})=>{
   const navigate = useNavigate()
   useEffect(()=>{
     if(userExist){
-        
+ 
         if(user.userId== blog.author.id){
             setShowActions(true)
         }
       }
     
-  },[])
+  },[user])
 
  
 

@@ -6,18 +6,8 @@ import { RenderHtml } from "./RenderHtml";
 import { ReadingListIcon } from "./ReadingListIcon";
 import { memo, useEffect, useState } from "react";
 import { ImageIO } from "./ImageIO";
-
-interface Blog {
-    "id":string;
-    "title":string;
-    "content": string;
-    "published": boolean
-    "createdAt": string;
-    "author": {
-        "name": string
-        "description": string; 
-    }
-}
+import { Blog } from "../interfaces";
+ 
 export const Fullblog =memo(({blog } : {blog:Blog})=>{
  
   const [date,setDate]= useState('')
@@ -44,7 +34,7 @@ export const Fullblog =memo(({blog } : {blog:Blog})=>{
                            
                         </div>
                   
-                    <ImageIO imgSrc={""} placeholderId={blog.id}/> 
+                    <ImageIO imgSrc={blog.img} placeholderId={blog.id}/> 
                     <div className="text-xl leading-10  text-slate-700 ">< RenderHtml  html={blog.content}/></div>
                 </div>
                 

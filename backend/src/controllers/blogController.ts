@@ -23,6 +23,7 @@ export async function getAllBlogs(c:Context){
 				content:true,
 				published:true,
 				createdAt:true,
+				img:true,
 				author: {
 					select:{name:true,id:true}
 				},
@@ -60,6 +61,7 @@ export async function getAllBlogs(c:Context){
 				title:true,
 				content:true,
 				published:true,
+				img:true,
 				createdAt:true,
 				author: {
 					select:{name:true,id:true}
@@ -93,6 +95,7 @@ export async function getBlogByIdForEditor(c: Context){
 				content:true,
 				published:true,
 				createdAt:true,
+				img:true,
 				author: {
 					select:{name:true,id:true}
 				},
@@ -157,6 +160,7 @@ export async function addBlog(c: Context){
 				published:true,
 				createdAt:true,
 				updatedAt:true,
+				img:true,
 				author: {
 					select:{name:true,id:true,description:true}
 				},
@@ -181,12 +185,23 @@ export async function addBlog(c: Context){
 }
  
 export async function manageImage(c: Context){
-				const req= await c.req.parseBody();
-				console.log(req['img'])
-				// update image url in post table
-				 
-			 
-				return c.json({ss: 's'})
+	try {
+				const input= await c.req.json();
+				const prisma = new PrismaClient({
+					datasourceUrl: c.env.DATABASE_URL,
+				  }).$extends(withAccelerate());
+				const updated = await prisma.post.update({where:{id:input.id},
+						data:{
+							img:input.img
+						},
+						})
+
+			c.status(StatusCode.OK);
+			return c.json({blog:updated})
+		} catch (error: any) {
+			c.status(StatusCode.BADREQ);
+			return c.json({error:{message: error.message}});
+		}
 }
  
 
@@ -224,6 +239,7 @@ export async function getmyBlogs(c: Context){
 				title:true,
 				content:true,
 				published:true,
+				img:true,
 				createdAt:true,
 				placeholder:false,
 				author: {
@@ -269,6 +285,7 @@ export async function updateBlog(c: Context){
 					content:input.content,
 					published:input.published,
 					placeholder:input.placeholder,
+				 
 					tags: {
 						set:[],
 						connectOrCreate: tagNames.map((tag) => ({
@@ -287,6 +304,7 @@ export async function updateBlog(c: Context){
 					published:true,
 					createdAt:true,
 					updatedAt:true,
+					img:true,
 					author: {
 						select:{name:true,id:true,description:true}
 					},

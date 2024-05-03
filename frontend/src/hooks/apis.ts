@@ -138,7 +138,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
     const tagsArr = useRecoilValue(tagsAtom);
  
     const tags = tagsArr.length>0 ?tagsArr.map(t=>t.tag).join(',') :"";
-    let imgObj = useRecoilValue(ImgAtom)
+    let [imgObj,setImgObj] = useRecoilState(ImgAtom)
     
     const navigate = useNavigate()
     const [errors,setErrors]= useRecoilState(errorAtom);
@@ -150,6 +150,10 @@ export const useBlogCrud =  ( placeholderId: string)=>{
         try {
          
             if(blog.state=='hasValue'&& blog.contents.title!='' && blog.contents.content!="" && currDraftState==''){
+                if(imgObj.newSrc!=""){
+                 await   manageImage();
+                 setImgObj({...imgObj,newSrc:""})
+                }
                 manageDraftState( DRAFTSTATE.SAVING)
                 const res = await axios.put(BACKEND_URL+'/blog/my',{
                     title:blog.contents.title,
@@ -157,13 +161,26 @@ export const useBlogCrud =  ( placeholderId: string)=>{
                     published:publish,
                     placeholder:false,
                     tags:tags,
-                    img:imgObj.new,
+                    
                     id:blog.contents.id
                 },{ 
                  headers: {
                     Authorization: 'Bearer ' + localStorage.getItem("token") //the token is a variable which holds the token
                     }, 
                 });
+                const updatedBlog= res.data.blog
+              await  setblog((prevBlog:any) => ({
+                    ...prevBlog,
+                    id: updatedBlog.id,
+                    title: updatedBlog.title,
+                    createdAt:updatedBlog.createdAt,
+                    content:updatedBlog.content,
+                    published: false,
+                    tags: updatedBlog.tags,
+                    author:updatedBlog.author,
+                    img:updatedBlog.img
+                    
+                  }));
                 if(publish){
                     navigate('/blog/'+res.data.blog.id)
                 }else{
@@ -186,21 +203,20 @@ export const useBlogCrud =  ( placeholderId: string)=>{
     }
 const manageImage= async()=>{
 try {
+ 
         if(blog.state=='hasValue'&& (blog.contents.title!='' || blog.contents.content!="") && currDraftState==''){
  
            
-          
             const res = await axios.put(BACKEND_URL+'/blog/img',{
                 img: imgObj.newSrc,
                 id:blog.contents.id
             },{ 
              headers: {
                 Authorization: 'Bearer ' + localStorage.getItem("token") ,
-                'Content-Type': 'multipart/form-data', // Set Content-Type header to multipart/form-data
-                //the token is a variable which holds the token
+                 //the token is a variable which holds the token
                 }, 
             });
-            // update blog img url//
+            
         }
     } catch (error) {
     console.log(error)
@@ -230,13 +246,14 @@ try {
                     }, 
                 });
                const updatedBlog= res.data.blog
+             
                 setblog((prevBlog:any) => ({
                     ...prevBlog,
                     id: updatedBlog.id,
                     title: updatedBlog.title,
                     createdAt:updatedBlog.createdAt,
                     content:updatedBlog.content,
-                    published: updatedBlog.published,
+                    published: false,
                     tags: updatedBlog.tags,
                     author:updatedBlog.author,
                     img:updatedBlog.img
@@ -294,8 +311,7 @@ try {
                     img:updatedBlog.img
                     
                   }));
-               
-                // history.replaceState({}, '', newPath);
+                
                 navigate(url,{ replace: true });
                  
             }
@@ -305,7 +321,7 @@ try {
             }
         }
 
-    return {setPublish,postBlog,getPlaceholderId,updateBlog,manageImage }
+    return {setPublish,postBlog,getPlaceholderId,updateBlog,manageImage,manageDraftState}
 
     
 
