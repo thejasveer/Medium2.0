@@ -24,5 +24,9 @@ export const blogAtom = atomFamily ({
         return res.data.blogs;
     }})
   });
+export const getNewBlogs= atom({
+  key:"getNewBlogs",
+  default:false
+})
 
   

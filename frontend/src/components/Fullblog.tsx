@@ -29,7 +29,7 @@ export const Fullblog =memo(({blog } : {blog:Blog})=>{
                                 {`${Math.ceil(blog.content?.length/100)} mins read`}
                             </div>
                             </div>
-                            <div className="text-slate-400   text-sm ">Posted on {date}</div>
+                            <div className="text-slate-400   text-sm ">Postesd on {date}</div>
                           
                            
                         </div>

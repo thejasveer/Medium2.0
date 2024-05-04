@@ -10,6 +10,7 @@ import { HTTPException } from 'hono/http-exception'
  
 export async function getAllBlogs(c:Context){
 	try {
+		const page = parseInt( c.req.query('page') || '') || 1;
 		const prisma = new PrismaClient({
 			datasourceUrl: c.env.DATABASE_URL,
 		  }).$extends(withAccelerate());
@@ -31,10 +32,11 @@ export async function getAllBlogs(c:Context){
 					select:{tag:true}
 				}
 				 
-			} ,	orderBy: {
+			},take: 10,
+			skip: (page - 1) * 10, 
+			orderBy: {
 				createdAt: 'desc', // Replace 'timestampField' with the actual field name representing the timestamp
-				  // Replace 'timestampField' with the actual field name representing the timestamp
-			  },
+				  },
 		  });
 		  c.status(StatusCode.OK);
 		  return c.json({blogs:blogs})
@@ -224,6 +226,7 @@ export async function deleteBlog(c: Context){
 }
 export async function getmyBlogs(c: Context){
 	try{
+		const page = parseInt( c.req.query('page') || '') || 1;
  		const prisma = new PrismaClient({
 			datasourceUrl: c.env.DATABASE_URL,
 		  }).$extends(withAccelerate());
@@ -249,7 +252,10 @@ export async function getmyBlogs(c: Context){
 					select:{tag:true}
 				}
 				 
-			} ,	orderBy: {
+			} ,	 
+			take: 10,
+			skip: (page - 1) * 10, 
+			orderBy: {
 				createdAt: 'desc', // Replace 'timestampField' with the actual field name representing the timestamp
 				  },
 		

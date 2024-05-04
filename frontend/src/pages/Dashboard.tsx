@@ -15,22 +15,26 @@ import { userAtom } from "../store/userAtom";
 
 export const Dashboard = ()=>{
     const {username} = useParams()
+      const {res}=  useAuth()
     const user = useRecoilValue(userAtom)
  
-    
+    if(res.state=='loading'){
+        return <Loading/>
+    }
+
       if(username!='@'+user.username){
             return <NotFound/>
         }
  
-    
+   
 
 
-    return   <div className="flex justify-center">
+    return  res.state=='hasValue'&& <div className="flex justify-center">
              <div className=" w-full md:max-w-6xl grid grid-cols-12 h-screen ">
                 <div className="col-span-12 md:col-span-8 py-10 px-8">
                 <AppBar username={user.username} />
                  <Routes>
-                    <Route index element={<Home />} />
+                    <Route path="/" element={<Home />} />
                     <Route path="lists" element={<Lists />} />
                     <Route path="about" element={<About />} />
                 </Routes>
@@ -50,8 +54,8 @@ export const Dashboard = ()=>{
 }
 
 const AppBar =({username}: {username?:string})=>{
-    const loaction = useLocation()
-    const {pathname} = loaction;
+    const location = useLocation()
+    const {pathname} = location;
  
     const pathArr ={
         1:`/@${username}`,

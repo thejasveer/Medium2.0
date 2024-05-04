@@ -14,15 +14,26 @@ export const Blogs = ()=>{
     return loading ?
         <Loading/>
     : <div className="w-full flex justify-center">
- <BlogsHtml blogs={blogs} />
-       
+        <BlogsHtml  blogs={blogs} />
+            
     </div>
 }
- export const BlogsHtml = ({blogs}:{blogs: Blog[]})=>{
+ export const BlogsHtml = ({blogs,showStatus=false}:{blogs: Blog[],showStatus?: boolean})=>{
+ 
     return <div className="mt-10 ">{blogs.map(blog =>{
-                return <BlogCard key={blog.id}
+                return <div  key={blog.id}>
+                     {(showStatus) && 
+                            (
+                                <div className="flex justify-end mt-2">
+                                <span className={`${blog.published? 'bg-green-500 ' :'bg-red-500'  } h-2 w-2 rounded-full mx-1 inline-block`}></span>
+                               </div> 
+                            )
+                       
+                     } 
+                    <BlogCard
                                     blog={blog}
                                 />
+                </div>
                         
                         })}
             </div> 

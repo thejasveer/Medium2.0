@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilStateLoadable, useRecoilValue, useRecoilValueLoadable, useSetRecoilState } from 'recoil';
 import { BACKEND_URL } from '../config';
-import {blogAtom, myBlogsAtom} from "../store/blogAtoms"
+import {blogAtom, getNewBlogs, myBlogsAtom} from "../store/blogAtoms"
  
 import {  activeUserAtom, authAtom, userAtom } from '../store/userAtom';
 import {  ImgAtom, contentAtom, draftState, placeholderIdAtom, reviewToggleAtom, tagsAtom } from '../store/EditorAtom';
@@ -89,13 +89,15 @@ export const useAuth = ()=>{
  // Authentication end
 
 //  blogs
-export const useBlogs= ()=>{
+export const useBlogs = (page: number)=>{
     const [blogs,setBlogs] = useState<Blog[]>([]);
+    const [myblogs,setMyblogs] = useState<Blog[]>([]);
     const [loading,setLoading] = useState(false);
+    const token = useRecoilValue(authAtom)
     const getBlogs = async()=>{
         try {
             setLoading(true);
-            const response = await axios.get(`${BACKEND_URL}/blog/bulk`);
+            const response = await axios.get(`${BACKEND_URL}/blog/bulk?page=${page}`);
             const data = response.data;
             setBlogs(data.blogs);
             setLoading(false);
@@ -103,12 +105,32 @@ export const useBlogs= ()=>{
             setLoading(false);
             
         }
-
     }
-    return {getBlogs,blogs,loading};
 
+        const getMyBlogs = async()=>{
+            try {
+                setLoading(true); 
+                const res = await axios.get(`${BACKEND_URL}/blog/my?page=${page}`,{
+                    headers:{
+                      Authorization: "Bearer "+  token
+                    }
+                  })  .then(response => { 
+                    const data = response.data.blogs;
+                    setMyblogs(prev=> [...prev,...data]);
+               
 
-}
+                  }) .finally(() => setLoading(false));
+         
+               
+            } catch (error) {
+                setLoading(false);
+                
+            }
+    
+        }
+    return {getBlogs,getMyBlogs,blogs,myblogs,loading};
+  }
+ 
 
 
 
@@ -136,6 +158,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
     const [blog,setblog]= useRecoilStateLoadable(contentAtom(placeholderId));
     const [currDraftState,setDraftState] = useRecoilState(draftState)
     const tagsArr = useRecoilValue(tagsAtom);
+    const [blogs,setBlogs] = useRecoilStateLoadable(myBlogsAtom)
  
     const tags = tagsArr.length>0 ?tagsArr.map(t=>t.tag).join(',') :"";
     let [imgObj,setImgObj] = useRecoilState(ImgAtom)
@@ -151,10 +174,10 @@ export const useBlogCrud =  ( placeholderId: string)=>{
          
             if(blog.state=='hasValue'&& blog.contents.title!='' && blog.contents.content!="" && currDraftState==''){
                // manage when image removed....
-                if(imgObj.newSrc!=""){
+                // if(imgObj.newSrc!=""){
                  await   manageImage();
                  setImgObj({...imgObj,newSrc:""})
-                }
+                // }
                 manageDraftState( DRAFTSTATE.SAVING)
                 const res = await axios.put(BACKEND_URL+'/blog/my',{
                     title:blog.contents.title,
@@ -176,12 +199,13 @@ export const useBlogCrud =  ( placeholderId: string)=>{
                     title: updatedBlog.title,
                     createdAt:updatedBlog.createdAt,
                     content:updatedBlog.content,
-                    published: false,
+                    published: publish,
                     tags: updatedBlog.tags,
                     author:updatedBlog.author,
                     img:updatedBlog.img
                     
                   }));
+              
                 if(publish){
                     navigate('/blog/'+res.data.blog.id)
                 }else{
@@ -202,27 +226,27 @@ export const useBlogCrud =  ( placeholderId: string)=>{
             console.error(error)
         }
     }
-const manageImage= async()=>{
-try {
- 
-        if(blog.state=='hasValue'&& (blog.contents.title!='' || blog.contents.content!="") && currDraftState==''){
- 
-           
-            const res = await axios.put(BACKEND_URL+'/blog/img',{
-                img: imgObj.newSrc,
-                id:blog.contents.id
-            },{ 
-             headers: {
-                Authorization: 'Bearer ' + localStorage.getItem("token") ,
-                 //the token is a variable which holds the token
-                }, 
-            });
+    const manageImage= async()=>{
+    try {
+    
+            if(blog.state=='hasValue'&& (blog.contents.title!='' || blog.contents.content!="") && currDraftState==''){
+    
             
+                const res = await axios.put(BACKEND_URL+'/blog/img',{
+                    img: imgObj.newSrc,
+                    id:blog.contents.id
+                },{ 
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem("token") ,
+                    //the token is a variable which holds the token
+                    }, 
+                });
+                
+            }
+        } catch (error) {
+        console.log(error)
         }
-    } catch (error) {
-    console.log(error)
     }
-}
 
 
     const updateBlog = async () =>{
