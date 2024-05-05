@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { PopUpDiv } from "./PopUpDiv";
   
 
-export function Avatar({name="Ano",size="size-8",text="text-lg",showlogout=false}: {name: string, size?: string,text?:string,showlogout?:boolean}){
+export function Avatar({name="Ano",size="size-8",text="text-lg",showlogout=false}: {name?: string, size?: string,text?:string,showlogout?:boolean}){
  
     const initial = name[0];
     const navigate = useNavigate()

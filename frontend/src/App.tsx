@@ -9,7 +9,7 @@ import { Publish } from './pages/Publish';
 import './App.css'
 import { Dashboard } from './pages/Dashboard';
 import { NotFound } from './components/NotFound';
-import { SweetErrors } from './components/SweetErrors';
+import { SweetAlert } from './components/SweetAlert';
 function App() {
   
   return (
@@ -29,7 +29,8 @@ function App() {
           <Route path="/:username/*" element={<Dashboard/> }></Route>
         </Routes>
       </BrowserRouter>
-      <SweetErrors/>
+ 
+      <SweetAlert/>
     </RecoilRoot>
   
     </div>

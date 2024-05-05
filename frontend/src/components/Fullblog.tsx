@@ -1,6 +1,6 @@
 import { useRecoilValue } from "recoil";
 import { useFormatDate } from "../hooks/apis";
-import { reviewToggleAtom } from "../store/EditorAtom";
+import { TagType, reviewToggleAtom } from "../store/EditorAtom";
 import { Avatar } from "./Avatar";
 import { RenderHtml } from "./RenderHtml";
 import { ReadingListIcon } from "./ReadingListIcon";
@@ -36,6 +36,7 @@ export const Fullblog =memo(({blog } : {blog:Blog})=>{
                   
                     <ImageIO imgSrc={blog.img} placeholderId={blog.id}/> 
                     <div className="text-xl leading-10  text-slate-700 ">< RenderHtml  html={blog.content}/></div>
+                    <Tags tags={blog.tags}/>
                 </div>
                 
         
@@ -45,3 +46,16 @@ export const Fullblog =memo(({blog } : {blog:Blog})=>{
    
          
 })
+
+const Tags = ({tags}: {tags: TagType[]})=>{
+
+
+  return   tags.length>0 && <div className="flex  gap-2">
+          {tags.map((tag)=>{
+        return <div className="bg-gray-200 text-light text-center rounded-full p-2 text-sm w-max overflow-hidden px-3 ">
+              <span>{ tag.tag}</span>
+            </div> 
+        })}
+  </div>
+ 
+}

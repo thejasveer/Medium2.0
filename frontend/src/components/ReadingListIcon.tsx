@@ -1,17 +1,26 @@
 import { useEffect, useMemo } from "react"
-import { useRecoilValue } from "recoil"
+import { useRecoilValue, useSetRecoilState } from "recoil"
 import { userAtom } from "../store/userAtom"
 import { useReadingList } from "../hooks/apis"
 import { ButtonSpinner } from "./ButtonSpinner"
+import { useLocation } from "react-router-dom"
+import { alertAtom } from "../store/alertAtom"
 
  
 
 export const ReadingListIcon = ({id}:{id: string})=>{
      const {list} = useRecoilValue(userAtom)
      const {update,loading} = useReadingList();
-        const handleReadingList = ()=>{
+     const setAlert= useSetRecoilState(alertAtom)
+       const handleReadingList = ()=>{
                 update(id)
         } 
+        const copy = async ()=>{
+      
+            const domain = window.location.host;
+            await navigator.clipboard.writeText(`${domain}/blog/${id}`);
+            setAlert([{msg: 'Link copied',bgColor:'bg-black'}])
+    }
  
         const exist = useMemo(() => {
             const exist = list?.some(l => l.post.id === id);
@@ -21,7 +30,7 @@ export const ReadingListIcon = ({id}:{id: string})=>{
 
 
     return     <div className="flex flex-col gap-5 text-slate-400"> 
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                        <svg onClick={copy} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 cursor-pointer">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
                         </svg>
                      {loading ? <ButtonSpinner  /> :    <svg onClick={handleReadingList}  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-6 h-6  cursor-pointer ${exist? 'fill-slate-400':''}`}>

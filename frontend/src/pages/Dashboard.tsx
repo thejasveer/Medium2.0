@@ -42,7 +42,7 @@ export const Dashboard = ()=>{
                 <div className="col-span-0   md:col-span-4 hidden md:flex flex-col space-y-3 border-l py-8  px-5 border-slate-200 ">
                     <Avatar name={user.username} size={'size-20'} text={"text-3xl"} />
                     <div className="capitalize font-semibold"> {user.username}</div>
-                    <Link className="text-green-600  text-sm" to={'about'}>Edit profile </Link>
+                    {/* <Link className="text-green-600  text-sm" to={'about'}>Edit profile </Link> */}
                 </div>
               
                 
@@ -75,7 +75,7 @@ const AppBar =({username}: {username?:string})=>{
                  <div className="flex  gap-10 text-sm text-slate-500   font-light border-b border-slate-200 ">
                     <Link to={''}><div className={`${pathArr[1] == pathname && activeClass  } py-4`}>Home</div></Link>
                     <Link to={'lists'}><div className={`${pathArr[2] == pathname &&activeClass  } py-4`}>Lists</div></Link> 
-                    <Link to={'about'}>  <div className={`${pathArr[3] == pathname &&activeClass  } py-4`}>About</div></Link>
+                    {/* <Link to={'about'}>  <div className={`${pathArr[3] == pathname &&activeClass  } py-4`}>About</div></Link> */}
                 </div>
             </div> 
   

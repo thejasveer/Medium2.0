@@ -52,7 +52,8 @@ return  <div   className=" gap-1 flex flex-col p-2">
                           <RenderHtml html={blog.content?.slice(0,50)+"... "}/> 
                             
                           <div className="flex space-x-2 items-center">
-                              {blog.tags.length>0?<div className="bg-gray-200 text-light text-center rounded-full p-1 text-sm w-max overflow-hidden px-3 ">
+                              {blog.tags.length>0?
+                              <div className="bg-gray-200 text-light text-center rounded-full p-1 text-sm w-max overflow-hidden px-3 ">
                               <span>{blog.tags[0].tag}</span>
                             </div>:''}
                             <div className= "text-sm font-light text-slate-500">

@@ -11,6 +11,7 @@ import {  ImgAtom, contentAtom, draftState, placeholderIdAtom, reviewToggleAtom,
 import  DOMPurify from 'dompurify';
 import DRAFTSTATE, { Blog ,SweetError,User} from '../interfaces';
 import { errorAtom } from '../store/errorAtoms';
+import { alertAtom } from '../store/alertAtom';
 
 // Authentication 
 export const useSignup= (inputs: signupParams)=>{
@@ -89,25 +90,27 @@ export const useAuth = ()=>{
  // Authentication end
 
 //  blogs
-export const useBlogs = (page: number)=>{
+export const useBlogs = ()=>{
     const [blogs,setBlogs] = useState<Blog[]>([]);
     const [myblogs,setMyblogs] = useState<Blog[]>([]);
     const [loading,setLoading] = useState(false);
     const token = useRecoilValue(authAtom)
     const getBlogs = async()=>{
+ 
         try {
             setLoading(true);
-            const response = await axios.get(`${BACKEND_URL}/blog/bulk?page=${page}`);
+            const response = await axios.get(`${BACKEND_URL}/blog/bulk`);
             const data = response.data;
             setBlogs(data.blogs);
             setLoading(false);
         } catch (error) {
             setLoading(false);
-            
+            console.log(error)
         }
     }
 
-        const getMyBlogs = async()=>{
+        const getMyBlogs = async(page: number)=>{
+     
             try {
                 setLoading(true); 
                 const res = await axios.get(`${BACKEND_URL}/blog/my?page=${page}`,{
@@ -116,7 +119,7 @@ export const useBlogs = (page: number)=>{
                     }
                   })  .then(response => { 
                     const data = response.data.blogs;
-                    setMyblogs(prev=> [...prev,...data]);
+                    setMyblogs(data);
                
 
                   }) .finally(() => setLoading(false));
@@ -164,7 +167,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
     let [imgObj,setImgObj] = useRecoilState(ImgAtom)
     
     const navigate = useNavigate()
-    const [errors,setErrors]= useRecoilState(errorAtom);
+    const setAlerts= useSetRecoilState(alertAtom);
     const setReviewToggle= useSetRecoilState(reviewToggleAtom)
     const user  = useRecoilValue(userAtom)
  
@@ -214,10 +217,16 @@ export const useBlogCrud =  ( placeholderId: string)=>{
 
                
                 manageDraftState( DRAFTSTATE.SAVED)
+                if(publish){
+                    setAlerts([{msg:"New story published",bgColor:"bg-green-500"}])
+                }else{
+                    setAlerts([{msg:"Story saved as draft",bgColor:"bg-black"}])
+                }
+                
             }else{
-                  const msg= [{ msg: 'Oops, did you mean to write something so short? Please write more and try publishing again.'}]
+                  const msg= [{ msg: 'Oops, did you mean to write something so short? Please write more and try publishing again.',bgColor:'bg-red-500'}]
                     if(blog.contents.title=="" || blog.contents.content==""){ 
-                        setErrors(msg) 
+                        setAlerts(msg) 
                       
                     } 
             }
@@ -355,6 +364,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
 export const useReadingList = ()=>{
 const auth = useRecoilValue(authAtom);
 const [loading,setLoading] = useState(false)
+const setAlert = useSetRecoilState(alertAtom)
  const [blogs,updateReadingList]= useRecoilState(userAtom)
  
     const update= async(id: string)=>{
@@ -369,7 +379,7 @@ const [loading,setLoading] = useState(false)
             });
             setLoading(false)
             updateReadingList({...blogs, list:res.data.list})
-        
+            setAlert([{msg: 'Updated reading list',bgColor:'bg-black'}])
         } catch (error) {
             setLoading(true)
             console.log(error)

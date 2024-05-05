@@ -41,6 +41,10 @@ interface ReadingList{
 export interface SweetError{
 msg: string
 }
+export interface Alert{
+msg: string,
+bgColor:string
+}
 
 enum DRAFTSTATE {
     SAVING = 'Saving....',
