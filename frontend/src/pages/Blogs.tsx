@@ -8,19 +8,20 @@ import { Blog } from "../interfaces";
 
 export const Blogs = ()=>{
     const {blogs,getBlogs,loading} = useBlogs();
+    const ss= blogs;
     useEffect(()=>{
         getBlogs();
     },[])
     return loading ?
         <Loading/>
     : <div className="w-full flex justify-center">
-        <BlogsHtml  blogs={blogs} />
+        <BlogsHtml  blogs={ss} />
             
     </div>
 }
  export const BlogsHtml = ({blogs,showStatus=false}:{blogs: Blog[],showStatus?: boolean})=>{
  
-    return <div className="mt-10 h-dvh overflow-auto">{blogs.map(blog =>{
+    return <div className="mt-10 w-full md:w-3/4 h-dvh overflow-auto ">{blogs.map(blog =>{
                 return <div  key={blog.id}>
                      {(showStatus) && 
                             (

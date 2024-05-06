@@ -29,4 +29,7 @@ export const getNewBlogs= atom({
   default:false
 })
 
-  
+ export  const clapClassAtom = atom({
+    key:'clapClassAtom',
+    default:'fill-slate-400'
+  })

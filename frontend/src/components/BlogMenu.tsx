@@ -18,7 +18,7 @@ export const BlogMenu = ({handleEdit,handleDelete}: {handleEdit: any,handleDelet
                            :""} 
             </div> 
 }
-const Dropdown=({showDropdown,handleDelete,handleEdit}: {showDropdown:boolean,handleEdit:any, handleDelete: any})=>{
+    const Dropdown=({showDropdown,handleDelete,handleEdit}: {showDropdown:boolean,handleEdit:any, handleDelete: any})=>{
 
 
  
@@ -30,8 +30,8 @@ const Dropdown=({showDropdown,handleDelete,handleEdit}: {showDropdown:boolean,ha
                         <div onClick={handleEdit}>Edit</div>
                     </div>
                     <button onClick={handleDelete} className="p-5 space-y-2 hover:text-slate-700 hover:font-light">
-                    Delete story 
-                        </button>
+                     Delete story 
+                   </button>
                   
                     
                     

@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
@@ -27,7 +28,9 @@ model Post {
   tags        Tags[]
   placeholder Boolean       @default(false)
   list        ReadingList[]
+  claps       Int           @default(0)
   img         String        @default("")
+  isDeleted   Boolean       @default(false)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @default(now()) @updatedAt
 }

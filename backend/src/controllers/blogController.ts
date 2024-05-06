@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import {Context} from 'hono'
 import StatusCode from '../utils/statusCode';
-import { blogSchema, updateBlogSchema } from "@codewithjass/common/dist"
+import { blogSchema, readingListSchema, updateBlogSchema } from "@codewithjass/common/dist"
 import { HTTPException } from 'hono/http-exception'
  
  
@@ -16,7 +16,8 @@ export async function getAllBlogs(c:Context){
 		  }).$extends(withAccelerate());
 		  const blogs = await prisma.post.findMany({
 			where:{
-				published:true
+				published:true,
+				isDeleted:false
 			},
 			select:{
 				id:true,
@@ -25,6 +26,7 @@ export async function getAllBlogs(c:Context){
 				published:true,
 				createdAt:true,
 				img:true,
+				claps:true,
 				author: {
 					select:{name:true,id:true}
 				},
@@ -55,7 +57,7 @@ export async function getAllBlogs(c:Context){
 		  }).$extends(withAccelerate());
 	
 		const blog = await prisma.post.findFirst({where:{
-			id:id,published:true
+			id:id,published:true,isDeleted:false
 		},
 			select:{
 				id:true,
@@ -63,6 +65,7 @@ export async function getAllBlogs(c:Context){
 				content:true,
 				published:true,
 				img:true,
+				claps:true,
 				createdAt:true,
 				author: {
 					select:{name:true,id:true}
@@ -88,7 +91,7 @@ export async function getBlogByIdForEditor(c: Context){
 		  }).$extends(withAccelerate());
 	
 		const blog = await prisma.post.findFirst({where:{
-			id:id,
+			id:id,isDeleted:false
 		},
 			select:{
 				id:true,
@@ -97,6 +100,7 @@ export async function getBlogByIdForEditor(c: Context){
 				published:true,
 				createdAt:true,
 				img:true,
+				claps:true,
 				author: {
 					select:{name:true,id:true}
 				},
@@ -142,6 +146,7 @@ export async function addBlog(c: Context){
 				title:input.title,
 				content:input.content,
 				authorId: authorId,
+				
 				placeholder:true,
 				published:input.published,
 				
@@ -160,6 +165,7 @@ export async function addBlog(c: Context){
 				content:true,
 				published:true,
 				createdAt:true,
+				claps:true,
 				updatedAt:true,
 				img:true,
 				author: {
@@ -212,10 +218,70 @@ export async function deleteBlog(c: Context){
 		const prisma = new PrismaClient({
 			datasourceUrl: c.env.DATABASE_URL,
 		  }).$extends(withAccelerate());
-		const res = await prisma.post.delete({where:{id}});
-		const blogs = await prisma.post.findMany({where:{authorId: c.get("userId")}})
+	
+		const res = await prisma.post.update({where:{id}, 
+			data:{
+				isDeleted:true
+			}
+		 });
+		 
+		const myBlogs = await prisma.post.findMany({
+			where:{
+				AND: [
+				{authorId : c.get("userId")},
+				{placeholder:false},
+				{isDeleted:false}
+			]},
+			select:{
+				id:true,
+				title:true,
+				content:true,
+				published:true,
+				img:true,
+				claps:true,
+			 	createdAt:true,
+				placeholder:false,
+				author: {
+					select:{name:true,id:true,description:true}
+				},
+				tags:{
+					select:{tag:true}
+				}
+				 
+				 
+			} ,
+			orderBy: {
+				createdAt: 'desc', // Replace 'timestampField' with the actual field name representing the timestamp
+				  },
+
+			})
+		const blogs = await prisma.post.findMany({
+			where:{
+				published:true,isDeleted:false
+			},
+			select:{
+				id:true,
+				title:true,
+				content:true,
+				published:true,
+				createdAt:true,
+				img:true,
+				claps:true,
+				author: {
+					select:{name:true,id:true}
+				},
+				tags:{
+					select:{tag:true}
+				}
+				 
+			} ,
+			orderBy: {
+				createdAt: 'desc', // Replace 'timestampField' with the actual field name representing the timestamp
+				  },
+		  });
 		c.status(StatusCode.OK);
-		return c.json({blogs: blogs});
+		return c.json({publishedBlogs:blogs,myBlogs});
+		// return c.json({"SS":"SSs"})
 	
 	} catch (error: any) {
 		c.status(StatusCode.BADREQ);
@@ -232,16 +298,16 @@ export async function getmyBlogs(c: Context){
 		  const authorId = c.get("userId")
 		const blogs = await prisma.post.findMany({
 			where:{
-				AND: [
-				{authorId : authorId},
-				{placeholder:false}
-			]},
+				 authorId : authorId, placeholder:false,isDeleted:false
+			},
 			select:{
 				id:true,
 				title:true,
 				content:true,
 				published:true,
 				img:true,
+				claps:true,
+			 
 				createdAt:true,
 				placeholder:false,
 				author: {
@@ -307,6 +373,7 @@ export async function updateBlog(c: Context){
 					content:true,
 					published:true,
 					createdAt:true,
+					claps:true,
 					updatedAt:true,
 					img:true,
 					author: {
@@ -332,4 +399,59 @@ export async function updateBlog(c: Context){
 	   return c.json({error:{message: error.message}});
    }
 }
- 
+interface clapUpdateInput{
+    id:string
+}
+
+
+export const updateClaps= async (c:Context)=>{
+    try {
+        const input: clapUpdateInput =   await c.req.json();
+        const {success,error} =  readingListSchema.safeParse(input);
+        if(!success) {
+            c.status(StatusCode.BADREQ);
+            return   c.json({"error": error.issues});
+        }else{
+            const prisma = new PrismaClient({
+                datasourceUrl: c.env.DATABASE_URL,
+              }).$extends(withAccelerate());
+              const userId =  c.get("userId")
+            const exist=  await prisma.readingList.findFirst({where:{postId: input.id,userId:userId}})
+              
+            if(exist!=null){
+                await prisma.readingList.delete({
+                    where: {
+                      id: exist.id,
+                      
+                    },
+                  });
+               
+            }else{
+       
+            const updatedClaps= await prisma.post.update({
+                where:{
+                    id:input.id
+                },data:{
+                    claps: {
+                        increment:1
+                    }
+                },
+                select:{
+                  claps:true     
+                     
+                 }
+            
+                
+            })
+            c.status(StatusCode.OK);
+            return c.json({message: "Reading list updated",claps:updatedClaps});
+
+        }
+    }
+        
+    } catch (error: any) {
+      
+        c.status(StatusCode.BADREQ);
+        return c.json({"error": [{message: error.message}]});
+    }
+}

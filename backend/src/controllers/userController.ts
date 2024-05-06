@@ -19,12 +19,14 @@ interface readingList{
     id:string
 }
 
+
     export const currentUser = async(c:Context)=>{
         const prisma = new PrismaClient({
             datasourceUrl: c.env.DATABASE_URL,
           }).$extends(withAccelerate());
         
         const user= await prisma.user.findFirst({
+            
             where:{id: c.get("userId")},
             select: {
                 id:true,
@@ -32,10 +34,11 @@ interface readingList{
                 email:true,
                 description:true,
                 posts:{
-                    where:{placeholder:false},
+                    where:{placeholder:false,isDeleted:false},
                     select:{
                         id:true,
                         title:true,
+                        claps:true,
                         content:true,
                         published:true,
                         img:true,
@@ -49,9 +52,13 @@ interface readingList{
                     }
                 },
                 list:{
+                    where: {
+                        post: { isDeleted: false }
+                    },
                     include:{
                         
                            post:{
+                            where:{isDeleted:false},
                             select:{
                                 id:true,
                                 title:true,
@@ -266,17 +273,22 @@ export const updateReadingList= async (c:Context)=>{
                  
             }
             const updatedList= await prisma.readingList.findMany({
-                where:{
-                    userId:userId
+                where: {
+                    userId:userId,
+                    post: { isDeleted: false }
                 },
                 include:{
                         
                     post:{
+                        where:{
+                            isDeleted:false
+                        },
                      select:{
                          id:true,
                          title:true,
                          content:true,
                          published:true,
+                         claps:true,
                          img:true,
                          createdAt:true,
                          author: {

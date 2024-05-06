@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilStateLoadable, useRecoilValue, useRecoilValueLoadable, useSetRecoilState } from 'recoil';
 import { BACKEND_URL } from '../config';
-import {blogAtom, getNewBlogs, myBlogsAtom} from "../store/blogAtoms"
+import {blogAtom, clapClassAtom, getNewBlogs, myBlogsAtom} from "../store/blogAtoms"
  
 import {  activeUserAtom, authAtom, userAtom } from '../store/userAtom';
 import {  ImgAtom, contentAtom, draftState, placeholderIdAtom, reviewToggleAtom, tagsAtom } from '../store/EditorAtom';
@@ -95,6 +95,7 @@ export const useBlogs = ()=>{
     const [myblogs,setMyblogs] = useState<Blog[]>([]);
     const [loading,setLoading] = useState(false);
     const token = useRecoilValue(authAtom)
+    const navigate = useNavigate()
     const getBlogs = async()=>{
  
         try {
@@ -131,15 +132,64 @@ export const useBlogs = ()=>{
             }
     
         }
-    return {getBlogs,getMyBlogs,blogs,myblogs,loading};
+
+        const deleteBlog=async(id: string)=>{
+            try {
+                setLoading(true); 
+                const res = await axios.delete(`${BACKEND_URL}/blog/my/${id}`,{
+                    headers:{
+                      Authorization: "Bearer "+  token
+                    }
+                  })  .then(async(response) => { 
+                    
+                    navigate('/')
+ 
+
+                  }) .finally(() => setLoading(false));
+         
+               
+            } catch (error) {
+                setLoading(false);
+            }
+        }
+    return {getBlogs,getMyBlogs,blogs,myblogs,loading,deleteBlog};
   }
  
 
 
 
 export const useBlog = (id: string = "") => {
-    const blog = useRecoilValueLoadable<Blog>(contentAtom(id));
-    return { blog };
+    const [blog,setBlog] = useRecoilStateLoadable<Blog>(blogAtom(id));
+    const token = useRecoilValue(authAtom)
+    const [clapClass,setClapClass] = useRecoilState(clapClassAtom)
+    useEffect(()=>{
+       
+    },[id])
+    const clap= async()=>{
+        try {   
+            setClapClass('') 
+            await setBlog((prevBlog:any) => ({
+                ...prevBlog,
+               claps:blog.contents.claps+1
+                
+              }));
+              setClapClass('animate-jump fill-slate-900')
+        const res  = await axios.put(BACKEND_URL+ '/blog/clap',{id:id},{
+        headers: {
+            Authorization: 'Bearer '+ token
+                }
+
+            } ) 
+          const claps= res.data.claps.claps;
+       
+        
+         
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return { blog,clap,clapClass };
   };
  
   export const useFormatDate=(str: string)=>{
@@ -195,6 +245,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
                     Authorization: 'Bearer ' + localStorage.getItem("token") //the token is a variable which holds the token
                     }, 
                 });
+              
                 const updatedBlog= res.data.blog
               await  setblog((prevBlog:any) => ({
                     ...prevBlog,
@@ -210,7 +261,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
                   }));
               
                 if(publish){
-                    navigate('/blog/'+res.data.blog.id)
+                    navigate('/')
                 }else{
                     navigate('/@'+user.username)
                 }

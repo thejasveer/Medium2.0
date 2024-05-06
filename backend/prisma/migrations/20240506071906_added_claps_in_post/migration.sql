@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Post" ADD COLUMN     "claps" BIGINT NOT NULL DEFAULT 0;

@@ -7,6 +7,7 @@ import { ReadingListIcon } from "./ReadingListIcon";
 import { memo, useEffect, useState } from "react";
 import { ImageIO } from "./ImageIO";
 import { Blog } from "../interfaces";
+import { Claps } from "./Claps";
  
 export const Fullblog =memo(({blog } : {blog:Blog})=>{
  
@@ -15,13 +16,17 @@ export const Fullblog =memo(({blog } : {blog:Blog})=>{
     const d = useFormatDate(blog?.createdAt|| '=')
     setDate(d)
   },[setDate,blog])
-   
+  
     return  <div className="flex justify-center p-10  ">
-            <div className="  w-full  max-w-screen-lg p-3  space-x-11 sm:p-5" >
+            <div className="  w-full  max-w-screen-lg p-3 space-x-11 sm:p-5" >
                 <div className={`flex flex-col gap-7  `}>
-                        <div className="grid grid-cols-12 "><div  className="col-span-10 text-4xl md:text-5xl font-bold max-w-2xl break-words capitalize">{blog.title} </div> <div className="col-span-2"> <ReadingListIcon  id={blog.id}/></div></div>
+                        <div className="grid grid-cols-12 "><div  className="col-span-11 text-4xl md:text-5xl font-bold max-w-2xl break-words capitalize">{blog.title} </div> <div className="col-span-1 flex justify-end">
+                       
+                       </div>
+                        
+                           </div>
                         <div className=" flex gap-5  items-end">
-                            <div className=" flex jusitfy-center items-center"><Avatar size={"size-10"} name={blog.author.name}  text=""/></div>
+                            <div className=" flex jusitfy-center items-center"><Avatar size={"size-12"} name={blog.author.name}  text=""/></div>
                             <div className=" ">
                             <div className="text-2xl font-light capitalize">{blog.author.name}</div>
                             
@@ -33,10 +38,22 @@ export const Fullblog =memo(({blog } : {blog:Blog})=>{
                           
                            
                         </div>
+                    <div className="  border-slate-200  flex justify-between p-3 h-max border-t border-b font-light ">
+                    <div>
+                      <Claps id={blog.id} claps={blog.claps}/>
+                    </div>
+                    <ReadingListIcon col={false} id={blog.id}/>
+                    </div>
                   
                     <ImageIO imgSrc={blog.img} placeholderId={blog.id}/> 
                     <div className="text-xl leading-10  text-slate-700 ">< RenderHtml  html={blog.content}/></div>
                     <Tags tags={blog.tags}/>
+                    <div className="  border-slate-200 mb-0 flex justify-between p-3 h-max border-t border-b font-light ">
+                    <div>
+                      <Claps id={blog.id} claps={blog.claps}/>
+                    </div>
+                    <ReadingListIcon col={false} id={blog.id}/>
+                    </div>
                 </div>
                 
         
@@ -51,8 +68,8 @@ const Tags = ({tags}: {tags: TagType[]})=>{
 
 
   return   tags.length>0 && <div className="flex  gap-2">
-          {tags.map((tag)=>{
-        return <div className="bg-gray-200 text-light text-center rounded-full p-2 text-sm w-max overflow-hidden px-3 ">
+          {tags.map((tag,i)=>{
+        return <div key={i} className="bg-gray-200 text-light text-center rounded-full p-2 text-sm w-max overflow-hidden px-3 ">
               <span>{ tag.tag}</span>
             </div> 
         })}

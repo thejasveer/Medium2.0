@@ -8,6 +8,7 @@ export interface Blog {
     published: boolean;
     createdAt: string;
     img: string;
+    claps:string,
     author: {
         name: string;
         description: string;
