@@ -10,6 +10,7 @@ interface props{
 }
 export const PublishButton = ({text,onclick}: props)=>{
     const placeholderId= useRecoilValue(placeholderIdAtom)
+ 
    const[showPublish,setShowPublish] = useState(true)
     const blog = useRecoilValueLoadable(contentAtom(placeholderId))
     const {pathname} = useLocation();
@@ -24,13 +25,12 @@ export const PublishButton = ({text,onclick}: props)=>{
             }
         }
 
-    },[blog,pathname])
+    },[blog.contents.title,blog.contents.content,placeholderId,pathname])
  
 
     return   <button
             onClick={showPublish?onclick:()=>{}}
-            className={`bg-green-700 px-3 ${!showPublish&&'opacity-50'} text-sm py-1 flex gap-2 items-center text-white rounded-full`}
-        >
+            className={`bg-green-700 px-3 ${!showPublish&&'opacity-50'} text-sm py-1 flex gap-2 items-center text-white rounded-full`}>
         {text}
         </button> 
     ;

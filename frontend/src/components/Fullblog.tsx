@@ -11,11 +11,12 @@ import { Claps } from "./Claps";
  
 export const Fullblog =memo(({blog } : {blog:Blog})=>{
  
-  const [date,setDate]= useState('')
+  const [date,setDate]= useState('');
+  const reviewToggle = useRecoilValue(reviewToggleAtom)
   useEffect(()=>{
     const d = useFormatDate(blog?.createdAt|| '=')
     setDate(d)
-  },[setDate,blog])
+ },[setDate,blog?.createdAt,])
   
     return  <div className="flex justify-center p-10  ">
             <div className="  w-full  max-w-screen-lg p-3 space-x-11 sm:p-5" >
@@ -38,22 +39,17 @@ export const Fullblog =memo(({blog } : {blog:Blog})=>{
                           
                            
                         </div>
-                    <div className="  border-slate-200  flex justify-between p-3 h-max border-t border-b font-light ">
+                 { !reviewToggle &&  <div className="  border-slate-200  flex justify-between p-3 h-max border-t border-b font-light ">
                     <div>
-                      <Claps id={blog.id} claps={blog.claps}/>
+                      <Claps id={blog.id}/>
                     </div>
                     <ReadingListIcon col={false} id={blog.id}/>
-                    </div>
+                    </div>}
                   
                     <ImageIO imgSrc={blog.img} placeholderId={blog.id}/> 
                     <div className="text-xl leading-10  text-slate-700 ">< RenderHtml  html={blog.content}/></div>
                     <Tags tags={blog.tags}/>
-                    <div className="  border-slate-200 mb-0 flex justify-between p-3 h-max border-t border-b font-light ">
-                    <div>
-                      <Claps id={blog.id} claps={blog.claps}/>
-                    </div>
-                    <ReadingListIcon col={false} id={blog.id}/>
-                    </div>
+                   
                 </div>
                 
         

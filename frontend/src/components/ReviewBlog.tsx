@@ -14,21 +14,23 @@ export const ReviewBlog = memo(({placeholderId}: {placeholderId: string}) =>{
     const user = useRecoilValue(userAtom)
     const blog = useRecoilValueLoadable(contentAtom(placeholderId))
     const currDraftState = useRecoilValue(draftState)
-    
+    console.log("fromtags",blog)
+        
 
     const { postBlog} = useBlogCrud(placeholderId)
     if(blog.state=='loading'){
         return <Loading/>
     }else{
+        console.log(blog.contents.tags)
         return <div className=" animate-jump-in animate-duration-[500ms] flex justify-center absolute h-screen bg-white top-0 w-full  ">
-        <div className="w-full sm:w-8/12  h-full p-3">
-        <button onClick={()=>{setReviewToggle(false)}} className="p-2 flex justify-end w-full  text-3xl font-thin text-slate-400  ">&times;</button>
-             <div className="grid grid-cols-12 mt-20 gap-10">
-                 <div className="col-span-12 lg:col-span-8 space-y-2  ">
-                    <div className="text-sm text-slate-500 font-semibold">Story Preview </div>
-                    <div className="bg-slate-50 rounded-lg ">
-                   <Fullblog blog={blog.contents} />
-             </div>
+                <div className="w-full sm:w-8/12  h-full p-3">
+                <button onClick={()=>{setReviewToggle(false)}} className="p-2 flex justify-end w-full  text-3xl font-thin text-slate-400  ">&times;</button>
+                <div className="grid grid-cols-12 mt-20 gap-10">
+                    <div className="col-span-12 lg:col-span-8 space-y-2  ">
+                        <div className="text-sm text-slate-500 font-semibold">Story Preview </div>
+                        <div className="bg-slate-50 rounded-lg ">
+                        <Fullblog blog={blog.contents} />
+                    </div>
             
              </div> 
            <div className="col-span-12 lg:col-span-4 space-y-7">
@@ -40,7 +42,7 @@ export const ReviewBlog = memo(({placeholderId}: {placeholderId: string}) =>{
 
             </div>
 
-        <div className="flex gap-2 items-center">
+            <div className="flex gap-2 items-center">
                 <PublishButton text={"Publish Now"} onclick={()=>{
                      currDraftState==''?postBlog(true):''
                         

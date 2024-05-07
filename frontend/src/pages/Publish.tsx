@@ -12,7 +12,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Loading } from '../components/Loading';
 import { v4 as uuidv4 } from 'uuid';
  import {editorStyles} from '../utils/styleObject';
- 
+ import gif from '../assets/giphy.webp'
 export const Publish = ()=>{
       const {id} = useParams();
       const location = useLocation();
@@ -39,7 +39,7 @@ export const Publish = ()=>{
           return ()=>{
               clearTimeout(timerId)
           }
-         },[blog])
+         },[blog.contents.title,blog.contents.content])
    
      function onChangeTitle(e){
        
@@ -80,7 +80,13 @@ export const Publish = ()=>{
                         
                              value={blog.contents.content}
                             onChange={onChangeContent}  />
+                             <div className="absolute bottom-10 border   ">
+                              
+                             <img className="h-auto max-w-xl mx-auto" src={gif}/>
+                               
+                               </div>
                     </div>
+                   
                 </div>
             }
           </Auth>

@@ -66,7 +66,7 @@ export const ImageIO = ({ imgSrc,placeholderId }:{imgSrc: string,placeholderId:s
   
     return imgSrc=="" && !review ?(""):(
       <>
-       <div style={{ backgroundImage:  `url(${img.src})`,height: height }} className={`relative bg-slate-200   ${height} bg-cover bg-center   flex justify-center items-center p-10`}  >
+       <div style={{ backgroundImage:  `url(${img.src})`,height: height }} className={`relative bg-slate-200 drop-shadow-md  ${height} bg-cover bg-center  rounded-lg flex justify-center items-center p-10`}  >
           {loading ? (
           <div><ButtonSpinner/></div>
         ) : (
@@ -81,7 +81,7 @@ export const ImageIO = ({ imgSrc,placeholderId }:{imgSrc: string,placeholderId:s
             />
             { img.src ? (
               <div>
-                <div>
+                <div className=''>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-8 absolute -top-8 right-1  text-slate-700" onClick={removeImg}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                   </svg>

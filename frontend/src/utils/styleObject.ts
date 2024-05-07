@@ -3,7 +3,7 @@ export const editorStyles={
     "borderRadius": ".375rem",
     "display": "flex",
     "flexDirection": "column",
-    "height": "100vh",
+    "height": "50vh",
     "overflow": "hidden",
     "resize":" vertical",
     "width": "500px",

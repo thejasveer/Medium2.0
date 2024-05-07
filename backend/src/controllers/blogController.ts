@@ -224,63 +224,33 @@ export async function deleteBlog(c: Context){
 				isDeleted:true
 			}
 		 });
-		 
-		const myBlogs = await prisma.post.findMany({
-			where:{
-				AND: [
-				{authorId : c.get("userId")},
-				{placeholder:false},
-				{isDeleted:false}
-			]},
-			select:{
-				id:true,
-				title:true,
-				content:true,
-				published:true,
-				img:true,
-				claps:true,
-			 	createdAt:true,
-				placeholder:false,
-				author: {
-					select:{name:true,id:true,description:true}
-				},
-				tags:{
-					select:{tag:true}
-				}
-				 
-				 
-			} ,
-			orderBy: {
-				createdAt: 'desc', // Replace 'timestampField' with the actual field name representing the timestamp
-				  },
-
-			})
-		const blogs = await prisma.post.findMany({
-			where:{
-				published:true,isDeleted:false
+		 const readingList = await prisma.readingList.findMany({
+			where: {
+				post: { isDeleted: false },
+				userId: c.get('userId')
 			},
-			select:{
-				id:true,
-				title:true,
-				content:true,
-				published:true,
-				createdAt:true,
-				img:true,
-				claps:true,
-				author: {
-					select:{name:true,id:true}
-				},
-				tags:{
-					select:{tag:true}
+			include:{
+				
+				   post:{
+					where:{isDeleted:false},
+					select:{
+						id:true,
+						title:true,
+						content:true,
+						published:true,
+						createdAt:true,
+						author: {
+							select:{name:true,id:true}
+						},
+						tags: {
+							select:{tag:true}
+						}
+					}
 				}
-				 
-			} ,
-			orderBy: {
-				createdAt: 'desc', // Replace 'timestampField' with the actual field name representing the timestamp
-				  },
-		  });
+			}
+		 })
 		c.status(StatusCode.OK);
-		return c.json({publishedBlogs:blogs,myBlogs});
+		return c.json({readingList:readingList});
 		// return c.json({"SS":"SSs"})
 	
 	} catch (error: any) {

@@ -10,10 +10,11 @@ import './App.css'
 import { Dashboard } from './pages/Dashboard';
 import { NotFound } from './components/NotFound';
 import { SweetAlert } from './components/SweetAlert';
+import { Search } from './components/Search';
 function App() {
   
   return (
-    <div className=' h-svh'>
+    <div className='relative h-svh'>
     <RecoilRoot>
     <BrowserRouter>
         <Appbar></Appbar>
@@ -28,9 +29,12 @@ function App() {
           <Route path="/p/:id/edit" element={<Publish/> }></Route>
           <Route path="/:username/*" element={<Dashboard/> }></Route>
         </Routes>
+           <Search/>
+           <SweetAlert/>
+   
       </BrowserRouter>
  
-      <SweetAlert/>
+  
     </RecoilRoot>
   
     </div>

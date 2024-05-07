@@ -14,14 +14,15 @@ export const Blogs = ()=>{
     },[])
     return loading ?
         <Loading/>
-    : <div className="w-full flex justify-center">
-        <BlogsHtml  blogs={ss} />
+    : <div className="w-full flex justify-center  ">
+        <div className=" md:w-2/3"> <BlogsHtml  blogs={ss} /></div>
+       
             
     </div>
 }
  export const BlogsHtml = ({blogs,showStatus=false}:{blogs: Blog[],showStatus?: boolean})=>{
  
-    return <div className="mt-10 w-full md:w-3/4 h-dvh overflow-auto ">{blogs.map(blog =>{
+    return <div className="mt-10 w-full h-dvh overflow-auto ">{blogs.map(blog =>{
                 return <div  key={blog.id}>
                      {(showStatus) && 
                             (

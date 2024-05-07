@@ -95,6 +95,8 @@ export const useBlogs = ()=>{
     const [myblogs,setMyblogs] = useState<Blog[]>([]);
     const [loading,setLoading] = useState(false);
     const token = useRecoilValue(authAtom)
+    const setUser = useSetRecoilState(userAtom)
+
     const navigate = useNavigate()
     const getBlogs = async()=>{
  
@@ -141,7 +143,11 @@ export const useBlogs = ()=>{
                       Authorization: "Bearer "+  token
                     }
                   })  .then(async(response) => { 
-                    
+               
+                    setUser(prev=>({
+                        ...prev,
+                        list:response.data.readingList
+                    }))
                     navigate('/')
  
 
@@ -159,29 +165,43 @@ export const useBlogs = ()=>{
 
 
 export const useBlog = (id: string = "") => {
-    const [blog,setBlog] = useRecoilStateLoadable<Blog>(blogAtom(id));
+ 
+    const [blog,setBlog] =  useState<Blog>()
+    const [loading,setLoading] = useState(true)
+    useEffect(()=>{
+        getBlog()
+        },[id])
+    
+    const getBlog = async ()=>{
+        try {
+            setLoading(true)
+            const res = await axios.get(`${BACKEND_URL}/blog/specific/${id}`);
+            setBlog(res.data.blog);
+            setLoading(false)
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
     const token = useRecoilValue(authAtom)
     const [clapClass,setClapClass] = useRecoilState(clapClassAtom)
-    useEffect(()=>{
-       
-    },[id])
+ 
     const clap= async()=>{
         try {   
-            setClapClass('') 
-            await setBlog((prevBlog:any) => ({
-                ...prevBlog,
-               claps:blog.contents.claps+1
-                
-              }));
-              setClapClass('animate-jump fill-slate-900')
+         
+            if(blog){
+                setClapClass('animate-jump ') 
+                await setBlog({...blog,claps:blog.claps+1});
+                setClapClass('animate-jump fill-slate-900')
+            }
+ 
         const res  = await axios.put(BACKEND_URL+ '/blog/clap',{id:id},{
-        headers: {
-            Authorization: 'Bearer '+ token
-                }
+            headers: {
+                Authorization: 'Bearer '+ token
+                    }
 
-            } ) 
-          const claps= res.data.claps.claps;
-       
+                    } ) 
+           
         
          
 
@@ -189,7 +209,7 @@ export const useBlog = (id: string = "") => {
             console.log(error)
         }
     }
-    return { blog,clap,clapClass };
+    return { blog,clap,clapClass,getBlog,loading};
   };
  
   export const useFormatDate=(str: string)=>{
@@ -210,10 +230,10 @@ export const useBlogCrud =  ( placeholderId: string)=>{
     const [publish,setPublish] = useState<boolean>(false)
     const [blog,setblog]= useRecoilStateLoadable(contentAtom(placeholderId));
     const [currDraftState,setDraftState] = useRecoilState(draftState)
-    const tagsArr = useRecoilValue(tagsAtom);
-    const [blogs,setBlogs] = useRecoilStateLoadable(myBlogsAtom)
+    const [tagsArr,setTagsArr] = useRecoilState(tagsAtom);
+    // const [blogs] = useRecoilStateLoadable(blogAtom)
  
-    const tags = tagsArr.length>0 ?tagsArr.map(t=>t.tag).join(',') :"";
+   
     let [imgObj,setImgObj] = useRecoilState(ImgAtom)
     
     const navigate = useNavigate()
@@ -226,11 +246,10 @@ export const useBlogCrud =  ( placeholderId: string)=>{
         try {
          
             if(blog.state=='hasValue'&& blog.contents.title!='' && blog.contents.content!="" && currDraftState==''){
-               // manage when image removed....
-                // if(imgObj.newSrc!=""){
+               
                  await   manageImage();
                  setImgObj({...imgObj,newSrc:""})
-                // }
+                 const tags = tagsArr.length>0 ?tagsArr.map(t=>t.tag).join(',') :"";
                 manageDraftState( DRAFTSTATE.SAVING)
                 const res = await axios.put(BACKEND_URL+'/blog/my',{
                     title:blog.contents.title,
@@ -259,9 +278,12 @@ export const useBlogCrud =  ( placeholderId: string)=>{
                     img:updatedBlog.img
                     
                   }));
-              
+                  setTagsArr([])
+                
                 if(publish){
-                    navigate('/')
+                    
+
+                    navigate('/blog/'+updatedBlog.id)
                 }else{
                     navigate('/@'+user.username)
                 }
@@ -314,7 +336,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
         try {
       
             if(blog.state=='hasValue'&& (blog.contents.title!='' || blog.contents.content!="") && currDraftState==''){
-   
+                const tags = tagsArr.length>0 ?tagsArr.map(t=>t.tag).join(',') :"";
                 manageDraftState( DRAFTSTATE.SAVING)
                 const res = await axios.put(BACKEND_URL+'/blog/my',{
                     title:blog.contents.title,
@@ -366,8 +388,9 @@ export const useBlogCrud =  ( placeholderId: string)=>{
  
         try {
      
- 
+            
             if(blog.state=='hasValue'&& (blog.contents.title!='' || blog.contents.content!="")  && currDraftState==''){
+                const tags = tagsArr.length>0 ?tagsArr.map(t=>t.tag).join(',') :"";
                 const res = await axios.post(BACKEND_URL+'/blog/my',{
                     title:blog.contents.title,
                     content:blog.contents.content, 
@@ -440,5 +463,49 @@ const setAlert = useSetRecoilState(alertAtom)
  
 return {update,loading}
 
+
+}
+
+interface recentSearch{
+    id:string;
+    title:string;
+    content:string;
+}
+export const useRecentSearches = ()=>{
+    const [recentSearches,setRecentSearches] = useState<recentSearch[]>([])
+
+    useEffect(()=>{
+        let r = localStorage.getItem('recent')
+        if(r){
+           r=JSON.parse(r);
+
+            setRecentSearches(r)
+        }else{
+
+            localStorage.setItem('recent', JSON.stringify([]));
+        }
+    },[])
+
+    function add({title,content,id}:{title:string,content:string,id:string }){
+         const newSearch = {title,content,id};
+        if(!recentSearches.find(obj=>obj.id==id)){
+            let rec = recentSearches;
+            if(recentSearches.length>4){
+                 
+                  rec = rec.slice(3);
+             } 
+            rec.push(newSearch);
+            setRecentSearches(rec)
+            localStorage.setItem('recent', JSON.stringify(recentSearches));
+        }
+    }
+
+    function remove(index: number){
+        const r = [...recentSearches]
+         r.splice(index,1)
+         setRecentSearches(r)
+         localStorage.setItem('recent', JSON.stringify(r));
+    }
+    return {recentSearches,add,remove}
 
 }
