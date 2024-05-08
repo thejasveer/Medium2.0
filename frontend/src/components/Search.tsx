@@ -5,7 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import { Blog } from "../interfaces";
 import { RenderHtml } from "./RenderHtml";
 import { v4 as uuidv4 } from 'uuid';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { BlogTrigger } from "../store/blogAtoms";
 export const Search =()=>{
  const [showSearch, setShowSearch] = useRecoilState(searchToggleAtom)
 
@@ -15,7 +16,7 @@ export const Search =()=>{
             if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
                event.preventDefault(); // Prevent default browser behavior
              setShowSearch(true)// Focus on the search input
-            }
+            } 
             if (event.key === 'Escape') {
                 event.preventDefault(); // Prevent default browser behavior
                 setShowSearch(false) // Remove focus from the search input
@@ -34,25 +35,32 @@ return showSearch && <Modal toggle={setShowSearch}  />
 
 const Modal=({toggle}:{toggle:any})=>{
     const searchRef = useRef<HTMLInputElement>(null)
-    const {blogs,getBlogs}= useBlogs();
+    const {blogs}= useBlogs();
     const [searchInput,setSearchInput]= useState("")
     const [filteredList,setFilteredList] = useState<Blog[]>([])
     const {recentSearches,add,remove} = useRecentSearches()
     const navigate = useNavigate();
-
+    const resetBlog= useSetRecoilState(BlogTrigger)
+    const {pathname} = useLocation()
+     
+ 
     useEffect(()=>{
         searchRef.current?.focus()
-        getBlogs()
+       
     },[])
-
+//reset blog
     const handleNavigation=({title,content,id}:{title:string,content:string,id:string })=>{
+        if(pathname.includes('/blog/')){
+            resetBlog((x)=>x+1)
+        }
+       
         navigate(`/blog/${id}`)
         const recentSearch = {title,content,id}
         add(recentSearch)
         toggle(false)
     }
     const filter=()=>{
-        const n = blogs.filter((b)=> b.title.includes(searchInput))  
+        const n = blogs.contents.filter((b: { title: string | string[]; })=> b.title.toLowerCase().includes(searchInput.toLowerCase()))  
         setFilteredList(n)
     }
     useEffect(()=>{
@@ -160,7 +168,7 @@ const Modal=({toggle}:{toggle:any})=>{
                     : <div>
                          <p className="text-gray-500 mb-4">Recent</p>
                         <ul className=" space-y-4 mb-4 overflow-auto  ">
-                            {recentSearches.length>0 && recentSearches.map((r,i)=>{
+                            {recentSearches.length>0 ?recentSearches.map((r,i)=>{
                                   return   <li  className=" " key={uuidv4()}>
                                                     
                                     <label
@@ -177,7 +185,7 @@ const Modal=({toggle}:{toggle:any})=>{
 
                                     </label>
                                 </li>
-                            }) 
+                            }) :<p className="text-center text-gray-500 mb-4">No recent... </p>
                         }
                     </ul>
                     </div>

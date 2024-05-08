@@ -41,7 +41,7 @@ export const Fullblog =memo(({blog } : {blog:Blog})=>{
                         </div>
                  { !reviewToggle &&  <div className="  border-slate-200  flex justify-between p-3 h-max border-t border-b font-light ">
                     <div>
-                      <Claps id={blog.id}/>
+                      <Claps id={blog.id} />
                     </div>
                     <ReadingListIcon col={false} id={blog.id}/>
                     </div>}
@@ -49,6 +49,19 @@ export const Fullblog =memo(({blog } : {blog:Blog})=>{
                     <ImageIO imgSrc={blog.img} placeholderId={blog.id}/> 
                     <div className="text-xl leading-10  text-slate-700 ">< RenderHtml  html={blog.content}/></div>
                     <Tags tags={blog.tags}/>
+                    { !reviewToggle &&  <div className="  border-slate-200  flex justify-between p-3 h-max border-t border-b font-light ">
+                    <div>
+                      <Claps id={blog.id} />
+                    </div>
+                    <ReadingListIcon col={false} id={blog.id}/>
+                    </div>}
+
+                    <div className="p-5 rounded-lg w-full bg-slate-100 flex flex-col text-3xl gap-5 font-semibold font-sans">
+                    <Avatar size={"size-12"} name={blog.author.name}  text=""/>
+                    <div>Written by:<span className="capitalize"> {blog.author.name} </span> </div>
+                    </div>
+
+
                    
                 </div>
                 

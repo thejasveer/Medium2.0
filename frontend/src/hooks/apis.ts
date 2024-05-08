@@ -1,16 +1,16 @@
 import { signinParams, signupParams } from '@codewithjass/common';
-import axios, { AxiosError, AxiosResponse } from 'axios' 
+import axios  from 'axios' 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate } from "react-router-dom";
-import { useRecoilState, useRecoilStateLoadable, useRecoilValue, useRecoilValueLoadable, useSetRecoilState } from 'recoil';
+import {  useNavigate } from "react-router-dom";
+import { useRecoilState, useRecoilStateLoadable, useRecoilValue, useRecoilValueLoadable, useResetRecoilState, useSetRecoilState } from 'recoil';
 import { BACKEND_URL } from '../config';
-import {blogAtom, clapClassAtom, getNewBlogs, myBlogsAtom} from "../store/blogAtoms"
+import {AllBlogsAtom, AllBlogsTrigger, BlogTrigger, MyBlogsTrigger, blogAtom, clapClassAtom, myBlogsAtom} from "../store/blogAtoms"
  
 import {  activeUserAtom, authAtom, userAtom } from '../store/userAtom';
-import {  ImgAtom, contentAtom, draftState, placeholderIdAtom, reviewToggleAtom, tagsAtom } from '../store/EditorAtom';
+import {  ImgAtom, contentAtom, draftState, reviewToggleAtom, tagsAtom } from '../store/EditorAtom';
 import  DOMPurify from 'dompurify';
-import DRAFTSTATE, { Blog ,SweetError,User} from '../interfaces';
-import { errorAtom } from '../store/errorAtoms';
+import DRAFTSTATE, { Blog ,User} from '../interfaces';
+ 
 import { alertAtom } from '../store/alertAtom';
 
 // Authentication 
@@ -91,125 +91,79 @@ export const useAuth = ()=>{
 
 //  blogs
 export const useBlogs = ()=>{
-    const [blogs,setBlogs] = useState<Blog[]>([]);
-    const [myblogs,setMyblogs] = useState<Blog[]>([]);
+    
+    // const [myblogs,setMyblogs] = useState<Blog[]>([]);
+    const blogs  = useRecoilValueLoadable<Blog[]>(AllBlogsAtom);
+    const  myblogs  = useRecoilValueLoadable<Blog[]>(myBlogsAtom);
+    const resetMyblogs = useSetRecoilState(MyBlogsTrigger);
+    const resetAllblogs = useSetRecoilState(AllBlogsTrigger);
     const [loading,setLoading] = useState(false);
     const token = useRecoilValue(authAtom)
     const setUser = useSetRecoilState(userAtom)
-
-    const navigate = useNavigate()
-    const getBlogs = async()=>{
  
-        try {
-            setLoading(true);
-            const response = await axios.get(`${BACKEND_URL}/blog/bulk`);
-            const data = response.data;
-            setBlogs(data.blogs);
-            setLoading(false);
-        } catch (error) {
-            setLoading(false);
-            console.log(error)
-        }
-    }
 
-        const getMyBlogs = async(page: number)=>{
-     
-            try {
-                setLoading(true); 
-                const res = await axios.get(`${BACKEND_URL}/blog/my?page=${page}`,{
-                    headers:{
-                      Authorization: "Bearer "+  token
-                    }
-                  })  .then(response => { 
-                    const data = response.data.blogs;
-                    setMyblogs(data);
-               
-
-                  }) .finally(() => setLoading(false));
-         
-               
-            } catch (error) {
-                setLoading(false);
-                
-            }
     
-        }
-
         const deleteBlog=async(id: string)=>{
-            try {
+           try{
                 setLoading(true); 
                 const res = await axios.delete(`${BACKEND_URL}/blog/my/${id}`,{
                     headers:{
                       Authorization: "Bearer "+  token
                     }
                   })  .then(async(response) => { 
-               
+ 
                     setUser(prev=>({
                         ...prev,
                         list:response.data.readingList
                     }))
-                    navigate('/')
- 
+                  
+                  }) .finally(() => {
+                    resetMyblogs((x)=>x+1)
+                    resetAllblogs((x)=>x+1)
+                    setLoading(false)
+                  }
+                  );
 
-                  }) .finally(() => setLoading(false));
          
                
             } catch (error) {
+                console.log(error)
                 setLoading(false);
             }
         }
-    return {getBlogs,getMyBlogs,blogs,myblogs,loading,deleteBlog};
+    return {blogs,myblogs,loading,deleteBlog};
   }
  
 
 
 
 export const useBlog = (id: string = "") => {
- 
-    const [blog,setBlog] =  useState<Blog>()
-    const [loading,setLoading] = useState(true)
-    useEffect(()=>{
-        getBlog()
-        },[id])
-    
-    const getBlog = async ()=>{
-        try {
-            setLoading(true)
-            const res = await axios.get(`${BACKEND_URL}/blog/specific/${id}`);
-            setBlog(res.data.blog);
-            setLoading(false)
-        } catch (error) {
-            console.log(error)
-        }
-
-    }
+    const [blog,setBlog]= useRecoilStateLoadable(blogAtom(id))
     const token = useRecoilValue(authAtom)
     const [clapClass,setClapClass] = useRecoilState(clapClassAtom)
+   
+  
  
     const clap= async()=>{
         try {   
          
-            if(blog){
-                setClapClass('animate-jump ') 
-                await setBlog({...blog,claps:blog.claps+1});
-                setClapClass('animate-jump fill-slate-900')
+            if(blog.contents){
+             
+              setClapClass(prev=>'') 
+              setBlog({...blog.contents,claps:blog.contents.claps+1});
+               setTimeout(()=>{
+                setClapClass(prev=>'animate-jump fill-slate-900')
+               },0) 
             }
  
         const res  = await axios.put(BACKEND_URL+ '/blog/clap',{id:id},{
-            headers: {
-                Authorization: 'Bearer '+ token
-                    }
-
-                    } ) 
-           
-        
-         
-
-        } catch (error) {
+            headers: {   Authorization: 'Bearer '+ token   }
+                     });
+              } catch (error) {
             console.log(error)
         }
     }
-    return { blog,clap,clapClass,getBlog,loading};
+    return { blog,clap,clapClass,setClapClass};
   };
  
   export const useFormatDate=(str: string)=>{
@@ -231,6 +185,9 @@ export const useBlogCrud =  ( placeholderId: string)=>{
     const [blog,setblog]= useRecoilStateLoadable(contentAtom(placeholderId));
     const [currDraftState,setDraftState] = useRecoilState(draftState)
     const [tagsArr,setTagsArr] = useRecoilState(tagsAtom);
+    const resetMyblogs = useSetRecoilState(MyBlogsTrigger);
+    const resetAllblogs = useSetRecoilState(AllBlogsTrigger);
+    const resetBlog = useSetRecoilState(BlogTrigger);
     // const [blogs] = useRecoilStateLoadable(blogAtom)
  
    
@@ -279,7 +236,9 @@ export const useBlogCrud =  ( placeholderId: string)=>{
                     
                   }));
                   setTagsArr([])
-                
+                  resetMyblogs((x)=>x+1)
+                  resetAllblogs((x)=>x+1)
+                  resetBlog((x)=>x+1)
                 if(publish){
                     
 
@@ -315,7 +274,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
     
             
                 const res = await axios.put(BACKEND_URL+'/blog/img',{
-                    img: imgObj.newSrc,
+                    img: imgObj.newSrc==""?blog.contents.img:imgObj.newSrc,
                     id:blog.contents.id
                 },{ 
                 headers: {
@@ -336,13 +295,15 @@ export const useBlogCrud =  ( placeholderId: string)=>{
         try {
       
             if(blog.state=='hasValue'&& (blog.contents.title!='' || blog.contents.content!="") && currDraftState==''){
-                const tags = tagsArr.length>0 ?tagsArr.map(t=>t.tag).join(',') :"";
+                let tags = blog.contents.tags;
+             
+                tags = tags.length>0 ?tags.map(t=>t.tag).join(',') :"";
                 manageDraftState( DRAFTSTATE.SAVING)
                 const res = await axios.put(BACKEND_URL+'/blog/my',{
                     title:blog.contents.title,
                     content:blog.contents.content,
                     published:blog.contents.published,
-                    placeholder:true,
+                    placeholder:blog.contents.placeholder,
                     tags:tags,
                       
                     id:blog.contents.id
@@ -360,6 +321,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
                     title: updatedBlog.title,
                     createdAt:updatedBlog.createdAt,
                     content:updatedBlog.content,
+                    
                     published: false,
                     tags: updatedBlog.tags,
                     author:updatedBlog.author,
@@ -476,6 +438,7 @@ export const useRecentSearches = ()=>{
 
     useEffect(()=>{
         let r = localStorage.getItem('recent')
+  
         if(r){
            r=JSON.parse(r);
 

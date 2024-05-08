@@ -25,14 +25,14 @@ export const TitleEditor=memo( ({onchange,value }: props)=>{
   
     
     return (
-        <a className="flex items-center -mx-14">
-            <span className={`px-3 ${show} text-xs text-slate-400 mb-4`}>Title</span>
+        <a className="flex items-center -ml-12 ">
+            <span className={`px-3 ${show}  text-xs text-slate-400   mb-4`}>Title</span>
             <input
                 onChange={onchange}
                 value={value}
                 type="text"
                 placeholder="Title"
-                className="caret-slate-400 px-3 font-serif text-5xl focus:outline-none text-slate-800 placeholder:text-slate-300 border-l-2 max-h-96 overflow-y-scroll border-slate-400"
+                className="w-full caret-slate-400 px-3 font-serif text-5xl focus:outline-none text-slate-800 placeholder:text-slate-300 sm:border-l-2 max-h-96 overflow-y-scroll border-slate-400"
             />
         </a>
     );

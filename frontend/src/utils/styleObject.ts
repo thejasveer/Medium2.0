@@ -3,17 +3,18 @@ export const editorStyles={
     "borderRadius": ".375rem",
     "display": "flex",
     "flexDirection": "column",
-    "height": "50vh",
+    "height": "67vh",
     "overflow": "hidden",
     "resize":" vertical",
-    "width": "500px",
+    "width": "100%",
     "fontFamily":" medium-content-serif-font, Georgia, Cambria, Times New Roman, Times, serif",
     "fontWeight": "400",
     "fontStyle": "normal",
     "fontSize": "25px",
     "lineHeight": "2.5rem",
     "letterSpacing":"-.003em",
-      "caretColor": "#94a3b8"
+      "caretColor": "#94a3b8",
+    "overflow":"scroll"
     }
     export const btnStyle= {
       "background": "#3b3a3a",
@@ -33,7 +34,7 @@ export const editorStyles={
       "display": "none",
       "width":"-webkit-fill-available",
       "border": "none",
-      "position": "absolute",
+      "position": "fixed",
       "top": "156",
       "left": "0",
       "padding": "3px"

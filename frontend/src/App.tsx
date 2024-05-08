@@ -11,10 +11,11 @@ import { Dashboard } from './pages/Dashboard';
 import { NotFound } from './components/NotFound';
 import { SweetAlert } from './components/SweetAlert';
 import { Search } from './components/Search';
+import { Footer } from './components/Footer';
 function App() {
   
   return (
-    <div className='relative h-svh'>
+    <div className='relative h-screen'>
     <RecoilRoot>
     <BrowserRouter>
         <Appbar></Appbar>
@@ -31,10 +32,10 @@ function App() {
         </Routes>
            <Search/>
            <SweetAlert/>
-   
+           <Footer />
       </BrowserRouter>
  
-  
+    
     </RecoilRoot>
   
     </div>

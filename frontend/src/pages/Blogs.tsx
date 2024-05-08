@@ -7,18 +7,18 @@ import { Blog } from "../interfaces";
  
 
 export const Blogs = ()=>{
-    const {blogs,getBlogs,loading} = useBlogs();
-    const ss= blogs;
-    useEffect(()=>{
-        getBlogs();
-    },[])
-    return loading ?
-        <Loading/>
-    : <div className="w-full flex justify-center  ">
-        <div className=" md:w-2/3"> <BlogsHtml  blogs={ss} /></div>
-       
-            
-    </div>
+    const {blogs} = useBlogs();
+    
+    if(blogs.state=='loading'){
+        return <Loading/>
+    }
+    if(blogs.state=='hasValue'){
+        return     <div className="w-full flex justify-center  ">
+        <div className=" md:w-2/3"> <BlogsHtml  blogs={blogs.contents} /></div>
+      </div>
+    }
+     
+
 }
  export const BlogsHtml = ({blogs,showStatus=false}:{blogs: Blog[],showStatus?: boolean})=>{
  

@@ -268,7 +268,10 @@ export async function getmyBlogs(c: Context){
 		  const authorId = c.get("userId")
 		const blogs = await prisma.post.findMany({
 			where:{
-				 authorId : authorId, placeholder:false,isDeleted:false
+				
+				 authorId : authorId,
+				  placeholder:false,
+				  isDeleted:false
 			},
 			select:{
 				id:true,

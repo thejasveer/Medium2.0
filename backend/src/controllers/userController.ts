@@ -62,6 +62,7 @@ interface readingList{
                             select:{
                                 id:true,
                                 title:true,
+                                img:true,
                                 content:true,
                                 published:true,
                                 createdAt:true,

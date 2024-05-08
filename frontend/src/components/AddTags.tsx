@@ -13,7 +13,7 @@ export const AddTags = ({blogTags,placeholderId}: {blogTags: any,placeholderId:s
     const { updateBlog} = useBlogCrud(placeholderId)
              
     useEffect(()=>{
-     
+        console.log(blogTags)
          setTags(blogTags);
       
     },[])

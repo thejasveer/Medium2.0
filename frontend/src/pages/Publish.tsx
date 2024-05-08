@@ -23,11 +23,21 @@ export const Publish = ()=>{
       const [blog, setBlog] = useRecoilStateLoadable(contentAtom(placeholderId.current));
       const reviewToggle = useRecoilValue(reviewToggleAtom);
       const {getPlaceholderId,updateBlog} = useBlogCrud(placeholderId.current)
-    
+      const [newToSite,SetNewToSite]= useState("true")
       useEffect(()=>{
       setPlaceholderId(placeholderId.current)
+      const s=  localStorage.getItem('newToSite') 
+      if(!s){
+        localStorage.setItem('newToSite','true')
+      }else{
+        SetNewToSite(s)
+      }
     
       },[])
+      const handleNewToSite= ()=>{
+        localStorage.setItem("newToSite","false")
+        SetNewToSite("false")
+      }
 
       useEffect(()=>{
     
@@ -71,20 +81,30 @@ export const Publish = ()=>{
  
       return <Auth>
            {reviewToggle == true  ? <ReviewBlog placeholderId={placeholderId.current}/>
-              : <div className='flex justify-center w-full gap-2 mt-5 '>
-                    <div className='max-w-lg min-h-screen flex flex-col gap-10'  >
-                          <div>
-                          <TitleEditor onchange={onChangeTitle} value={blog.contents.title} />
+              : <div className='flex justify-center w-full gap-2 mt-5  '>
+                    <div className='relative w-full lg:w-3/6  h-dvh flex flex-col items-center gap-10'  >
+                          <div className='w-full '>
+                          <TitleEditor onchange={onChangeTitle} 
+                          value={blog.contents.title} />
                           </div>
                           <ContentEditor  containerProps={{ style: editorStyles }}
-                        
-                             value={blog.contents.content}
+                            value={blog.contents.content}
                             onChange={onChangeContent}  />
-                             <div className="absolute bottom-10 border   ">
-                              
-                             <img className="h-auto max-w-xl mx-auto" src={gif}/>
-                               
-                               </div>
+                            
+                           {newToSite=="true"&&<div   className="mt-10 w-full bg-black     
+                            flex justify-center absolute bottom-14 h-1/6 border rounded-lg py-2   ">
+                           <div  style={{ backgroundImage:  `url(${gif})`}} className={`bg-center bg-white   
+                            w-full relative drop-shadow-md flex justify-end p-2 bg-no-repeat  h-auto `}  
+                            >
+                          
+                  
+                          <svg onClick={handleNewToSite} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 cursor-pointer">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                          </svg> 
+
+                            </div>
+                        
+                             </div>}  
                     </div>
                    
                 </div>

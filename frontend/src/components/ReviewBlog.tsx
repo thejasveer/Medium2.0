@@ -29,7 +29,8 @@ export const ReviewBlog = memo(({placeholderId}: {placeholderId: string}) =>{
                     <div className="col-span-12 lg:col-span-8 space-y-2  ">
                         <div className="text-sm text-slate-500 font-semibold">Story Preview </div>
                         <div className="bg-slate-50 rounded-lg ">
-                        <Fullblog blog={blog.contents} />
+                             <Fullblog blog={blog.contents} /> 
+                       
                     </div>
             
              </div> 
