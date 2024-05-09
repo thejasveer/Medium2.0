@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom"
-import { useAuth, useBlog, useBlogs, useFormatDate, useReadingList } from "../hooks/apis"
+import { useAuth,   useBlogs, useFormatDate, } from "../hooks/apis"
 import { Blog } from "../interfaces"
 import { Avatar } from "./Avatar"
 import { ReadingListIcon,  } from "./ReadingListIcon"
@@ -16,7 +16,7 @@ export const BlogCard=({blog  }: {blog: Blog})=>{
   const {deleteBlog,loading} = useBlogs()
   useEffect(()=>{
     if(userExist){
-      if(user.userId== blog.author.id){
+      if(user.userId== blog?.author?.id){
             setShowActions(true)
         }
       }

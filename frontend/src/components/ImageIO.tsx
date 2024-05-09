@@ -1,14 +1,14 @@
  
 import {useEffect, useMemo, useRef, useState} from 'react';
-import { ImgAtom, draftState, reviewToggleAtom } from '../store/EditorAtom';
+import { ImgAtom, reviewToggleAtom } from '../store/EditorAtom';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { useBlogCrud } from '../hooks/apis';
+ 
 import { imageDb } from '../utils/firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
-import DRAFTSTATE from '../interfaces';
+ 
 import { ButtonSpinner } from './ButtonSpinner';
-export const ImageIO = ({ imgSrc,placeholderId }:{imgSrc: string,placeholderId:string}) => {
+export const ImageIO = ({ imgSrc }:{imgSrc: string}) => {
     const review= useRecoilValue(reviewToggleAtom)
     const [img,setImg]= useRecoilState(ImgAtom)
  

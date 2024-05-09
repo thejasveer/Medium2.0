@@ -1,11 +1,10 @@
-import {atom, atomFamily, selectorFamily, useRecoilValue} from 'recoil';
-import { Blog } from '../interfaces';
+import {atom, atomFamily, selectorFamily } from 'recoil';
+ 
 import axios from 'axios';
 import { BACKEND_URL } from '../config';
-import { useAuth } from '../hooks/apis';
+ 
 import { authAtom } from './userAtom';
-import { v4 as uuidv4 } from 'uuid';
-import { useLocation } from 'react-router-dom';
+ 
 
 
 export const contentAtom = atomFamily({

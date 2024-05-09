@@ -1,7 +1,5 @@
 import { ChangeEvent, memo, useEffect, useState } from "react"
-import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from "recoil"
-import { contentAtom, placeholderIdAtom } from "../store/EditorAtom"
-import { useParams } from "react-router-dom"
+ 
 interface props {
     onchange: (e: ChangeEvent<HTMLInputElement>) => void
     value: string

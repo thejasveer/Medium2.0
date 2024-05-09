@@ -14,7 +14,7 @@ export const editorStyles={
     "lineHeight": "2.5rem",
     "letterSpacing":"-.003em",
       "caretColor": "#94a3b8",
-    "overflow":"scroll"
+     "overFlow":"scroll",
     }
     export const btnStyle= {
       "background": "#3b3a3a",
@@ -28,7 +28,7 @@ export const editorStyles={
       
     }
     
-    export const defaultToolbarStyles={
+    export const defaultToolbarStyles: ToolbarStyleTypes={
       "alignItems": "center",
       "backgroundColor": "transparent",
       "display": "none",
@@ -39,3 +39,14 @@ export const editorStyles={
       "left": "0",
       "padding": "3px"
          }
+  export  type ToolbarStyleTypes = {
+      alignItems: string;
+      backgroundColor: string;
+      display: string;
+      width: string;
+      border: string;
+      position?: 'absolute' | 'relative' | 'fixed' | 'static' | 'sticky' | undefined; // Define position type
+      top: string;
+      left: string;
+      padding: string;
+    };

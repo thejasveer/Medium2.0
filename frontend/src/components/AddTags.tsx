@@ -1,6 +1,6 @@
-import { RefObject, SyntheticEvent, useEffect, useRef, useState } from "react"
-import { noWait, useRecoilState, useRecoilStateLoadable } from "recoil"
-import { contentAtom, tagsAtom ,TagType} from "../store/EditorAtom"
+import { RefObject, useEffect, useRef, useState } from "react"
+import {  useRecoilState } from "recoil"
+import {  tagsAtom ,TagType} from "../store/EditorAtom"
 import { useBlogCrud } from "../hooks/apis"
  
 
@@ -88,7 +88,7 @@ export const AddTags = ({blogTags,placeholderId}: {blogTags: any,placeholderId:s
         if(e.target.value!='') setActiveTagIndex(-1)
     }
     //   Todo: Add tooltip
-    return <div  onClick={(e)=>{
+    return <div  onClick={()=>{
         setActiveTagIndex(-1)
    
 

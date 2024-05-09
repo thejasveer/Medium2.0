@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom"
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import {  useRecoilValue, useSetRecoilState } from "recoil";
 import {  draftState, reviewToggleAtom } from "../store/EditorAtom";
 import { Avatar } from "./Avatar"
 import { PublishButton } from "./PublishButton";
@@ -15,7 +15,7 @@ export const Appbar =()=>{
     const authenticated = useRecoilValue(authAtom)
     const currDraftState = useRecoilValue(draftState)
     const  setShowSearch  = useSetRecoilState(searchToggleAtom)
-    const {userExist}=  useAuth()
+    const {}=  useAuth()
     const user  = useRecoilValue(userAtom)
     return(<div className=" flex justify-between px-3 py-3  sm:px-20 border-b ">
         <div className=" flex gap-5 items-center">

@@ -5,14 +5,14 @@ import { useEffect, useRef, useState } from "react";
 import { Blog } from "../interfaces";
 import { RenderHtml } from "./RenderHtml";
 import { v4 as uuidv4 } from 'uuid';
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {  useLocation, useNavigate } from "react-router-dom";
 import { BlogTrigger } from "../store/blogAtoms";
 export const Search =()=>{
  const [showSearch, setShowSearch] = useRecoilState(searchToggleAtom)
 
     useEffect(()=>{
     
-        const handleKeyDown = (event) => {
+        const handleKeyDown = (event:any) => {
             if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
                event.preventDefault(); // Prevent default browser behavior
              setShowSearch(true)// Focus on the search input
@@ -60,7 +60,7 @@ const Modal=({toggle}:{toggle:any})=>{
         toggle(false)
     }
     const filter=()=>{
-        const n = blogs.contents.filter((b: { title: string | string[]; })=> b.title.toLowerCase().includes(searchInput.toLowerCase()))  
+        const n = blogs.contents.filter((b: { title:any; })=> b.title.toLowerCase().includes(searchInput.toLowerCase()))  
         setFilteredList(n)
     }
     useEffect(()=>{
@@ -168,7 +168,7 @@ const Modal=({toggle}:{toggle:any})=>{
                     : <div>
                          <p className="text-gray-500 mb-4">Recent</p>
                         <ul className=" space-y-4 mb-4 overflow-auto  ">
-                            {recentSearches.length>0 ?recentSearches.map((r,i)=>{
+                            {recentSearches.length>0 ?recentSearches.map((r:any,i:number)=>{
                                   return   <li  className=" " key={uuidv4()}>
                                                     
                                     <label

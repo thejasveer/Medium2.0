@@ -46,7 +46,7 @@ export const Fullblog =memo(({blog } : {blog:Blog})=>{
                     <ReadingListIcon col={false} id={blog.id}/>
                     </div>}
                   
-                    <ImageIO imgSrc={blog.img} placeholderId={blog.id}/> 
+                    <ImageIO imgSrc={blog.img} /> 
                     <div className="text-xl leading-10  text-slate-700 ">< RenderHtml  html={blog.content}/></div>
                     <Tags tags={blog.tags}/>
                     { !reviewToggle &&  <div className="  border-slate-200  flex justify-between p-3 h-max border-t border-b font-light ">
@@ -78,7 +78,7 @@ const Tags = ({tags}: {tags: TagType[]})=>{
 
   return   tags.length>0 && <div className="flex  gap-2">
           {tags.map((tag,i)=>{
-        return <div key={i} className="bg-gray-200 text-light text-center rounded-full p-2 text-sm w-max overflow-hidden px-3 ">
+        return <div key={i} className="bg-gray-200 text-light text-center rounded-full p-2 text-sm w-max overflow-hidden px-3 capitalize ">
               <span>{ tag.tag}</span>
             </div> 
         })}

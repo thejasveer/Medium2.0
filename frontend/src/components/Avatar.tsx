@@ -1,7 +1,7 @@
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Link,   useLocation, useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { authAtom, userAtom } from "../store/userAtom";
-import { useEffect, useRef, useState } from "react";
+import {   useState } from "react";
 import { PopUpDiv } from "./PopUpDiv";
   
 
@@ -12,29 +12,16 @@ export function Avatar({name="Ano",size="size-8",text="text-lg",showlogout=false
     const setUser = useSetRecoilState(userAtom)
    const setAuthenticated = useSetRecoilState(authAtom)
    const [showDropdown,setShowDrowpdown] = useState(false)
-   const popupRef = useRef(null);
+ 
     const handleLogout = ()=>{
         localStorage.removeItem("token")
         setAuthenticated(null)
         setUser({})
         navigate("/signin")
     }
-        // useEffect(()=>{
-        //     function handleClickOutside(e) {
-               
-        //         if (popupRef.current && !popupRef.current.contains(e.target)) {
-        //             setShowDrowpdown(false);
-        //         }
-        //       }
-          
-        //       document.addEventListener('click', handleClickOutside);
-          
-        //       return () => {
-        //         document.removeEventListener('click', handleClickOutside);
-        //       };
-        // },[])
+ 
 
-return   <div onClick={(e)=>setShowDrowpdown(!showDropdown)} className={`relative group  cursor-pointer flex items-center justify-center  ${size} first: bg-red-500 rounded-full `}>
+return   <div onClick={()=>setShowDrowpdown(!showDropdown)} className={`relative group  cursor-pointer flex items-center justify-center  ${size} first: bg-red-500 rounded-full `}>
 <div className={`font-medium ${ text} text-slate-100  `}>{initial}</div>
 {showlogout?  <Dropdown onClick={handleLogout} name={name} showDropdown={showDropdown}/>  
                            :""} 

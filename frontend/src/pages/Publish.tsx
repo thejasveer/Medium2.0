@@ -1,14 +1,14 @@
  
  
 import { useEffect, useRef, useState } from 'react';
-import { useRecoilState, useRecoilStateLoadable, useRecoilValue, useSetRecoilState } from 'recoil';
+import {  useRecoilStateLoadable, useRecoilValue, useSetRecoilState } from 'recoil';
 import {ContentEditor} from '../components/Editor';
 import { ReviewBlog } from '../components/ReviewBlog';
 import { TitleEditor } from '../components/TitleEditor';
 import { useBlogCrud, useSanitize } from '../hooks/apis';
-import { contentAtom, draftState, placeholderIdAtom, reviewToggleAtom, todosAtomFamily } from '../store/EditorAtom';
+import { contentAtom, draftState, placeholderIdAtom, reviewToggleAtom  } from '../store/EditorAtom';
 import { Auth } from '../components/Auth';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation,  useParams } from 'react-router-dom';
 import { Loading } from '../components/Loading';
 import { v4 as uuidv4 } from 'uuid';
  import {editorStyles} from '../utils/styleObject';
@@ -51,7 +51,7 @@ export const Publish = ()=>{
           }
          },[blog.contents.title,blog.contents.content])
    
-     function onChangeTitle(e){
+     function onChangeTitle(e:any){
        
         const title =useSanitize(e.target.value)
         
@@ -62,7 +62,7 @@ export const Publish = ()=>{
           
         }));
        }
-      function onChangeContent(e) {
+      function onChangeContent(e:any) {
      
         const content =useSanitize(e.target.value)
  

@@ -11,6 +11,7 @@ export interface Blog {
     claps:string,
     author: {
         name: string;
+        id:string;
         description: string;
     };
 }  
@@ -29,15 +30,7 @@ interface ReadingList{
     "id": string,
     "postId": string,
     "userId":string,
-    "post": {
-        "id": string,
-        "title": string,
-        "content": string,
-        "published": true,
-        "authorId": string,
-        "createdAt": string,
-        "updatedAt": string
-    }
+    "post": Blog
 }
 export interface SweetError{
 msg: string

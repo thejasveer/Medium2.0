@@ -1,20 +1,13 @@
 import { memo, useEffect, useState } from 'react';
 import "../assets/editorStyles.css"
 import { 
-    
-    BtnBold,
-    BtnBulletList,
-    BtnClearFormatting,
+      BtnBold, 
     BtnItalic,
-    BtnLink,
-    BtnNumberedList,
+    BtnLink, 
     BtnRedo,
-    BtnStrikeThrough,
-    BtnStyles,
+    BtnStrikeThrough, 
     BtnUnderline,
-    BtnUndo,
-    HtmlButton,
-    Separator,
+    BtnUndo,  
   Editor,
   EditorProvider,
   Toolbar,
@@ -37,7 +30,7 @@ export   const  ContentEditor = memo(({containerProps,onChange,value}: any)=> {
       }
   },[value])
   
-  function onSelect(e) {
+  function onSelect() {
     
     const selection: any = window.getSelection();
     let {top,left} = selection.getRangeAt(0).getBoundingClientRect();
@@ -55,10 +48,7 @@ export   const  ContentEditor = memo(({containerProps,onChange,value}: any)=> {
    
   }
  
-  const handleImageInsert = (imageData: any) => {
-    // Implement your logic to insert image data into the editor here
-          console.log('Insert image:', imageData);
-  };
+ 
   return (
           <EditorProvider>
             <Editor containerProps={containerProps} onChange={onChange} value={value}  onSelect={onSelect}   >

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { atom, selector, useRecoilState, useSetRecoilState } from "recoil";
+import { atom, selector , useSetRecoilState } from "recoil";
 import { BACKEND_URL } from "../config";
 import { User } from "../interfaces";
 
@@ -16,7 +16,7 @@ export const authAtom = atom <string|null>({
  
 export const activeUserAtom = selector<User>({
     key:'activeUserAtom',
-    get: async ({get})=>{
+    get: async ({})=>{
         const token = localStorage.getItem('token');
        
         let user ={};

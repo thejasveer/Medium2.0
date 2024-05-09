@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {atomFamily, selectorFamily,selector,atom, useRecoilValue,DefaultValue} from 'recoil'
+import {atomFamily, selectorFamily,selector,atom   } from 'recoil'
 import { BACKEND_URL } from '../config'
 import { authAtom } from './userAtom';
 

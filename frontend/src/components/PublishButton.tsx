@@ -1,8 +1,8 @@
-import { MouseEvent, useEffect, useMemo, useState } from "react";
+import { MouseEvent, useEffect,  useState } from "react";
 import { useRecoilValue, useRecoilValueLoadable } from "recoil";
-import { contentAtom, draftState, placeholderIdAtom } from "../store/EditorAtom";
-import { ButtonSpinner } from "./ButtonSpinner";
-import { useLocation, useParams } from "react-router-dom";
+import { contentAtom,   placeholderIdAtom } from "../store/EditorAtom";
+ 
+import { useLocation } from "react-router-dom";
 
 interface props{
     text: string;

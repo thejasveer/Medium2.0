@@ -1,7 +1,7 @@
  
 import { Loading } from "../Loading";
 import { BlogsHtml } from "../../pages/Blogs";
-import {  useEffect, useState } from "react";
+ 
  
 import { useBlogs } from "../../hooks/apis";
 import { useNavigate } from "react-router-dom";

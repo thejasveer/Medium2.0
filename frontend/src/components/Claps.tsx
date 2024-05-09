@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect  } from "react"
 import { useBlog } from "../hooks/apis"
 import { useSetRecoilState } from "recoil"
 import { clapClassAtom } from "../store/blogAtoms"

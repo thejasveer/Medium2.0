@@ -1,14 +1,14 @@
-import { useLocation, useNavigate } from "react-router-dom"
+  
 import { PopUpDiv } from "./PopUpDiv"
 import { useState } from "react"
 
 export const BlogMenu = ({handleEdit,handleDelete}: {handleEdit: any,handleDelete: any})=>{
-    const navigate= useNavigate();
+   
 
     const [showDropdown,setShowDrowpdown] = useState(false)
 
     return  <div className="relative">
-            <svg onClick={e=> setShowDrowpdown(!showDropdown)} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+            <svg onClick={()=> setShowDrowpdown(!showDropdown)} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
             </svg>
            

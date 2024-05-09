@@ -1,7 +1,7 @@
 import { useRecoilValue } from "recoil"
-import { useAuth } from "../../hooks/apis"
+ 
 import { userAtom } from "../../store/userAtom"
-import { BlogsHtml } from "../../pages/Blogs"
+ 
 import { BlogCard } from "../BlogCard"
 
 export const Lists=()=>{

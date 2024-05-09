@@ -1,5 +1,5 @@
-import { useSetRecoilState , useRecoilValue, useRecoilState, useRecoilValueLoadable} from "recoil"
-import { contentAtom, draftState, placeholderIdAtom, reviewToggleAtom } from "../store/EditorAtom"
+import { useSetRecoilState , useRecoilValue,   useRecoilValueLoadable} from "recoil"
+import { contentAtom, draftState,   reviewToggleAtom } from "../store/EditorAtom"
 import { AddTags } from "./AddTags"
 import { Fullblog } from "./Fullblog"
 import { PublishButton } from "./PublishButton"

@@ -1,9 +1,9 @@
-import { useEffect, useMemo } from "react"
+import {   useMemo } from "react"
 import { useRecoilValue, useSetRecoilState } from "recoil"
 import { userAtom } from "../store/userAtom"
 import { useReadingList } from "../hooks/apis"
 import { ButtonSpinner } from "./ButtonSpinner"
-import { useLocation } from "react-router-dom"
+ 
 import { alertAtom } from "../store/alertAtom"
 
  

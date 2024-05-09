@@ -1,6 +1,4 @@
- 
-import { ChangeEvent } from "react"
-
+     
 interface t {
     text: string
     onclick: ()=> void

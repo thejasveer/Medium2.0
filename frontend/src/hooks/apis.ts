@@ -1,21 +1,21 @@
 import { signinParams, signupParams } from '@codewithjass/common';
 import axios  from 'axios' 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect , useState } from 'react';
 import {  useNavigate } from "react-router-dom";
-import { useRecoilState, useRecoilStateLoadable, useRecoilValue, useRecoilValueLoadable, useResetRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilStateLoadable, useRecoilValue, useRecoilValueLoadable, useSetRecoilState } from 'recoil';
 import { BACKEND_URL } from '../config';
 import {AllBlogsAtom, AllBlogsTrigger, BlogTrigger, MyBlogsTrigger, blogAtom, clapClassAtom, myBlogsAtom} from "../store/blogAtoms"
  
 import {  activeUserAtom, authAtom, userAtom } from '../store/userAtom';
 import {  ImgAtom, contentAtom, draftState, reviewToggleAtom, tagsAtom } from '../store/EditorAtom';
-import  DOMPurify from 'dompurify';
+import  * as DOMPurify from 'dompurify';
 import DRAFTSTATE, { Blog ,User} from '../interfaces';
  
 import { alertAtom } from '../store/alertAtom';
 
 // Authentication 
 export const useSignup= (inputs: signupParams)=>{
-    const [response,setRes] = useState();
+    
     const [errors,setErrors] = useState([]);
     const [loading,setLoading] = useState(false);
     const setAuth = useSetRecoilState(authAtom)
@@ -39,11 +39,11 @@ export const useSignup= (inputs: signupParams)=>{
             }
     }
 
-    return {response,errors,signupPost,loading};
+    return {errors,signupPost,loading};
 }
 
 export const useSignin=(inputs: signinParams) => {
-    const [response,setRes] = useState();
+ 
     const [errors,setErrors] = useState<any>([]);
     const [loading,setLoading] = useState(false);
     const setAuth = useSetRecoilState(authAtom)
@@ -71,7 +71,7 @@ export const useSignin=(inputs: signinParams) => {
                 }
         }
 
-    return {response,errors,signinIn,loading};
+    return {errors,signinIn,loading};
 }
 export const useAuth = ()=>{
    
@@ -106,7 +106,7 @@ export const useBlogs = ()=>{
         const deleteBlog=async(id: string)=>{
            try{
                 setLoading(true); 
-                const res = await axios.delete(`${BACKEND_URL}/blog/my/${id}`,{
+               await axios.delete(`${BACKEND_URL}/blog/my/${id}`,{
                     headers:{
                       Authorization: "Bearer "+  token
                     }
@@ -149,14 +149,14 @@ export const useBlog = (id: string = "") => {
          
             if(blog.contents){
              
-              setClapClass(prev=>'') 
+              setClapClass(()=>'') 
               setBlog({...blog.contents,claps:blog.contents.claps+1});
                setTimeout(()=>{
-                setClapClass(prev=>'animate-jump fill-slate-900')
+                setClapClass(()=>'animate-jump fill-slate-900')
                },0) 
             }
  
-        const res  = await axios.put(BACKEND_URL+ '/blog/clap',{id:id},{
+         await axios.put(BACKEND_URL+ '/blog/clap',{id:id},{
             headers: {   Authorization: 'Bearer '+ token   }
                      });
               } catch (error) {
@@ -181,7 +181,7 @@ export const useSanitize = (str: string)=>{
 // :save as dashboard of user , update , delete, 
 export const useBlogCrud =  ( placeholderId: string)=>{ 
  
-    const [publish,setPublish] = useState<boolean>(false)
+    const [,setPublish] = useState<boolean>(false)
     const [blog,setblog]= useRecoilStateLoadable(contentAtom(placeholderId));
     const [currDraftState,setDraftState] = useRecoilState(draftState)
     const [tagsArr,setTagsArr] = useRecoilState(tagsAtom);
@@ -273,7 +273,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
             if(blog.state=='hasValue'&& (blog.contents.title!='' || blog.contents.content!="") && currDraftState==''){
     
             
-                const res = await axios.put(BACKEND_URL+'/blog/img',{
+                await axios.put(BACKEND_URL+'/blog/img',{
                     img: imgObj.newSrc==""?blog.contents.img:imgObj.newSrc,
                     id:blog.contents.id
                 },{ 
@@ -297,7 +297,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
             if(blog.state=='hasValue'&& (blog.contents.title!='' || blog.contents.content!="") && currDraftState==''){
                 let tags = blog.contents.tags;
              
-                tags = tags.length>0 ?tags.map(t=>t.tag).join(',') :"";
+                tags = tags.length>0 ?tags.map((t: any)=>{t.tag.join(',')}) :"";
                 manageDraftState( DRAFTSTATE.SAVING)
                 const res = await axios.put(BACKEND_URL+'/blog/my',{
                     title:blog.contents.title,
@@ -434,13 +434,13 @@ interface recentSearch{
     content:string;
 }
 export const useRecentSearches = ()=>{
-    const [recentSearches,setRecentSearches] = useState<recentSearch[]>([])
+    const [recentSearches,setRecentSearches] = useState< recentSearch[]|any>([])
 
     useEffect(()=>{
-        let r = localStorage.getItem('recent')
+        let r = localStorage.getItem('recent') 
   
         if(r){
-           r=JSON.parse(r);
+           r = JSON.parse(r);
 
             setRecentSearches(r)
         }else{
@@ -451,7 +451,7 @@ export const useRecentSearches = ()=>{
 
     function add({title,content,id}:{title:string,content:string,id:string }){
          const newSearch = {title,content,id};
-        if(!recentSearches.find(obj=>obj.id==id)){
+        if(!recentSearches.find((obj:recentSearch)=>obj.id==id)){
             let rec = recentSearches;
             if(recentSearches.length>4){
                  

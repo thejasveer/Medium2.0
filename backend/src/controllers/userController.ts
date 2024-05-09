@@ -38,18 +38,22 @@ interface readingList{
                     select:{
                         id:true,
                         title:true,
-                        claps:true,
                         content:true,
                         published:true,
                         img:true,
+                        claps:true,
+                     
                         createdAt:true,
+                        placeholder:false,
                         author: {
-                            select:{name:true,id:true}
+                            select:{name:true,id:true,description:true}
                         },
-                        tags: {
+                        tags:{
                             select:{tag:true}
                         }
-                    }
+                         
+                    } ,	 
+                    
                 },
                 list:{
                     where: {

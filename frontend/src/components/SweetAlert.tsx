@@ -1,4 +1,4 @@
-import { useRecoilState, useRecoilValue } from "recoil"
+import { useRecoilState } from "recoil"
  
 import { memo, useEffect, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
