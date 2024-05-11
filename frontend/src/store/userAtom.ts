@@ -19,7 +19,7 @@ export const activeUserAtom = selector<User>({
     get: async ({})=>{
  
             const token = localStorage.getItem('token');
-            debugger
+          
             let user ={};
             let setUser= useSetRecoilState(userAtom);
     

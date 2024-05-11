@@ -63,7 +63,7 @@ export const Publish = ()=>{
         }));
        }
       function onChangeContent(e:any) {
-     debugger
+   
         const content =useSanitize(e.target.value)
  
         setBlog((prevBlog:any) => ({
