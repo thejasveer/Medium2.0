@@ -5,6 +5,7 @@ import { useReadingList } from "../hooks/apis"
 import { ButtonSpinner } from "./ButtonSpinner"
  
 import { alertAtom } from "../store/alertAtom"
+import { useNavigate } from "react-router-dom"
 
  
 
@@ -12,8 +13,15 @@ export const ReadingListIcon = ({id , col=true}:{id: string,col?:boolean})=>{
      const {list} = useRecoilValue(userAtom)
      const {update,loading} = useReadingList();
      const setAlert= useSetRecoilState(alertAtom)
+     const user = useRecoilValue(userAtom)
+     const navigate = useNavigate()
        const handleReadingList = ()=>{
-                update(id)
+        if(Object.keys(user).length>0){
+            update(id)
+        }else{
+            navigate('/signin')
+        }
+               
         } 
         const copy = async ()=>{
       
