@@ -4,7 +4,7 @@ interface props {
     html: string
 }
 export const RenderHtml = memo(({html} : props) =>{
- 
+ return
     return <div  className=" "  dangerouslySetInnerHTML={{__html: html}} >
 
     </div>

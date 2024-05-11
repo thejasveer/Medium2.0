@@ -17,28 +17,32 @@ export const authAtom = atom <string|null>({
 export const activeUserAtom = selector<User>({
     key:'activeUserAtom',
     get: async ({})=>{
-        const token = localStorage.getItem('token');
-       
-        let user ={};
-        let setUser= useSetRecoilState(userAtom);
-
-        if(token){
-            try {
-             const res = await axios.get(BACKEND_URL+'/user/me',{headers:{
-                    Authorization: 'Bearer ' + token
-                  }});
-               
-        const user = res.data.user;
-            setUser(res.data.user)
-            return user;
-            } catch (error) {
-                setUser({})
-                console.log(error)
-             } 
-          
-            }
+ 
+            const token = localStorage.getItem('token');
+            debugger
+            let user ={};
+            let setUser= useSetRecoilState(userAtom);
+    
+            if(token){
+                try {
+                 const res = await axios.get(BACKEND_URL+'/user/me',{headers:{
+                        Authorization: 'Bearer ' + token
+                      }});
+                   
+            const user = res.data.user;
+                setUser(res.data.user)
+                return user;
+                } catch (error) {
+                    // debugger
+                    // setUser({})
+                    // // console.log(error)
+                 } 
+              
+                }
+         
+          return user ;
      
-      return user ;
+       
     }
   })
  

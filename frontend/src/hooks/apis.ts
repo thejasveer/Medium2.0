@@ -8,7 +8,7 @@ import {AllBlogsAtom, AllBlogsTrigger, BlogTrigger, MyBlogsTrigger, blogAtom, cl
  
 import {  activeUserAtom, authAtom, userAtom } from '../store/userAtom';
 import {  ImgAtom, contentAtom, draftState, reviewToggleAtom, tagsAtom } from '../store/EditorAtom';
-import  * as DOMPurify from 'dompurify';
+// import  * as DOMPurify from 'dompurify';
 import DRAFTSTATE, { Blog ,User} from '../interfaces';
  
 import { alertAtom } from '../store/alertAtom';
@@ -173,8 +173,9 @@ export const useBlog = (id: string = "") => {
 }
 
 export const useSanitize = (str: string)=>{
-     const clean = DOMPurify.sanitize(str);
-        return clean;
+    return str;
+    //  const clean = DOMPurify.sanitize(str);
+    //     return clean;
 }
  
 
@@ -223,7 +224,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
                 });
               
                 const updatedBlog= res.data.blog
-              await  setblog((prevBlog:any) => ({
+            setblog((prevBlog:any) => ({
                     ...prevBlog,
                     id: updatedBlog.id,
                     title: updatedBlog.title,
