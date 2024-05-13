@@ -15,7 +15,7 @@ import { Footer } from './components/Footer';
 function App() {
   
   return (
-    <div className='relative h-screen'>
+    <div className='relative h-svh '>
     <RecoilRoot>
     <BrowserRouter>
         <Appbar></Appbar>

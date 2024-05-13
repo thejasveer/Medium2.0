@@ -1,7 +1,7 @@
 import { Link,   useLocation, useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { authAtom, userAtom } from "../store/userAtom";
-import {   useState } from "react";
+import {   useEffect, useState } from "react";
 import { PopUpDiv } from "./PopUpDiv";
   
 
@@ -12,13 +12,26 @@ export function Avatar({name="Ano",size="size-8",text="text-lg",showlogout=false
     const setUser = useSetRecoilState(userAtom)
    const setAuthenticated = useSetRecoilState(authAtom)
    const [showDropdown,setShowDrowpdown] = useState(false)
- 
+   useEffect(()=>{
+    const handleKeyDown = (event:any) => {
+  
+        if (event.key === 'Escape') {
+            event.preventDefault(); // Prevent default browser behavior
+            setShowDrowpdown(false) // Remove focus from the search input
+          }
+      };
+    document.addEventListener('keydown', handleKeyDown);
+     return () => { 
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+},[])
     const handleLogout = ()=>{
         localStorage.removeItem("token")
         setAuthenticated(null)
         setUser({})
         navigate("/signin")
     }
+  
  
 
 return   <div onClick={()=>setShowDrowpdown(!showDropdown)} className={`relative group  cursor-pointer flex items-center justify-center  ${size} first: bg-red-500 rounded-full `}>
@@ -30,6 +43,7 @@ return   <div onClick={()=>setShowDrowpdown(!showDropdown)} className={`relative
 }
 
 const Dropdown=({onClick,name,showDropdown}: {onClick: any,name: string,showDropdown:boolean})=>{
+ 
     const location = useLocation()
     const {pathname}= location;
     const active= " text-slate-700 font-semibold"

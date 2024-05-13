@@ -1,4 +1,4 @@
-import {   useEffect, useMemo, useRef, useState } from "react"
+import {   useEffect, useMemo, useState } from "react"
 import { useRecoilValue, useSetRecoilState } from "recoil"
 import { userAtom } from "../store/userAtom"
 import { useReadingList } from "../hooks/apis"
@@ -66,9 +66,5 @@ export const ReadingListIcon = ({id , col=true}:{id: string,col?:boolean})=>{
                     </div>
           
 }
-
-
-function useeState() {
-    throw new Error("Function not implemented.")
-}
+ 
  

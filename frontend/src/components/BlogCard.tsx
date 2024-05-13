@@ -7,6 +7,7 @@ import { BlogMenu } from "./BlogMenu"
 import { RenderHtml } from "./RenderHtml"
 import { useEffect, useState } from "react"
 import { Loading } from "./Loading"
+import { Claps } from "./Claps"
  
 export const BlogCard=({blog  }: {blog: Blog})=>{
   const date =useFormatDate(blog.createdAt) ;
@@ -69,6 +70,7 @@ return loading? <Loading/>: <div   className=" gap-1 flex flex-col p-2">
                             <div className= "text-sm font-light text-slate-500">
                                 {`${Math.ceil(blog.content?.length/100)} mins read`}
                             </div>
+                            <Claps id={blog.id} />
                              
                             </div>
                         </div>
@@ -81,6 +83,7 @@ return loading? <Loading/>: <div   className=" gap-1 flex flex-col p-2">
                     <div className="flex space-x-2 text-slate-400">
                     {showActions?<BlogMenu  handleDelete={handleDelete} handleEdit={handleEdit}/>:""}
                     </div>
+
                   </div>
                 
                 </div>
