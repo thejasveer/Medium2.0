@@ -32,7 +32,7 @@ export const ReadingListIcon = ({id , col=true}:{id: string,col?:boolean})=>{
                return ()=> clearTimeout(timerId)
          
         },[copiedClass])
-        const copy = async (e)=>{
+        const copy = async ()=>{
             setCopiedClass(true)
            
             const domain = window.location.host;
