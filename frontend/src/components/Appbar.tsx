@@ -4,7 +4,7 @@ import {  draftState, reviewToggleAtom } from "../store/EditorAtom";
 import { Avatar } from "./Avatar"
 import { PublishButton } from "./PublishButton";
 import { authAtom, userAtom} from "../store/userAtom";
-import { useAuth } from "../hooks/apis";
+// import { useAuth } from "../hooks/apis";
 import { searchToggleAtom } from "../store/searchAtom";
  
  
@@ -15,7 +15,7 @@ export const Appbar =()=>{
     const authenticated = useRecoilValue(authAtom)
     const currDraftState = useRecoilValue(draftState)
     const  setShowSearch  = useSetRecoilState(searchToggleAtom)
-    const {}=  useAuth()
+    // const {}=  useAuth()
     const user  = useRecoilValue(userAtom)
     return(<div className=" flex justify-between px-3 py-3  md:px-20 border-b ">
         <div className=" flex gap-5 items-center">

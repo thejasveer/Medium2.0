@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom"
  
 
 export const ReadingListIcon = ({id , col=true}:{id: string,col?:boolean})=>{
-     const {list} = useRecoilValue(userAtom)
+ 
      const {update,loading} = useReadingList();
      const setAlert= useSetRecoilState(alertAtom)
      const [copiedClass,setCopiedClass]= useState(false)
@@ -42,9 +42,9 @@ export const ReadingListIcon = ({id , col=true}:{id: string,col?:boolean})=>{
  
         const exist = useMemo(() => {
            
-            const exist = list?.some(l => l.post?.id === id);
+            const exist = user.list?.some(l => l.post?.id === id);
             return !!exist ; // Convert to boolean
-        }, [id, list]);
+        }, [id, user.list]);
  
 
 

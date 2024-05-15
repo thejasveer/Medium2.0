@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom"
-import { useAuth,   useBlogs, useFormatDate, } from "../hooks/apis"
+import { useAuth,   useBlogs, useFormatDate } from "../hooks/apis"
 import { Blog } from "../interfaces"
 import { Avatar } from "./Avatar"
 import { ReadingListIcon,  } from "./ReadingListIcon"
@@ -7,30 +7,40 @@ import { BlogMenu } from "./BlogMenu"
 import { RenderHtml } from "./RenderHtml"
 import { useEffect, useState } from "react"
 import { Loading } from "./Loading"
-import { Claps } from "./Claps"
+ 
+import { useRecoilValue } from "recoil"
+import { userAtom } from "../store/userAtom"
+ 
  
 export const BlogCard=({blog  }: {blog: Blog})=>{
   const date =useFormatDate(blog.createdAt) ;
   const [showActions,setShowActions] = useState(false)
-  const {user,userExist}= useAuth();
+  
+  const {}= useAuth();
+  const user = useRecoilValue(userAtom)
   const navigate = useNavigate()
   const {deleteBlog,loading} = useBlogs()
-  useEffect(()=>{
-    if(userExist){
+    useEffect(()=>{
+      
+  
       if(user.userId== blog?.author?.id){
             setShowActions(true)
+        }else{
+          setShowActions(false)
         }
-      }
+ 
     },[user])
+   
 
  
-
   const handleEdit =()=>{
     navigate( `/p/${blog.id}/edit`)
   }
   const handleDelete =()=>{
    deleteBlog(blog.id)
   }
+
+
 
 return loading? <Loading/>: <div   className=" gap-1 flex flex-col p-2">
             <div className="grid grid-cols-12 space-x-5">
@@ -45,7 +55,7 @@ return loading? <Loading/>: <div   className=" gap-1 flex flex-col p-2">
                 </div>
               </div>
               
-                  <div className="col-span-7 md:col-span-8  ">
+                  <div className="col-span-7 md:col-span-8 flex flex-col gap-5  ">
                       <Link className=" backdrop: space-y-5  focus:outline-none" key=  {blog.id}  to={blog.published?"/blog/"+blog.id:''}>
                           <div className="flex gap-2 items-center ">
                               <div>
@@ -60,7 +70,9 @@ return loading? <Loading/>: <div   className=" gap-1 flex flex-col p-2">
                           {blog.title}
                           </div>
                           <div className="font-light flex flex-col gap-4 ">
-                          <RenderHtml html={blog.content?.slice(0,50)+"... "}/> 
+                       
+                            <div > <RenderHtml html={blog.content.slice(0,50)+'...'}/></div>
+                         
                             
                           <div className="flex space-x-2 items-center">
                               {blog.tags.length>0?
@@ -70,11 +82,12 @@ return loading? <Loading/>: <div   className=" gap-1 flex flex-col p-2">
                             <div className= "text-sm font-light text-slate-500">
                                 {`${Math.ceil(blog.content?.length/100)} mins read`}
                             </div>
-                            <Claps id={blog.id} />
+                           
                              
                             </div>
                         </div>
                     </Link>
+             
                 </div>
             
                                 

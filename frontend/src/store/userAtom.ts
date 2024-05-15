@@ -1,5 +1,5 @@
 import axios from "axios";
-import { atom, selector , useSetRecoilState } from "recoil";
+import { atom, selector  } from "recoil";
 import { BACKEND_URL } from "../config";
 import { User } from "../interfaces";
 
@@ -13,30 +13,26 @@ export const authAtom = atom <string|null>({
     key:"authAtom",
     default:localStorage.getItem('token') 
 })
+
+
  
 export const activeUserAtom = selector<User>({
     key:'activeUserAtom',
     get: async ({})=>{
- 
             const token = localStorage.getItem('token');
-          
-            let user ={};
-            let setUser= useSetRecoilState(userAtom);
+        let user ={};
+ 
     
             if(token){
-                try {
+       
                  const res = await axios.get(BACKEND_URL+'/user/me',{headers:{
                         Authorization: 'Bearer ' + token
                       }});
                    
-            const user = res.data.user;
-                setUser(res.data.user)
-                return user;
-                } catch (error) {
-                    // debugger
-                    // setUser({})
-                    // // console.log(error)
-                 } 
+                    const user = res.data.user;
+                   
+                        return user;
+              
               
                 }
          

@@ -1,11 +1,14 @@
   
+import { useHandlePopup } from "../hooks/apis";
 import { PopUpDiv } from "./PopUpDiv"
-import { useState } from "react"
-
+import { useRef, useState } from "react"
+import { v4 as uuidv4 } from 'uuid';
 export const BlogMenu = ({handleEdit,handleDelete}: {handleEdit: any,handleDelete: any})=>{
    
 
     const [showDropdown,setShowDrowpdown] = useState(false)
+    const ref = useRef<any>();
+    useHandlePopup(ref,setShowDrowpdown,uuidv4())
 
     return  <div className="relative">
             <svg onClick={()=> setShowDrowpdown(!showDropdown)} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -14,7 +17,7 @@ export const BlogMenu = ({handleEdit,handleDelete}: {handleEdit: any,handleDelet
            
                
             
-            {showDropdown?  <Dropdown showDropdown={showDropdown} handleEdit={handleEdit} handleDelete={handleDelete}/>  
+            {showDropdown? <div ref={ref}> <Dropdown showDropdown={showDropdown} handleEdit={handleEdit} handleDelete={handleDelete}/>  </div>
                            :""} 
             </div> 
 }
