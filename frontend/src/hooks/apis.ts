@@ -8,7 +8,7 @@ import {AllBlogsAtom, AllBlogsTrigger, BlogTrigger, MyBlogsTrigger, blogAtom, cl
  
 import {  activeUserAtom, authAtom, userAtom } from '../store/userAtom';
 import {  ImgAtom, contentAtom, draftState, reviewToggleAtom, tagsAtom } from '../store/EditorAtom';
-import  * as DOMPurify from 'dompurify';
+import   DOMPurify from 'dompurify';
 import DRAFTSTATE, { Blog ,User} from '../interfaces';
  
 import { alertAtom } from '../store/alertAtom';
