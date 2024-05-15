@@ -106,7 +106,7 @@ const Modal=({toggle}:{toggle:any})=>{
                             onChange={(e)=>{
                                 setSearchInput(e.target.value)
                             }}
-                            className="block outline-none w-full p-4 ps-10 text-sm focus:ring-0
+                            className="block bg-white outline-none w-full p-4 ps-10 text-sm focus:ring-0
                              text-gray-900   "
                             placeholder="Search stories..."
                       
