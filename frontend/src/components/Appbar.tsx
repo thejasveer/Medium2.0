@@ -4,8 +4,10 @@ import {  draftState, reviewToggleAtom } from "../store/EditorAtom";
 import { Avatar } from "./Avatar"
 import { PublishButton } from "./PublishButton";
 import { authAtom, userAtom} from "../store/userAtom";
-// import { useAuth } from "../hooks/apis";
+ 
 import { searchToggleAtom } from "../store/searchAtom";
+import { useAuth } from "../hooks/apis";
+ 
  
  
 export const Appbar =()=>{
@@ -15,7 +17,7 @@ export const Appbar =()=>{
     const authenticated = useRecoilValue(authAtom)
     const currDraftState = useRecoilValue(draftState)
     const  setShowSearch  = useSetRecoilState(searchToggleAtom)
-    // const {}=  useAuth()
+      const {}= useAuth();
     const user  = useRecoilValue(userAtom)
     return(<div className=" flex justify-between px-3 py-3  md:px-20 border-b ">
         <div className=" flex gap-5 items-center">
@@ -59,7 +61,7 @@ export const Appbar =()=>{
 
                         { (authenticated) ?   
                                     <div className="col-span-1 flex justify-center   ">
-                                    <Avatar  size={"size-8"} text={"text-xl"} name={user.username??'a'} showlogout={true}/>
+                                    <Avatar  size={"size-8"} text={"text-xl"} name={user.username} showlogout={true}/>
                                     </div>
                                     :
                                     <div className="col-span-1 flex gap-2 space-x-2 lg:space-x-4 text-slate-400">

@@ -6,7 +6,7 @@ import { useRecoilState, useRecoilStateLoadable, useRecoilValue, useRecoilValueL
 import { BACKEND_URL } from '../config';
 import {AllBlogsAtom, AllBlogsTrigger, BlogTrigger, MyBlogsTrigger, blogAtom, clapClassAtom, myBlogsAtom} from "../store/blogAtoms"
  
-import {  activeUserAtom, authAtom, userAtom } from '../store/userAtom';
+import {  activeUserAtom, authAtom, userAtom, userAtomTrigger } from '../store/userAtom';
 import {  ImgAtom, contentAtom, draftState, reviewToggleAtom, tagsAtom } from '../store/EditorAtom';
 import   DOMPurify from 'dompurify';
 import DRAFTSTATE, { Blog ,User} from '../interfaces';
@@ -28,10 +28,13 @@ export const useSignup= (inputs: signupParams)=>{
              const data = response.data;
              const token: string = data.token;
             localStorage.setItem('token',token);
+      
             setAuth(token);
-            navigate('/blogs')
             setLoading(false);
             setUser(data.user)
+         
+            navigate('/blogs')
+         
 
             } catch (err: any) {
                  setLoading(false);
@@ -47,7 +50,7 @@ export const useSignin=(inputs: signinParams) => {
     const [errors,setErrors] = useState<any>([]);
     const [loading,setLoading] = useState(false);
     const setAuth = useSetRecoilState(authAtom)
-    const setUser= useSetRecoilState(userAtom)
+    const resetUser= useSetRecoilState(userAtomTrigger)
     const navigate = useNavigate()
           
 
@@ -59,9 +62,10 @@ export const useSignin=(inputs: signinParams) => {
                 const token: string = data.token;
                 localStorage.setItem('token',token)
                 setAuth(token);
-                setUser(data.user)
-                navigate('/blogs')
+                resetUser((p)=>p+1)
                 setLoading(false);
+                navigate('/blogs')
+            
                 
             } catch (err: any) {
                     console.log(err)
@@ -78,9 +82,11 @@ export const useAuth = ()=>{
     const userLoadable = useRecoilValueLoadable<User>(activeUserAtom);
     const setUser = useSetRecoilState(userAtom)
     const userExist = userLoadable.state === 'hasValue' && Object.keys(userLoadable.contents).length>0
-    if(userExist){
+
+    useEffect(()=>{
         setUser(userLoadable.contents)
-    }
+    },[userExist])
+ 
     return {
       user: userLoadable,
       res: userLoadable,

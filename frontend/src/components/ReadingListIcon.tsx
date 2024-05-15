@@ -44,7 +44,7 @@ export const ReadingListIcon = ({id , col=true}:{id: string,col?:boolean})=>{
            
             const exist = user.list?.some(l => l.post?.id === id);
             return !!exist ; // Convert to boolean
-        }, [id, user.list]);
+        }, [id, user?.list]);
  
 
 

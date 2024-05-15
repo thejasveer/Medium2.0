@@ -1,14 +1,15 @@
 import { Link,   useLocation, useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { authAtom, userAtom } from "../store/userAtom";
-import {   useRef, useState } from "react";
+import {   useEffect, useRef, useState } from "react";
 import { PopUpDiv } from "./PopUpDiv";
 import { useHandlePopup } from "../hooks/apis";
 import { v4 as uuidv4 } from 'uuid';
+import { ButtonSpinner } from "./ButtonSpinner";
 
-export function Avatar({name="Ano",size="size-8",text="text-lg",showlogout=false}: {name?: string, size?: string,text?:string,showlogout?:boolean}){
+export function Avatar({name,size="size-8",text="text-lg",showlogout=false}: {name?: string, size?: string,text?:string,showlogout?:boolean}){
  
-    const initial = name[0];
+    const [initial,setInitial] = useState('');
     const navigate = useNavigate()
     const setUser = useSetRecoilState(userAtom)
    const setAuthenticated = useSetRecoilState(authAtom)
@@ -22,12 +23,15 @@ export function Avatar({name="Ano",size="size-8",text="text-lg",showlogout=false
         setUser({})
         navigate("/signin")
     }
-  
+  useEffect(()=>{
+ 
+        if(name)setInitial(name[0])
+  },[name])
  
 
 return   <div onClick={()=>setShowDrowpdown(!showDropdown)} className={`relative group  cursor-pointer flex items-center justify-center  ${size} first: bg-red-500 rounded-full `}>
-<div className={`font-medium ${ text} text-slate-100  `}>{initial}</div>
-{showlogout?  <div ref={ref}><Dropdown onClick={handleLogout}  name={name} showDropdown={showDropdown}/>  </div>
+<div className={`font-medium ${ text} text-slate-100  `}>{initial==''?<ButtonSpinner/>: initial}</div>
+{showlogout?  <div ref={ref}><Dropdown onClick={handleLogout}  name={name||''} showDropdown={showDropdown}/>  </div>
                            :""} 
 </div> 
 

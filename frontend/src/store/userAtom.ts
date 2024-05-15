@@ -14,14 +14,17 @@ export const authAtom = atom <string|null>({
     default:localStorage.getItem('token') 
 })
 
-
+export const userAtomTrigger= atom<number>({
+    key:'userAtomTrigger',
+    default:0
+})
  
 export const activeUserAtom = selector<User>({
     key:'activeUserAtom',
-    get: async ({})=>{
+    get: async ({get})=>{
             const token = localStorage.getItem('token');
         let user ={};
- 
+         get(userAtomTrigger)
     
             if(token){
        

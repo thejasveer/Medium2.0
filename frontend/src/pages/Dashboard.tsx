@@ -15,12 +15,10 @@ import { userAtom } from "../store/userAtom";
 
 export const Dashboard = ()=>{
     const {username} = useParams()
-      const {res}=  useAuth()
+ 
     const user = useRecoilValue(userAtom)
  
-    if(res.state=='loading'){
-        return <Loading/>
-    }
+ 
 
       if(username!='@'+user.username){
             return <NotFound/>
@@ -29,7 +27,7 @@ export const Dashboard = ()=>{
    
 
 
-    return  res.state=='hasValue'&& <div className="flex justify-center">
+    return  Object.keys(user).length>0&& <div className="flex justify-center">
              <div className=" w-full md:max-w-6xl grid grid-cols-12 h-fit  ">
                 <div className="col-span-12 md:col-span-8 py-10 px-8">
                 <AppBar username={user.username} />

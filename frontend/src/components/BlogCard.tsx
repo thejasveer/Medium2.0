@@ -15,8 +15,7 @@ import { userAtom } from "../store/userAtom"
 export const BlogCard=({blog  }: {blog: Blog})=>{
   const date =useFormatDate(blog.createdAt) ;
   const [showActions,setShowActions] = useState(false)
-  
-  const {}= useAuth();
+
   const user = useRecoilValue(userAtom)
   const navigate = useNavigate()
   const {deleteBlog,loading} = useBlogs()
