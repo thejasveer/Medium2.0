@@ -3,12 +3,14 @@ import { useRecoilValue, useRecoilValueLoadable } from "recoil";
 import { contentAtom,   placeholderIdAtom } from "../store/EditorAtom";
  
 import { useLocation } from "react-router-dom";
+import { ButtonSpinner } from "./ButtonSpinner";
 
 interface props{
     text: string;
+    loading?:boolean;
     onclick: (e: MouseEvent<HTMLButtonElement>) => void
 }
-export const PublishButton = ({text,onclick}: props)=>{
+export const PublishButton = ({text,onclick,loading=false}: props)=>{
     const placeholderId= useRecoilValue(placeholderIdAtom)
  
    const[showPublish,setShowPublish] = useState(true)
@@ -31,7 +33,7 @@ export const PublishButton = ({text,onclick}: props)=>{
     return   <button
             onClick={showPublish?onclick:()=>{}}
             className={`bg-green-700 px-3 ${!showPublish&&'opacity-50'} text-sm py-1 flex gap-2 items-center text-white rounded-full`}>
-        {text}
+        {loading?<ButtonSpinner/>:''} {text}
         </button> 
     ;
 

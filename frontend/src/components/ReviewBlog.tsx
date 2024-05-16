@@ -7,6 +7,7 @@ import { userAtom } from "../store/userAtom"
 import {  useBlogCrud } from "../hooks/apis"
 import { Loading } from "./Loading"
 import { memo } from "react"
+import { ButtonSpinner } from "./ButtonSpinner"
  
 
 export const ReviewBlog = memo(({placeholderId}: {placeholderId: string}) =>{
@@ -14,11 +15,11 @@ export const ReviewBlog = memo(({placeholderId}: {placeholderId: string}) =>{
     const user = useRecoilValue(userAtom)
     const blog = useRecoilValueLoadable(contentAtom(placeholderId))
     const currDraftState = useRecoilValue(draftState)
-    console.log("fromtags",blog)
+     
         
 
-    const { postBlog} = useBlogCrud(placeholderId)
-    if(blog.state=='loading'){
+    const { postBlog,loading,dloading} = useBlogCrud(placeholderId)
+    if(blog.state=='loading'  ){
         return <Loading/>
     }else{
         console.log(blog.contents.tags)
@@ -44,13 +45,13 @@ export const ReviewBlog = memo(({placeholderId}: {placeholderId: string}) =>{
             </div>
 
             <div className="flex gap-2 items-center">
-                <PublishButton text={"Publish Now"} onclick={()=>{
+                <PublishButton text={"Publish Now"} loading={loading} onclick={()=>{
                      currDraftState==''?postBlog(true):''
                         
                       }}/>
                 <button className="text-slate-400 text-xs flex gap-2 items-center" onClick={()=>{
                     currDraftState==''?postBlog(false):''
-                }}> Make it a draft  </button>
+                }}> {dloading? <ButtonSpinner/>:'' }Make it a draft  </button>
             </div> 
             </div> 
            <div></div> 

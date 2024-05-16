@@ -14,5 +14,5 @@ blogRouter.delete('/my/:id',Auth, deleteBlog)
 blogRouter.post('/my', Auth, addBlog ) 
 blogRouter.put('/my', Auth, updateBlog)
 blogRouter.put('/img', Auth, manageImage)
-blogRouter.put('/clap', Auth, updateClaps)
+blogRouter.put('/clap',  updateClaps)
 export default blogRouter; 

@@ -2,12 +2,13 @@ import { useEffect  } from "react"
 import { useBlog } from "../hooks/apis"
 import { useSetRecoilState } from "recoil"
 import { clapClassAtom } from "../store/blogAtoms"
+ 
 
 export const Claps=({id }: {id:string })=>{
  
         const {clap,clapClass,blog} = useBlog(id)
         const setClapState = useSetRecoilState(clapClassAtom)
-     
+ 
         useEffect(()=>{
             setClapState('fill-slate-400')
            

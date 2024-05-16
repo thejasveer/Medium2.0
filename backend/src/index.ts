@@ -5,7 +5,14 @@ import { cors } from 'hono/cors';
 import { env } from 'hono/adapter'
  
 const app = new Hono();
-app.use(cors());
+app.use('*', cors({
+  origin: 'https://medium2-0-coral.vercel.app',
+  allowHeaders: ['Content-Type', 'Authorization'],
+  allowMethods: ['POST', 'GET', 'OPTIONS'],
+  exposeHeaders: ['Content-Length'],
+  maxAge: 600,
+  credentials: true,
+}))
  
 app.get('/env', (c) => {
   const { NAME } = env<{ NAME: string }>(c)

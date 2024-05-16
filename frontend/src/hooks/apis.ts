@@ -12,6 +12,7 @@ import   DOMPurify from 'dompurify';
 import DRAFTSTATE, { Blog ,User} from '../interfaces';
  
 import { alertAtom } from '../store/alertAtom';
+ 
 
 // Authentication 
 export const useSignup= (inputs: signupParams)=>{
@@ -197,6 +198,8 @@ export const useBlogCrud =  ( placeholderId: string)=>{
     const resetMyblogs = useSetRecoilState(MyBlogsTrigger);
     const resetAllblogs = useSetRecoilState(AllBlogsTrigger);
     const resetBlog = useSetRecoilState(BlogTrigger);
+    const [loading,setLoading] = useState(false)
+    const [dloading,setDLoading] = useState(false)
     // const [blogs] = useRecoilStateLoadable(blogAtom)
  
    
@@ -212,7 +215,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
         try {
          
             if(blog.state=='hasValue'&& blog.contents.title!='' && blog.contents.content!="" && currDraftState==''){
-               
+              publish? setLoading(true):setDLoading(true)
                  await   manageImage();
                  setImgObj({...imgObj,newSrc:""})
                  const tags = tagsArr.length>0 ?tagsArr.map(t=>t.tag).join(',') :"";
@@ -232,7 +235,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
                 });
               
                 const updatedBlog= res.data.blog
-            setblog((prevBlog:any) => ({
+                     setblog((prevBlog:any) => ({
                     ...prevBlog,
                     id: updatedBlog.id,
                     title: updatedBlog.title,
@@ -248,6 +251,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
                   resetMyblogs((x)=>x+1)
                   resetAllblogs((x)=>x+1)
                   resetBlog((x)=>x+1)
+                  publish? setLoading(false):setDLoading(false)
                 if(publish){
                     
 
@@ -400,7 +404,7 @@ export const useBlogCrud =  ( placeholderId: string)=>{
             }
         }
 
-    return {setPublish,postBlog,getPlaceholderId,updateBlog,manageImage,manageDraftState}
+    return {setPublish,postBlog,getPlaceholderId,updateBlog,manageImage,manageDraftState,loading,dloading}
 
     
 

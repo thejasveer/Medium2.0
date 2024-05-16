@@ -388,18 +388,7 @@ export const updateClaps= async (c:Context)=>{
             const prisma = new PrismaClient({
                 datasourceUrl: c.env.DATABASE_URL,
               }).$extends(withAccelerate());
-              const userId =  c.get("userId")
-            const exist=  await prisma.readingList.findFirst({where:{postId: input.id,userId:userId}})
-              
-            if(exist!=null){
-                await prisma.readingList.delete({
-                    where: {
-                      id: exist.id,
-                      
-                    },
-                  });
-               
-            }else{
+        
        
             const updatedClaps= await prisma.post.update({
                 where:{
@@ -417,9 +406,8 @@ export const updateClaps= async (c:Context)=>{
                 
             })
             c.status(StatusCode.OK);
-            return c.json({message: "Reading list updated",claps:updatedClaps});
-
-        }
+            return c.json({message: "claps updated",claps:updatedClaps});
+ 
     }
         
     } catch (error: any) {

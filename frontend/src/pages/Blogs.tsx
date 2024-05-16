@@ -21,7 +21,7 @@ export const Blogs = ()=>{
 }
  export const BlogsHtml = ({blogs,showStatus=false}:{blogs: Blog[],showStatus?: boolean})=>{
  
-    return <div className="mt-10 w-full h-dvh overflow-auto ">{blogs.map(blog =>{
+    return <div className="mt-10 w-full h-dvh overflow-auto overscroll-auto md:overscroll-contain">{blogs.map(blog =>{
                 return <div  key={blog.id}>
                      {(showStatus) && 
                             (

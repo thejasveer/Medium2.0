@@ -31,12 +31,15 @@ export   const  ContentEditor = memo(({containerProps,onChange,value}: any)=> {
   },[value])
   
   function onSelect() {
-    
-    const selection: any = window.getSelection();
+     const selection: any = window.getSelection();
     let {top,left} = selection.getRangeAt(0).getBoundingClientRect();
-      
+      console.log(top,left)
       top -=42;
-       
+ 
+       if(left>300){
+    
+        left -=300
+       }
     if(selection.toString().length > 0 ){
       setToolbarStyle({...toolbarStyle,display: "flex",top:top,left:left})
     }
@@ -50,11 +53,13 @@ export   const  ContentEditor = memo(({containerProps,onChange,value}: any)=> {
  
  
   return (
-          <EditorProvider>
+ 
+         <EditorProvider>
             <Editor containerProps={containerProps} onChange={onChange} value={value}  onSelect={onSelect}   >
               {showplaceholder && <div className='relative'>
                                 <div className="absolute text-slate-300 text-2xl top-2 px-3 font-serif not-italic flex leading-normal">Tell your story...</div>
                               </div>}
+                          
               <Toolbar style={toolbarStyle}>
                
               <BtnUndo style={btnStyle} />
@@ -74,6 +79,7 @@ export   const  ContentEditor = memo(({containerProps,onChange,value}: any)=> {
               
             </Editor>
           </EditorProvider>
+ 
   );
 });
 
