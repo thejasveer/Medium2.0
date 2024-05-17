@@ -3,7 +3,7 @@ export const Footer=()=>{
     const location = useLocation()
     const {pathname} = location;
 
-    return  (pathname.includes("/edit") || pathname.includes("/new-story")) ?"": <div className=" bg-black    w-full  mt-20 flex flex-col items-center justify-around gap-6 py-8 sm:flex-row ">
+    return  (pathname.includes("/edit") || pathname.includes("/new-story")) ?"": <div className=" bg-black     w-full   flex flex-col items-center justify-around gap-6 py-8 sm:flex-row ">
           <div className="name flex flex-col items-center justify-center gap-x-4 gap-y-2 sm:flex-row sm:justify-self-start">
             <a
               className="text-xl font-extrabold tracking-tighter text-slate-100 transition-colors duration-150 hover:text-yellow-400"

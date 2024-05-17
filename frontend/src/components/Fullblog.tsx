@@ -18,7 +18,7 @@ export const Fullblog =memo(({blog } : {blog:Blog})=>{
     setDate(d)
  },[setDate,blog?.createdAt,])
   
-    return  <div className="flex justify-center p-10  ">
+    return  <div className="flex justify-center p-10 min-h-dvh ">
             <div className="  w-full  max-w-screen-lg p-3 space-x-11 sm:p-5" >
                 <div className={`flex flex-col gap-7  `}>
                         <div className="grid grid-cols-12 "><div  className="col-span-11 text-4xl md:text-5xl font-bold max-w-2xl break-words capitalize">{blog.title} </div> <div className="col-span-1 flex justify-end">
@@ -47,7 +47,7 @@ export const Fullblog =memo(({blog } : {blog:Blog})=>{
                     </div>}
                   
                     <ImageIO imgSrc={blog.img} /> 
-                    <div className="text-xl leading-10  text-slate-700 ">< RenderHtml  html={blog.content}/></div>
+                    <div className="text-xl leading-10  text-slate-700 min-h-dvh">< RenderHtml  html={blog.content}/></div>
                     <Tags tags={blog.tags}/>
                     { !reviewToggle &&  <div className="  border-slate-200  flex justify-between p-3 h-max border-t border-b font-light ">
                     <div>

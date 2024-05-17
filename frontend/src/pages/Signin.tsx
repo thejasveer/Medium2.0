@@ -37,7 +37,7 @@ export const Signin= () =>{
             <div className="w-full lg:w-1/2    h-screen flex flex-col justify-center items-center">
                 <div className="w-full p-16">
                 <Heading text={"Create an account"}></Heading>
-                <Subheading text={"Don't have an account?"} link={"Singnup"} />
+                <Subheading text={"Don't have an account?"} link={"Signup"} />
                 <Input label="Email" value={inputs.email} onchange={(e)=>{ setInputs({...inputs, email:e.target.value})}}   type={"text"} placeholder="Enter your email"/>  
                 <Input label="Password" value={inputs.password}  onchange={(e)=>{ setInputs({...inputs, password:e.target.value})}}   type={"password"} placeholder="******* "/>  
                 <Errors errors={errors} />

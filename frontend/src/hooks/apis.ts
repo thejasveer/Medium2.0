@@ -489,12 +489,15 @@ export const useRecentSearches = ()=>{
 export const useHandlePopup = (ref:any,handler:any,id:string)=>{
     useEffect(()=>{
         const handleKeyDown = (event:any) => {
-      
+            if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+                event.preventDefault(); // Prevent default browser behavior
+                handler(true)// Focus on the search input
+            } 
             if (event.key === 'Escape') {
                 event.preventDefault(); // Prevent default browser behavior
                 handler(false) // Remove focus from the search input
               }
-             
+ 
               if (ref.current && !ref.current.contains(event.target)) {
                 handler(false);
               }

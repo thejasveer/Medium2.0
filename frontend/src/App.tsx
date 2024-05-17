@@ -15,7 +15,7 @@ import { Footer } from './components/Footer';
 function App() {
   
   return (
-    <div className='flex flex-col relative min-h-screen justify-between'>
+    <div className='flex flex-col relative min-h-screen'>
     <RecoilRoot>
     <BrowserRouter>
         <Appbar></Appbar>

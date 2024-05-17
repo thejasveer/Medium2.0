@@ -1,6 +1,6 @@
 import { useRecoilState, useSetRecoilState } from "recoil"
 import { searchToggleAtom } from "../store/searchAtom"
-import { useBlogs, useRecentSearches } from "../hooks/apis";
+import { useBlogs, useHandlePopup, useRecentSearches } from "../hooks/apis";
 import { useEffect, useRef, useState } from "react";
 import { Blog } from "../interfaces";
 import { RenderHtml } from "./RenderHtml";
@@ -9,31 +9,17 @@ import {  useLocation, useNavigate } from "react-router-dom";
 import { BlogTrigger } from "../store/blogAtoms";
 export const Search =()=>{
  const [showSearch, setShowSearch] = useRecoilState(searchToggleAtom)
-
-    useEffect(()=>{
+ const ref=  useRef<any>();
+ useHandlePopup(ref,setShowSearch,uuidv4())
+ 
     
-        const handleKeyDown = (event:any) => {
-            if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
-               event.preventDefault(); // Prevent default browser behavior
-             setShowSearch(true)// Focus on the search input
-            } 
-            if (event.key === 'Escape') {
-                event.preventDefault(); // Prevent default browser behavior
-                setShowSearch(false) // Remove focus from the search input
-              }
-          };
-        document.addEventListener('keydown', handleKeyDown);
-         return () => { 
-          document.removeEventListener('keydown', handleKeyDown);
-        };
-    },[])
-    
-return showSearch && <Modal toggle={setShowSearch}  />
+return showSearch && <div ref={ref}> <Modal toggle={setShowSearch}  /></div>
 
 }
 
 
 const Modal=({toggle}:{toggle:any})=>{
+
     const searchRef = useRef<HTMLInputElement>(null)
     const {blogs}= useBlogs();
     const [searchInput,setSearchInput]= useState("")
@@ -74,9 +60,7 @@ const Modal=({toggle}:{toggle:any})=>{
     
     return <div
     id="select-modal"
-    // onClick={()=>toggle(true)}
-  
-    className=" overflow-y-auto overflow-x-hidden flex absolute top-0   opacity-3  z-50 justify-center items-start w-full  h-full backdrop-opacity-10 backdrop-invert bg-white/30"
+   className=" overflow-y-auto overflow-x-hidden flex absolute top-0   opacity-3  z-50 justify-center items-start w-full  h-full backdrop-opacity-10 backdrop-invert bg-white/30"
 >
 <div className="relative p-4 w-full mt-20 max-w-md h-max">
             <div className="relative bg-white rounded-lg shadow">
