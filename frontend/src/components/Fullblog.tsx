@@ -76,7 +76,7 @@ export const Fullblog =memo(({blog } : {blog:Blog})=>{
 const Tags = ({tags}: {tags: TagType[]})=>{
 
 
-  return   tags.length>0 && <div className="flex  gap-2">
+  return   tags.length>0 && <div className="flex flex-wrap   gap-2">
           {tags.map((tag,i)=>{
         return <div key={i} className="bg-gray-200 text-light text-center rounded-full p-2 text-sm w-max overflow-hidden px-3 capitalize ">
               <span>{ tag.tag}</span>
