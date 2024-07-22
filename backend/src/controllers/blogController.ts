@@ -218,6 +218,15 @@ export async function deleteBlog(c: Context){
 		const prisma = new PrismaClient({
 			datasourceUrl: c.env.DATABASE_URL,
 		  }).$extends(withAccelerate());
+
+		  const curr = await prisma.post.findFirst({where:{id}});
+ 
+		  if(c.get('userId')!= curr?.authorId){
+		 
+			c.status(StatusCode.BADREQ);
+			return c.json({error:{message: "unauthorized"}});
+		  }
+
 	
 		const res = await prisma.post.update({where:{id}, 
 			data:{
